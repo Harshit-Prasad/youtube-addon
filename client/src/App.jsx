@@ -38,7 +38,11 @@ const router = createBrowserRouter([
           },
           {
             path: "/admin-rah/:idx",
-            element: <AdminRAH />,
+            element: (
+              <SocketProvider>
+                <AdminRAH />
+              </SocketProvider>
+            ),
           },
         ],
       },
@@ -54,7 +58,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/main-stream/:idx",
-        element: <MainStream />,
+        element: (
+          <SocketProvider>
+            <MainStream />
+          </SocketProvider>
+        ),
       },
     ],
   },
@@ -82,7 +90,7 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <SocketProvider>
+    <>
       <RouterProvider router={router} />
       <Toaster
         position="top-right"
@@ -90,6 +98,6 @@ export default function App() {
           duration: 5000,
         }}
       />
-    </SocketProvider>
+    </>
   );
 }

@@ -1,6 +1,8 @@
 import React from "react";
 import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import LiveStream from "../../components/LiveStream";
+import LiveChat from "../../components/LiveChat";
 
 export default function PrivateStream() {
   const { idx } = useParams();
@@ -24,31 +26,14 @@ export default function PrivateStream() {
       <Link to={"/"} className="button">
         Go back
       </Link>
-      <div className="aspect-video max-w-[800px] mx-auto my-2">
-        <iframe
-          width="100%"
-          height="100%"
-          src={`https://www.youtube.com/embed/${streamId}`}
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-        ></iframe>
-      </div>
+      <LiveStream streamId={streamId} />
       <div className="flex justify-center items-center gap-5 my-5">
         <button onClick={handleCopyLink} className="button">
           Copy Stream Link
         </button>
         <span>Stream Link: {streamLink}</span>
       </div>
-      <div className="aspect-square max-w-[400px] mx-auto">
-        {/* <iframe
-            width="520"
-            height="616"
-            src={`https://www.youtube.com/live_chat?v=${
-              streamId
-            }&amp;embed_domain=${import.meta.env.VITE_CLIENT_URL}`}
-          ></iframe> */}
-      </div>
+      <LiveChat streamId={streamId} />
     </div>
   );
 }

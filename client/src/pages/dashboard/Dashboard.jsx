@@ -33,14 +33,12 @@ export default function Dashboard() {
                     {upcomingStream.id}
                   </h3>
                   <div className="flex gap-2">
-                    <button
+                    <Link
                       className="button"
-                      onClick={() => {
-                        navigate(`/admin-rah/${upcomingStream.id}`);
-                      }}
+                      to={`/admin-rah/${upcomingStream.id}`}
                     >
                       RHA
-                    </button>
+                    </Link>
                     <Link
                       className="button"
                       to={`/private-stream/${upcomingStream.id}`}

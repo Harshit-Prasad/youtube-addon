@@ -1,34 +1,36 @@
-import React, { useCallback, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { useSocket } from "../../providers/SocketProvider";
 import { useAuthStore } from "../../services/store";
 import toast from "react-hot-toast";
+import LiveStream from "../../components/LiveStream";
+import LiveChat from "../../components/LiveChat";
+import { Hand } from "lucide-react";
+import webRTCPeer from "../../services/webRTC";
+import ReactPlayer from "react-player";
 
 export default function MainStream() {
   const userInfo = useAuthStore((state) => state);
   const params = useParams();
+  const [adminId, streamId] = params.idx.split("_");
   const socket = useSocket();
-
-  const [adminId, _] = params.idx.split("_");
+  const [toggleRaiseHand, setToggleRaiseHand] = useState(false);
+  const [localStream, setLocalStream] = useState();
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [remoteStream, setRemoteStream] = useState();
 
   const userConnected = useCallback(() => {
     socket.emit("user-connected", {
       userInfo: {
         id: userInfo.id,
         name: userInfo.name,
+        handRaised: toggleRaiseHand,
+        role: userInfo.role,
       },
       adminId,
       streamId: params.idx,
     });
-  }, []);
-
-  const userDisconnected = useCallback(() => {
-    socket.emit("user-disconnected", {
-      id: userInfo.id,
-      adminId,
-      streamId: params.idx,
-    });
-  }, []);
+  }, [toggleRaiseHand]);
 
   const adminConnected = useCallback(() => {
     toast.success("Admin connected");
@@ -38,24 +40,178 @@ export default function MainStream() {
     toast.error("Admin disconnected");
   }, []);
 
+  const handleRaiseHand = useCallback(() => {
+    socket.emit("hand-raised", {
+      id: userInfo.id,
+      adminId,
+      handRaised: !toggleRaiseHand,
+    });
+
+    setToggleRaiseHand(!toggleRaiseHand);
+  }, [toggleRaiseHand]);
+
   useEffect(() => {
     socket.on("connect", userConnected);
-    socket.on("disconnect", userDisconnected);
     socket.on("admin-connected", adminConnected);
     socket.on("admin-disconnected", adminDisconnected);
 
     return () => {
       socket.off("connect", userConnected);
-      socket.off("disconnect", userDisconnected);
       socket.off("admin-connected", adminConnected);
       socket.off("admin-disconnected", adminDisconnected);
     };
-  }, [userConnected, userDisconnected, adminConnected, adminDisconnected]);
+  }, [userConnected, adminConnected, adminDisconnected]);
+
+  useEffect(() => {
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  // WebRTC
+
+  const handleIncomingCall = useCallback(async ({ from, offer }) => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true,
+    });
+    const audioTrack = stream.getAudioTracks()[0];
+    audioTrack.applyConstraints({
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true,
+    });
+    setLocalStream(stream);
+    const answer = await webRTCPeer.getAnswer(offer);
+    setSelectedAdmin(from);
+    socket.emit("call-accepted", { answer, to: from, from: userInfo.id });
+  }, []);
+
+  const sendStream = useCallback(() => {
+    for (const track of localStream.getTracks()) {
+      webRTCPeer.peer.addTrack(track, localStream);
+    }
+  }, [localStream, webRTCPeer]);
+
+  const handleAnswerCall = useCallback(() => {
+    sendStream();
+  }, [sendStream]);
+
+  const handleNegotiationNeeded = useCallback(
+    async (e) => {
+      console.log(e);
+      const offer = await webRTCPeer.getOffer();
+      socket.emit("nego-needed", {
+        offer,
+        to: selectedAdmin,
+        from: userInfo.id,
+      });
+    },
+    [webRTCPeer, selectedAdmin]
+  );
+
+  const handleNegotiationIncoming = useCallback(
+    async ({ from, offer }) => {
+      const answer = await webRTCPeer.getAnswer(offer);
+      socket.emit("nego-done", { to: from, answer, from: userInfo.id });
+    },
+    [webRTCPeer]
+  );
+
+  const handleNegotiationFinal = useCallback(
+    async ({ answer }) => {
+      await webRTCPeer.setLocalDescription(answer);
+    },
+    [webRTCPeer]
+  );
+
+  const handleIncomingTracks = useCallback(
+    (e) => {
+      const [stream] = e.streams;
+      setRemoteStream(stream);
+    },
+    [setRemoteStream]
+  );
+
+  useEffect(() => {
+    socket.on("incoming-call", handleIncomingCall);
+    socket.on("nego-incoming", handleNegotiationIncoming);
+    socket.on("nego-final", handleNegotiationFinal);
+
+    webRTCPeer.peer.addEventListener(
+      "negotiationneeded",
+      handleNegotiationNeeded
+    );
+    webRTCPeer.peer.addEventListener("track", handleIncomingTracks);
+
+    return () => {
+      socket.off("incoming-call", handleIncomingCall);
+      socket.off("nego-incoming", handleNegotiationIncoming);
+      socket.off("nego-final", handleNegotiationFinal);
+
+      webRTCPeer.peer.removeEventListener(
+        "negotiationneeded",
+        handleNegotiationNeeded
+      );
+      webRTCPeer.peer.removeEventListener("track", handleIncomingTracks);
+    };
+  }, [
+    webRTCPeer,
+    handleIncomingCall,
+    handleNegotiationNeeded,
+    handleNegotiationFinal,
+    handleIncomingTracks,
+  ]);
+
+  console.log(remoteStream);
 
   return (
     <>
-      <h1>Stream ID: {params.idx}</h1>
-      <h1>User ID: {userInfo.id}</h1>
+      <Link to="/welcome" className="button">
+        To Home
+      </Link>
+      <LiveStream streamId={streamId} />
+      <button
+        onClick={handleRaiseHand}
+        className="button flex items-center justify-center gap-3"
+      >
+        Hand Raised
+        <span
+          className={`flex justify-center items-center p-1 rounded-full border-2 border-solid ${
+            toggleRaiseHand ? "border-white" : "border-transparent"
+          }`}
+        >
+          <Hand />
+        </span>
+      </button>
+      {selectedAdmin && (
+        <button onClick={handleAnswerCall} className="button">
+          Start Call
+        </button>
+      )}
+      <h1>USER</h1>
+
+      {localStream && (
+        <ReactPlayer
+          width={0}
+          height={0}
+          playing
+          muted={false}
+          url={localStream}
+        ></ReactPlayer>
+      )}
+      <h1>REMOTE USER</h1>
+      {remoteStream && (
+        <ReactPlayer
+          width={0}
+          height={0}
+          playing
+          muted={false}
+          url={remoteStream}
+        ></ReactPlayer>
+      )}
+
+      <LiveChat streamId={streamId} />
     </>
   );
 }
