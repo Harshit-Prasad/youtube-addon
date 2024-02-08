@@ -9,7 +9,7 @@ export default function NotAuthorizedOnly() {
     <>
       {!userInfo.authorized && <Outlet />}
       {userInfo.role === "student" && <Navigate to="/welcome" replace />}
-      {userInfo.role === "teacher" && <Navigate to="/dashboard" replace />}
+      {userInfo.role === "teacher" && <Navigate to="/" replace />}
     </>
   );
 }
