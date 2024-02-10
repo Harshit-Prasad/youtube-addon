@@ -263,6 +263,7 @@ export default function AdminRAH() {
           width={0}
           height={0}
           muted={true}
+          playing
           url={localStream}
         ></ReactPlayer>
       )}
@@ -271,6 +272,7 @@ export default function AdminRAH() {
           width={0}
           height={0}
           muted={false}
+          playing
           url={remoteStream}
         ></ReactPlayer>
       )}
