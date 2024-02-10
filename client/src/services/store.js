@@ -14,6 +14,9 @@ export const useAuthStore = create((set) => {
     role: userInfo?.role || "",
     bgColor: userInfo?.bgColor || "",
     authorized: userInfo?.authorized || false,
+    setAuth: (authVal) => {
+      return set(authVal);
+    },
   };
 });
 

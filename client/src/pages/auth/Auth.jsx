@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  Navigate,
+  redirect,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useAuthStore } from "../../services/store";
 import axios from "axios";
 
@@ -8,6 +13,10 @@ export default function Auth() {
   const [name, setName] = useState("");
   const [role, setRole] = useState("student");
   const [bgColor, setBgColor] = useState("#000000");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const setAuth = useAuthStore((state) => state.setAuth);
+
+  const currentStreamId = searchParams.get("streamId");
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -33,8 +42,13 @@ export default function Auth() {
         const userInfo = { id, role, bgColor, name, authorized };
         window.localStorage.setItem("user-info", JSON.stringify(userInfo));
 
-        useAuthStore.setState({ id, role, bgColor, name, authorized });
-        navigate("/");
+        setAuth({ id, role, bgColor, name, authorized });
+
+        if (currentStreamId && role === "student") {
+          navigate(-1);
+        } else {
+          navigate("/");
+        }
       }
     } catch (error) {}
   }

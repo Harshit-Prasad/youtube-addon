@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "../../services/store";
 
 export default function AuthOnlyRoute() {
-  const userInfo = useAuthStore.getState();
+  const userInfo = useAuthStore((state) => state);
 
   return (
     <>

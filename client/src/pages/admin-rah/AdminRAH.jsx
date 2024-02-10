@@ -258,22 +258,18 @@ export default function AdminRAH() {
         })}
       </div>
       {selectedUser && <></>}
-      <h1>YOU</h1>
       {localStream && (
         <ReactPlayer
           width={0}
           height={0}
-          playing
-          muted={false}
+          muted={true}
           url={localStream}
         ></ReactPlayer>
       )}
-      <h1>REMOTE USER</h1>
       {remoteStream && (
         <ReactPlayer
           width={0}
           height={0}
-          playing
           muted={false}
           url={remoteStream}
         ></ReactPlayer>

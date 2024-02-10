@@ -14,14 +14,13 @@ import NotAuthorizedOnly from "./protected-routes/not-authorized-only/NotAuthori
 import AdminRAH from "./pages/admin-rah/AdminRAH";
 import SocketProvider from "./providers/SocketProvider";
 import { Toaster } from "react-hot-toast";
+import NotAuthorizedOnlyStream from "./protected-routes/not-authorized-only-stream/NotAuthorizedOnlyStream";
 
 const router = createBrowserRouter([
   {
-    path: "/",
     element: <AuthOnlyRoute />,
     children: [
       {
-        path: "/",
         element: <AdminOnlyRoute />,
         children: [
           {
@@ -46,6 +45,11 @@ const router = createBrowserRouter([
           },
         ],
       },
+    ],
+  },
+  {
+    element: <AuthOnlyRoute />,
+    children: [
       {
         path: "/welcome",
         element: <WelcomePage />,
@@ -53,7 +57,6 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/main-stream/:idx",
     element: <UserOnlyRoute />,
     children: [
       {
@@ -67,7 +70,6 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/auth",
     element: <NotAuthorizedOnly />,
     children: [
       {
@@ -77,8 +79,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/public-stream/:idx",
-    element: <NotAuthorizedOnly />,
+    element: <NotAuthorizedOnlyStream />,
     children: [
       {
         path: "/public-stream/:idx",

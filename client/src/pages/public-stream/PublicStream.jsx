@@ -5,13 +5,13 @@ import LiveStream from "../../components/LiveStream";
 import LiveChat from "../../components/LiveChat";
 
 export default function PublicStream() {
-  const userInfo = useAuthStore.getState();
+  const userInfo = useAuthStore((state) => state);
   const params = useParams();
 
-  const [_, streamId] = params.idx;
+  const [_, streamId] = params.idx.split("_");
   return (
     <>
-      <Link className="button" to="/auth">
+      <Link className="button" to={`/auth?streamId=${params.idx}`}>
         Login
       </Link>
       <LiveStream streamId={streamId} />

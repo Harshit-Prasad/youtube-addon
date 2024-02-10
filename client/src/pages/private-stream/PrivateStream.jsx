@@ -10,7 +10,7 @@ export default function PrivateStream() {
 
   const streamLink = `${
     import.meta.env.VITE_CLIENT_URL
-  }/main-stream/${userId}_${streamId}`;
+  }/public-stream/${userId}_${streamId}`;
 
   async function handleCopyLink(e) {
     try {

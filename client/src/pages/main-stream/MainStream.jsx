@@ -8,6 +8,7 @@ import LiveChat from "../../components/LiveChat";
 import { Hand } from "lucide-react";
 import webRTCPeer from "../../services/webRTC";
 import ReactPlayer from "react-player";
+import AmountSlider from "../../components/AmountSlider";
 
 export default function MainStream() {
   const userInfo = useAuthStore((state) => state);
@@ -18,6 +19,7 @@ export default function MainStream() {
   const [localStream, setLocalStream] = useState();
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [remoteStream, setRemoteStream] = useState();
+  const [startPaymentProcess, setStartPaymentProcess] = useState(false);
 
   const userConnected = useCallback(() => {
     socket.emit("user-connected", {
@@ -41,13 +43,14 @@ export default function MainStream() {
   }, []);
 
   const handleRaiseHand = useCallback(() => {
-    socket.emit("hand-raised", {
-      id: userInfo.id,
-      adminId,
-      handRaised: !toggleRaiseHand,
-    });
+    setStartPaymentProcess(true);
+    // socket.emit("hand-raised", {
+    //   id: userInfo.id,
+    //   adminId,
+    //   handRaised: !toggleRaiseHand,
+    // });
 
-    setToggleRaiseHand(!toggleRaiseHand);
+    // setToggleRaiseHand(!toggleRaiseHand);
   }, [toggleRaiseHand]);
 
   useEffect(() => {
@@ -184,28 +187,25 @@ export default function MainStream() {
           <Hand />
         </span>
       </button>
+      {startPaymentProcess && <AmountSlider />}
       {selectedAdmin && (
         <button onClick={handleAnswerCall} className="button">
           Start Call
         </button>
       )}
-      <h1>USER</h1>
 
       {localStream && (
         <ReactPlayer
           width={0}
           height={0}
-          playing
-          muted={false}
+          muted={true}
           url={localStream}
         ></ReactPlayer>
       )}
-      <h1>REMOTE USER</h1>
       {remoteStream && (
         <ReactPlayer
           width={0}
           height={0}
-          playing
           muted={false}
           url={remoteStream}
         ></ReactPlayer>
