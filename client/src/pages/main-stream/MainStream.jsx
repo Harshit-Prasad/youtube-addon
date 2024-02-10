@@ -44,13 +44,13 @@ export default function MainStream() {
 
   const handleRaiseHand = useCallback(() => {
     setStartPaymentProcess(true);
-    // socket.emit("hand-raised", {
-    //   id: userInfo.id,
-    //   adminId,
-    //   handRaised: !toggleRaiseHand,
-    // });
+    socket.emit("hand-raised", {
+      id: userInfo.id,
+      adminId,
+      handRaised: !toggleRaiseHand,
+    });
 
-    // setToggleRaiseHand(!toggleRaiseHand);
+    setToggleRaiseHand(!toggleRaiseHand);
   }, [toggleRaiseHand]);
 
   useEffect(() => {
