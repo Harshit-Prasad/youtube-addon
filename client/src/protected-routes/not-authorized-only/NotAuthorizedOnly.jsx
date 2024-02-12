@@ -10,7 +10,7 @@ import { useAuthStore } from "../../services/store";
 export default function NotAuthorizedOnly() {
   const userInfo = useAuthStore((state) => state);
   const location = useLocation();
-  console.log(">>", location);
+
   return (
     <>
       {!userInfo.authorized && <Outlet />}

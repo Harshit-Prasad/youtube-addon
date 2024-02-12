@@ -11,11 +11,17 @@ export default function PublicStream() {
   const [_, streamId] = params.idx.split("_");
   return (
     <>
-      <Link className="button" to={`/auth?streamId=${params.idx}`}>
+      <Link
+        className="button bg-slate-800 hover:bg-slate-950"
+        to={`/auth?streamId=${params.idx}`}
+      >
         Login
       </Link>
       <LiveStream streamId={streamId} />
-      <button disabled={true} className="button">
+      <button
+        disabled={true}
+        className="button bg-slate-800 hover:bg-slate-950"
+      >
         Raise hand
       </button>
       <LiveChat streamId={streamId} />

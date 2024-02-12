@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useSocket } from "../../providers/SocketProvider";
 import { useAuthStore } from "../../services/store";
@@ -6,9 +6,9 @@ import toast from "react-hot-toast";
 import LiveStream from "../../components/LiveStream";
 import LiveChat from "../../components/LiveChat";
 import { Hand } from "lucide-react";
-import webRTCPeer from "../../services/webRTC";
-import ReactPlayer from "react-player";
+import WebRTCPeer from "../../services/webRTC";
 import AmountSlider from "../../components/AmountSlider";
+import MediaPlayer from "../../components/MediaPlayer";
 
 export default function MainStream() {
   const userInfo = useAuthStore((state) => state);
@@ -16,10 +16,13 @@ export default function MainStream() {
   const [adminId, streamId] = params.idx.split("_");
   const socket = useSocket();
   const [toggleRaiseHand, setToggleRaiseHand] = useState(false);
+
+  const [webRTCPeer, setWebRTCPeer] = useState(new WebRTCPeer());
   const [localStream, setLocalStream] = useState();
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [remoteStream, setRemoteStream] = useState();
   const [startPaymentProcess, setStartPaymentProcess] = useState(false);
+  const [callStarted, setCallStarted] = useState(false);
 
   const userConnected = useCallback(() => {
     socket.emit("user-connected", {
@@ -32,7 +35,15 @@ export default function MainStream() {
       adminId,
       streamId: params.idx,
     });
-  }, [toggleRaiseHand]);
+  }, [
+    toggleRaiseHand,
+    socket,
+    userInfo.id,
+    userInfo.name,
+    userInfo.role,
+    adminId,
+    params.idx,
+  ]);
 
   const adminConnected = useCallback(() => {
     toast.success("Admin connected");
@@ -43,7 +54,7 @@ export default function MainStream() {
   }, []);
 
   const handleRaiseHand = useCallback(() => {
-    setStartPaymentProcess(true);
+    // setStartPaymentProcess(true);
     socket.emit("hand-raised", {
       id: userInfo.id,
       adminId,
@@ -51,7 +62,7 @@ export default function MainStream() {
     });
 
     setToggleRaiseHand(!toggleRaiseHand);
-  }, [toggleRaiseHand]);
+  }, [toggleRaiseHand, socket, adminId, userInfo.id]);
 
   useEffect(() => {
     socket.on("connect", userConnected);
@@ -63,32 +74,35 @@ export default function MainStream() {
       socket.off("admin-connected", adminConnected);
       socket.off("admin-disconnected", adminDisconnected);
     };
-  }, [userConnected, adminConnected, adminDisconnected]);
+  }, [userConnected, adminConnected, adminDisconnected, socket]);
 
   useEffect(() => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [socket]);
 
   // WebRTC
 
-  const handleIncomingCall = useCallback(async ({ from, offer }) => {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: false,
-      audio: true,
-    });
-    const audioTrack = stream.getAudioTracks()[0];
-    audioTrack.applyConstraints({
-      echoCancellation: true,
-      noiseSuppression: true,
-      autoGainControl: true,
-    });
-    setLocalStream(stream);
-    const answer = await webRTCPeer.getAnswer(offer);
-    setSelectedAdmin(from);
-    socket.emit("call-accepted", { answer, to: from, from: userInfo.id });
-  }, []);
+  const handleIncomingCall = useCallback(
+    async ({ from, offer }) => {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: false,
+        audio: true,
+      });
+      const audioTrack = stream.getAudioTracks()[0];
+      audioTrack.applyConstraints({
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      });
+      setLocalStream(stream);
+      const answer = await webRTCPeer.getAnswer(offer);
+      setSelectedAdmin(from);
+      socket.emit("call-accepted", { answer, to: from, from: userInfo.id });
+    },
+    [webRTCPeer, socket, userInfo.id]
+  );
 
   const sendStream = useCallback(() => {
     for (const track of localStream.getTracks()) {
@@ -98,27 +112,24 @@ export default function MainStream() {
 
   const handleAnswerCall = useCallback(() => {
     sendStream();
+    setCallStarted(true);
   }, [sendStream]);
 
-  const handleNegotiationNeeded = useCallback(
-    async (e) => {
-      console.log(e);
-      const offer = await webRTCPeer.getOffer();
-      socket.emit("nego-needed", {
-        offer,
-        to: selectedAdmin,
-        from: userInfo.id,
-      });
-    },
-    [webRTCPeer, selectedAdmin]
-  );
+  const handleNegotiationNeeded = useCallback(async () => {
+    const offer = await webRTCPeer.getOffer();
+    socket.emit("nego-needed", {
+      offer,
+      to: selectedAdmin,
+      from: userInfo.id,
+    });
+  }, [webRTCPeer, selectedAdmin, socket, userInfo.id]);
 
   const handleNegotiationIncoming = useCallback(
     async ({ from, offer }) => {
       const answer = await webRTCPeer.getAnswer(offer);
       socket.emit("nego-done", { to: from, answer, from: userInfo.id });
     },
-    [webRTCPeer]
+    [webRTCPeer, socket, userInfo.id]
   );
 
   const handleNegotiationFinal = useCallback(
@@ -136,10 +147,27 @@ export default function MainStream() {
     [setRemoteStream]
   );
 
+  const handleCallEnded = useCallback(() => {
+    const tracks = localStream.getTracks();
+    tracks.forEach((track) => {
+      track.stop();
+    });
+    setRemoteStream(null);
+    setLocalStream(null);
+    webRTCPeer.peer.close();
+    setCallStarted(false);
+    setToggleRaiseHand(false);
+    setSelectedAdmin(null);
+    setWebRTCPeer(new WebRTCPeer());
+  }, [webRTCPeer, localStream]);
+
+  console.log(localStream);
+
   useEffect(() => {
     socket.on("incoming-call", handleIncomingCall);
     socket.on("nego-incoming", handleNegotiationIncoming);
     socket.on("nego-final", handleNegotiationFinal);
+    socket.on("admin-ended-call", handleCallEnded);
 
     webRTCPeer.peer.addEventListener(
       "negotiationneeded",
@@ -151,6 +179,7 @@ export default function MainStream() {
       socket.off("incoming-call", handleIncomingCall);
       socket.off("nego-incoming", handleNegotiationIncoming);
       socket.off("nego-final", handleNegotiationFinal);
+      socket.off("admin-ended-call", handleCallEnded);
 
       webRTCPeer.peer.removeEventListener(
         "negotiationneeded",
@@ -164,19 +193,39 @@ export default function MainStream() {
     handleNegotiationNeeded,
     handleNegotiationFinal,
     handleIncomingTracks,
+    handleCallEnded,
+    handleNegotiationIncoming,
+    socket,
   ]);
 
-  console.log(remoteStream);
+  // Media Controls
+
+  const handleEndCall = useCallback(() => {
+    const tracks = localStream.getTracks();
+    tracks.forEach((track) => {
+      track.stop();
+    });
+
+    setRemoteStream(null);
+    setLocalStream(null);
+    setCallStarted(false);
+    webRTCPeer.peer.close();
+    setToggleRaiseHand(false);
+    socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin });
+
+    setSelectedAdmin(null);
+    setWebRTCPeer(new WebRTCPeer());
+  }, [selectedAdmin, socket, userInfo.id, webRTCPeer.peer, localStream]);
 
   return (
     <>
-      <Link to="/welcome" className="button">
+      <Link to="/welcome" className="button bg-slate-800 hover:bg-slate-950">
         To Home
       </Link>
       <LiveStream streamId={streamId} />
       <button
         onClick={handleRaiseHand}
-        className="button flex items-center justify-center gap-3"
+        className="button bg-slate-800 hover:bg-slate-950 flex items-center justify-center gap-3"
       >
         Hand Raised
         <span
@@ -189,30 +238,29 @@ export default function MainStream() {
       </button>
       {startPaymentProcess && <AmountSlider />}
       {selectedAdmin && (
-        <button onClick={handleAnswerCall} className="button">
+        <button
+          onClick={handleAnswerCall}
+          className="button bg-slate-800 hover:bg-slate-950"
+        >
           Start Call
         </button>
       )}
 
-      {localStream && (
-        <ReactPlayer
-          width={0}
-          height={0}
-          muted={true}
-          playing
-          url={localStream}
-        ></ReactPlayer>
+      {localStream && <MediaPlayer muted={true} url={localStream} />}
+      {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
+      {callStarted && (
+        <>
+          <button className="button bg-slate-800 hover:bg-slate-950">
+            Mute
+          </button>
+          <button
+            onClick={handleEndCall}
+            className="button bg-red-700 hover:bg-red-500"
+          >
+            End Call
+          </button>
+        </>
       )}
-      {remoteStream && (
-        <ReactPlayer
-          width={0}
-          height={0}
-          muted={false}
-          playing
-          url={remoteStream}
-        ></ReactPlayer>
-      )}
-
       <LiveChat streamId={streamId} />
     </>
   );

@@ -11,7 +11,10 @@ export default function Dashboard() {
   return (
     <main className="h-dvh flex flex-col items-center gap-3 p-5">
       <div>
-        <Link className="button" to="/create-page">
+        <Link
+          className="button bg-slate-800 hover:bg-slate-950"
+          to="/create-page"
+        >
           Create a new Page
         </Link>
       </div>
@@ -34,19 +37,19 @@ export default function Dashboard() {
                   </h3>
                   <div className="flex gap-2">
                     <Link
-                      className="button"
+                      className="button bg-slate-800 hover:bg-slate-950"
                       to={`/admin-rah/${upcomingStream.id}`}
                     >
                       RHA
                     </Link>
                     <Link
-                      className="button"
+                      className="button bg-slate-800 hover:bg-slate-950"
                       to={`/private-stream/${upcomingStream.id}`}
                     >
                       Go to create page
                     </Link>
                     <button
-                      className="button"
+                      className="button bg-slate-800 hover:bg-slate-950"
                       onClick={(e) => {
                         e.preventDefault();
                         removeStream(upcomingStream.id);

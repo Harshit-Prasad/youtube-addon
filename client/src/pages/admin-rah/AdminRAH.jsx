@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import ReactPlayer from "react-player";
 import { useSocket } from "../../providers/SocketProvider";
 import { useAuthStore } from "../../services/store";
 import axios from "axios";
-import webRTCPeer from "../../services/webRTC";
+import WebRTCPeer from "../../services/webRTC";
+import MediaPlayer from "../../components/MediaPlayer";
 
 export default function AdminRAH() {
   const params = useParams();
@@ -12,35 +12,33 @@ export default function AdminRAH() {
   const userInfo = useAuthStore((state) => state);
   const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+
+  const [callStarted, setCallStarted] = useState(false);
+
+  const [webRTCPeer, setWebRTCPeer] = useState(new WebRTCPeer());
   const [localStream, setLocalStream] = useState();
-  const [remoteStream, setRemoteStream] = useState(null);
+  const [remoteStream, setRemoteStream] = useState();
 
   const adminConnected = useCallback(() => {
     socket.emit("admin-connected", { userInfo, streamId: params.idx });
-  }, []);
+  }, [params.idx, socket, userInfo]);
 
-  const userConnected = useCallback(
-    (userInfo) => {
-      console.log("-->");
-      setUsers((prev) => [
-        {
-          id: userInfo.id,
-          name: userInfo.name,
-          handRaised: userInfo.handRaised,
-        },
-        ...prev,
-      ]);
-    },
-    [users]
-  );
+  const userConnected = useCallback((userInfo) => {
+    setUsers((prev) => [
+      {
+        id: userInfo.id,
+        name: userInfo.name,
+        handRaised: userInfo.handRaised,
+      },
+      ...prev,
+    ]);
+  }, []);
 
   const userDisconnected = useCallback(
     ({ id }) => {
       let disconnectedUserId;
-      console.log(users);
 
       users.forEach((cur, i) => {
-        console.log(cur);
         if (cur.id === id) {
           disconnectedUserId = i;
         }
@@ -85,7 +83,7 @@ export default function AdminRAH() {
     } catch (error) {
       console.log(error.message);
     }
-  }, []);
+  }, [params.idx]);
 
   useEffect(() => {
     socket.on("connect", adminConnected);
@@ -99,7 +97,7 @@ export default function AdminRAH() {
       socket.off("user-disconnected", userDisconnected);
       socket.off("hand-raised", userHandRaised);
     };
-  }, [adminConnected, userConnected, userDisconnected, userHandRaised]);
+  }, [adminConnected, userConnected, userDisconnected, userHandRaised, socket]);
 
   useEffect(() => {
     getCurrentAudience();
@@ -107,26 +105,30 @@ export default function AdminRAH() {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [getCurrentAudience, socket]);
 
   // WebRTC
 
-  const handleCallAudience = useCallback(async (userId) => {
-    setSelectedUser(userId);
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: false,
-      audio: true,
-    });
-    const audioTrack = stream.getAudioTracks()[0];
-    audioTrack.applyConstraints({
-      echoCancellation: true,
-      noiseSuppression: true,
-      autoGainControl: true,
-    });
-    setLocalStream(stream);
-    const offer = await webRTCPeer.getOffer();
-    socket.emit("call-peer", { from: userInfo.id, to: userId, offer });
-  }, []);
+  const handleCallAudience = useCallback(
+    async (userId) => {
+      setSelectedUser(userId);
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: false,
+        audio: true,
+      });
+      const audioTrack = stream.getAudioTracks()[0];
+      audioTrack.applyConstraints({
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true,
+      });
+      setLocalStream(stream);
+      const offer = await webRTCPeer.getOffer();
+      socket.emit("call-peer", { from: userInfo.id, to: userId, offer });
+      setCallStarted(true);
+    },
+    [webRTCPeer, socket, userInfo.id]
+  );
 
   const sendStream = useCallback(() => {
     for (const track of localStream.getTracks()) {
@@ -135,33 +137,28 @@ export default function AdminRAH() {
   }, [localStream, webRTCPeer]);
 
   const handleCallAccepted = useCallback(
-    async ({ from, answer }) => {
+    async ({ answer }) => {
       await webRTCPeer.setLocalDescription(answer);
       sendStream();
     },
     [sendStream, webRTCPeer]
   );
 
-  const handleNegotiationNeeded = useCallback(
-    async (e) => {
-      console.log(e);
-      const offer = await webRTCPeer.getOffer();
-      socket.emit("nego-needed", {
-        offer,
-        to: selectedUser,
-        from: userInfo.id,
-      });
-    },
-    [webRTCPeer, selectedUser]
-  );
+  const handleNegotiationNeeded = useCallback(async () => {
+    const offer = await webRTCPeer.getOffer();
+    socket.emit("nego-needed", {
+      offer,
+      to: selectedUser,
+      from: userInfo.id,
+    });
+  }, [webRTCPeer, selectedUser, socket, userInfo.id]);
 
   const handleNegotiationIncoming = useCallback(
     async ({ from, offer }) => {
-      console.log("nego-incoming-teacher");
       const answer = await webRTCPeer.getAnswer(offer);
       socket.emit("nego-done", { to: from, answer, from: userInfo.id });
     },
-    [webRTCPeer]
+    [webRTCPeer, socket, userInfo.id]
   );
 
   const handleNegotiationFinal = useCallback(
@@ -179,10 +176,43 @@ export default function AdminRAH() {
     [setRemoteStream]
   );
 
+  const handleCallEnded = useCallback(
+    ({ from: userId }) => {
+      const tracks = localStream?.getTracks();
+      tracks?.forEach((track) => {
+        track.stop();
+      });
+
+      webRTCPeer.peer.close();
+      setRemoteStream(null);
+      setLocalStream(null);
+      setCallStarted(false);
+      setWebRTCPeer(new WebRTCPeer());
+      setSelectedUser(null);
+      setUsers((users) => {
+        const u = users.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              handRaised: false,
+            };
+          }
+
+          return user;
+        });
+        return u;
+      });
+    },
+    [webRTCPeer, localStream]
+  );
+
+  console.log(localStream);
+
   useEffect(() => {
     socket.on("call-accepted", handleCallAccepted);
     socket.on("nego-incoming", handleNegotiationIncoming);
     socket.on("nego-final", handleNegotiationFinal);
+    socket.on("user-ended-call", handleCallEnded);
 
     webRTCPeer.peer.addEventListener(
       "negotiationneeded",
@@ -195,11 +225,11 @@ export default function AdminRAH() {
       socket.off("call-accepted", handleCallAccepted);
       socket.off("nego-incoming", handleNegotiationIncoming);
       socket.off("nego-final", handleNegotiationFinal);
+      socket.off("user-call-ended", handleCallEnded);
+
       webRTCPeer.peer.removeEventListener(
         "negotiationneeded",
-        handleNegotiationNeeded,
-        handleNegotiationIncoming,
-        handleNegotiationFinal
+        handleNegotiationNeeded
       );
       webRTCPeer.peer.removeEventListener("track", handleIncomingTracks);
     };
@@ -208,16 +238,52 @@ export default function AdminRAH() {
     handleCallAccepted,
     handleNegotiationNeeded,
     handleNegotiationIncoming,
+    handleNegotiationFinal,
     handleIncomingTracks,
+    handleCallEnded,
+    socket,
   ]);
 
-  console.log(remoteStream);
+  // Media Controls
+
+  const handleEndCall = useCallback(
+    (userId) => {
+      const tracks = localStream.getTracks();
+      tracks.forEach((track) => {
+        track.stop();
+      });
+
+      setRemoteStream(null);
+      setLocalStream(null);
+      webRTCPeer.peer.close();
+      socket.emit("admin-end-call", { to: selectedUser, from: userInfo.id });
+
+      setCallStarted(false);
+      setWebRTCPeer(new WebRTCPeer());
+      setSelectedUser(null);
+
+      setUsers((users) => {
+        const u = users.map((user) => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              handRaised: false,
+            };
+          }
+
+          return user;
+        });
+        return u;
+      });
+    },
+    [webRTCPeer, selectedUser, localStream, socket, userInfo.id]
+  );
 
   return (
     <>
       <header>
         <div className="flex items-center m-4">
-          <Link className="button" to="/">
+          <Link className="button bg-slate-800 hover:bg-slate-950" to="/">
             To Home
           </Link>
           <div className="flex-grow">
@@ -231,14 +297,31 @@ export default function AdminRAH() {
         {users.map((user) => {
           if (user.handRaised) {
             return (
-              <button
-                onClick={() => handleCallAudience(user.id)}
-                className="button"
-                key={user.id}
-                disabled={selectedUser !== null}
-              >
-                <p>{user.name} </p>
-              </button>
+              <div key={user.id}>
+                <button
+                  onClick={() => handleCallAudience(user.id)}
+                  className="button bg-slate-800 hover:bg-slate-950"
+                  key={user.id}
+                  disabled={selectedUser !== null}
+                >
+                  <p>{user.name} </p>
+                </button>
+                {selectedUser === user.id && callStarted && (
+                  <>
+                    <button className="button bg-slate-800 hover:bg-slate-950">
+                      Mute
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleEndCall(user.id);
+                      }}
+                      className="button bg-red-700 hover:bg-red-500"
+                    >
+                      End Call
+                    </button>
+                  </>
+                )}
+              </div>
             );
           }
 
@@ -258,24 +341,8 @@ export default function AdminRAH() {
         })}
       </div>
       {selectedUser && <></>}
-      {localStream && (
-        <ReactPlayer
-          width={0}
-          height={0}
-          muted={true}
-          playing
-          url={localStream}
-        ></ReactPlayer>
-      )}
-      {remoteStream && (
-        <ReactPlayer
-          width={0}
-          height={0}
-          muted={false}
-          playing
-          url={remoteStream}
-        ></ReactPlayer>
-      )}
+      {localStream && <MediaPlayer muted={true} url={localStream} />}
+      {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
     </>
   );
 }

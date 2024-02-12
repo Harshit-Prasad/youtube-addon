@@ -6,8 +6,6 @@ export default function UserOnlyRoute() {
   const userInfo = useAuthStore((state) => state);
   const params = useParams();
 
-  console.log("user only");
-
   return (
     <>
       {userInfo?.role === "student" && <Outlet />}

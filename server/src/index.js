@@ -108,12 +108,27 @@ io.on("connection", (socket) => {
   });
 
   socket.on("nego-needed", ({ offer, to, from }) => {
-    console.log("to", to, "from", from);
     io.to(to).emit("nego-incoming", { from, offer });
   });
 
   socket.on("nego-done", ({ answer, to, from }) => {
     io.to(to).emit("nego-final", { from, answer });
+  });
+
+  socket.on("admin-end-call", ({ to, from }) => {
+    const userInfo = socketToUserID.get(socket.id);
+    userInfo.handRaised = false;
+    socketToUserID.set(socket.id, userInfo);
+
+    io.to(to).emit("admin-ended-call", { from });
+  });
+
+  socket.on("user-end-call", ({ to, from }) => {
+    const userInfo = socketToUserID.get(socket.id);
+    userInfo.handRaised = false;
+    socketToUserID.set(socket.id, userInfo);
+
+    io.to(to).emit("user-ended-call", { from });
   });
 });
 

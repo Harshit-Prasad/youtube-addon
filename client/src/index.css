@@ -4,6 +4,6 @@
 
 @layer components {
   .button {
-    @apply inline-block bg-slate-800 hover:bg-slate-950 text-white py-2 px-4 rounded-lg;
+    @apply inline-block text-white py-2 px-4 rounded-lg;
   }
 }

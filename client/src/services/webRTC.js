@@ -36,4 +36,4 @@ class WebRTCPeer {
   }
 }
 
-export default new WebRTCPeer();
+export default WebRTCPeer;

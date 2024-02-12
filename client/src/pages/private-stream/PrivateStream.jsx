@@ -23,12 +23,15 @@ export default function PrivateStream() {
 
   return (
     <div className="bg-slate-300 p-5">
-      <Link to={"/"} className="button">
+      <Link to={"/"} className="button bg-slate-800 hover:bg-slate-950">
         Go back
       </Link>
       <LiveStream streamId={streamId} />
       <div className="flex justify-center items-center gap-5 my-5">
-        <button onClick={handleCopyLink} className="button">
+        <button
+          onClick={handleCopyLink}
+          className="button bg-slate-800 hover:bg-slate-950"
+        >
           Copy Stream Link
         </button>
         <span>Stream Link: {streamLink}</span>

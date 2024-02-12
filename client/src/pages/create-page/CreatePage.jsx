@@ -51,7 +51,10 @@ export default function CreatePage() {
           />
         </div>
 
-        <button type="submit" className="button">
+        <button
+          type="submit"
+          className="button bg-slate-800 hover:bg-slate-950"
+        >
           Create new page
         </button>
       </form>
