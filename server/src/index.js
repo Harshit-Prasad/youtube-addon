@@ -4,9 +4,13 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { Server } from "socket.io";
 
+import connectDB from "./config/db.js";
 import userRoute from "./routes/user.route.js";
+import userStream from "./routes/stream.route.js";
+import { errorHandler, notFound } from "./middlewares/error.middleware.js";
 
 dotenv.config();
+connectDB();
 const PORT = process.env.PORT || 5000;
 const app = express();
 
@@ -38,11 +42,9 @@ const io = new Server(server, {
   },
 });
 
-app.use("/api/user", userRoute);
-
 // Routes
-
-// Error
+app.use("/api/stream", userStream);
+app.use("/api/user", userRoute);
 
 server.listen(PORT, function () {
   console.log("Server Started on PORT: " + PORT);
@@ -85,12 +87,12 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     const userInfo = socketToUserID.get(socket.id);
 
-    if (userInfo?.role === "teacher") {
+    if (userInfo?.role === "admin") {
       socketToUserID.delete(socket.id);
       socket.broadcast.to(userInfo.streamId).emit("admin-disconnected");
     }
 
-    if (userInfo?.role === "student") {
+    if (userInfo?.role === "user") {
       io.to(userInfo.adminId).emit("user-disconnected", { id: userInfo.id });
       usersInRooms.get(userInfo.streamId).delete(socket.id);
       socketToUserID.delete(socket.id);
@@ -134,6 +136,7 @@ io.on("connection", (socket) => {
 
 app.get("/api/audience-list/:streamId", (req, res) => {
   const streamId = req.params.streamId;
+  console.log(streamId);
   const streamAudience = usersInRooms.get(streamId);
   let audienceList = [];
 
@@ -148,3 +151,7 @@ app.get("/api/audience-list/:streamId", (req, res) => {
 
   return res.json(audienceList);
 });
+
+// Error
+app.use(notFound);
+app.use(errorHandler);

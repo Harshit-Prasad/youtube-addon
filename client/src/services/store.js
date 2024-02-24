@@ -1,35 +1,34 @@
 import { create } from "zustand";
 
-export const useAuthStore = create((set) => {
-  const userInfoString = localStorage.getItem("user-info") || "";
-  let userInfo;
-
-  if (userInfoString) {
-    userInfo = JSON.parse(userInfoString);
-  }
-
+export const useUserInfoStore = create((set) => {
   return {
-    id: userInfo?.id || "",
-    name: userInfo?.name || "",
-    role: userInfo?.role || "",
-    bgColor: userInfo?.bgColor || "",
-    authorized: userInfo?.authorized || false,
-    setAuth: (authVal) => {
-      return set(authVal);
-    },
+    id: "",
+    name: "",
+    role: "",
+    picture: "",
+    email: "",
+    setUserInfo: (authVal) => set(authVal),
+    setRole: (role) =>
+      set((state) => ({
+        ...state,
+        role,
+      })),
   };
 });
 
-export const useUpcomingStreamsStore = create((set) => ({
-  upcomingStreams: [],
-  addNewUpcomingStreams: (upcomingStream) =>
+export const useStreamsStore = create((set) => ({
+  streams: [],
+  setStreams: (streams) => set({ streams }),
+  addNewStreams: (stream) =>
     set((state) => ({
-      upcomingStreams: [upcomingStream, ...state.upcomingStreams],
+      streams: [stream, ...state.streams],
     })),
   removeStream: (streamID) =>
-    set((state) => ({
-      upcomingStreams: state.upcomingStreams.filter(
-        (stream) => stream.id !== streamID
-      ),
-    })),
+    set((state) => {
+      const removedStream = state.streams.find((s) => s._id === streamID);
+
+      removedStream.ended = true;
+
+      return state;
+    }),
 }));

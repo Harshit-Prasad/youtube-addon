@@ -1,93 +1,65 @@
-import React from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Dashboard from "./pages/dashboard/Dashboard";
-import PrivateStream from "./pages/private-stream/PrivateStream";
-import CreatePage from "./pages/create-page/CreatePage";
-import Auth from "./pages/auth/Auth";
-import WelcomePage from "./pages/welcome-page/WelcomePage";
-import PublicStream from "./pages/public-stream/PublicStream";
-import MainStream from "./pages/main-stream/MainStream";
-import AuthOnlyRoute from "./protected-routes/auth-only-route/AuthOnlyRoute";
-import AdminOnlyRoute from "./protected-routes/admin-only-route/AdminOnlyRoute";
-import UserOnlyRoute from "./protected-routes/user-only-route/UserOnlyRoute";
-import NotAuthorizedOnly from "./protected-routes/not-authorized-only/NotAuthorizedOnly";
-import AdminRAH from "./pages/admin-rah/AdminRAH";
-import SocketProvider from "./providers/SocketProvider";
+import {
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import NotAuthorizedOnlyStream from "./protected-routes/not-authorized-only-stream/NotAuthorizedOnlyStream";
+import SocketProvider from "./providers/SocketProvider";
+import Home from "./routes/Home";
+import Auth from "./routes/Auth";
+import AuthProtector from "./protected-route/AuthProtector";
+import ProtectedRoute from "./protected-route/ProtectedRoute";
+import Welcome from "./routes/Welcome";
+import AdminProtected from "./protected-route/AdminProtected";
+import Dashboard from "./routes/admin/Dashboard";
+import CreatePage from "./routes/admin/CreatePage";
+import AdminRAH from "./routes/admin/AdminRAH";
+import PrivateStream from "./routes/admin/PrivateStream";
+import UserProtected from "./protected-route/UserProtected";
+import NavigateTo from "./routes/user/NavigateTo";
+import MainStream from "./routes/user/MainStream";
+import Settings from "./routes/Settings";
 
-const router = createBrowserRouter([
-  {
-    element: <AuthOnlyRoute />,
-    children: [
-      {
-        element: <AdminOnlyRoute />,
-        children: [
-          {
-            path: "/",
-            element: <Dashboard />,
-          },
-          {
-            path: "/create-page",
-            element: <CreatePage />,
-          },
-          {
-            path: "/private-stream/:idx",
-            element: <PrivateStream />,
-          },
-          {
-            path: "/admin-rah/:idx",
-            element: (
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+      <Route index={true} path="/" element={<Home />} />
+      <Route element={<AuthProtector />}>
+        <Route path="/auth" element={<Auth />} />
+      </Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/settings" element={<Settings />} />
+
+        <Route element={<AdminProtected />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create-page" element={<CreatePage />} />
+          <Route path="/private-stream/:roomId" element={<PrivateStream />} />
+          <Route
+            path="/admin-rah/:roomId"
+            element={
               <SocketProvider>
                 <AdminRAH />
               </SocketProvider>
-            ),
-          },
-        ],
-      },
-    ],
-  },
-  {
-    element: <AuthOnlyRoute />,
-    children: [
-      {
-        path: "/welcome",
-        element: <WelcomePage />,
-      },
-    ],
-  },
-  {
-    element: <UserOnlyRoute />,
-    children: [
-      {
-        path: "/main-stream/:idx",
-        element: (
-          <SocketProvider>
-            <MainStream />
-          </SocketProvider>
-        ),
-      },
-    ],
-  },
-  {
-    element: <NotAuthorizedOnly />,
-    children: [
-      {
-        path: "/auth",
-        element: <Auth />,
-      },
-    ],
-  },
-  {
-    element: <NotAuthorizedOnlyStream />,
-    children: [
-      {
-        path: "/public-stream/:idx",
-        element: <PublicStream />,
-      },
-    ],
-  },
-]);
+            }
+          />
+        </Route>
+        <Route element={<UserProtected />}>
+          <Route path="/navigate-to" element={<NavigateTo />} />
+          <Route
+            path="/main-stream/:roomId"
+            element={
+              <SocketProvider>
+                <MainStream />
+              </SocketProvider>
+            }
+          />
+        </Route>
+      </Route>
+    </>
+  )
+);
 
 export default function App() {
   return (
