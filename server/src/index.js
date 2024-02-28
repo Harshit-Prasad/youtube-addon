@@ -136,7 +136,6 @@ io.on("connection", (socket) => {
 
 app.get("/api/audience-list/:streamId", (req, res) => {
   const streamId = req.params.streamId;
-  console.log(streamId);
   const streamAudience = usersInRooms.get(streamId);
   let audienceList = [];
 

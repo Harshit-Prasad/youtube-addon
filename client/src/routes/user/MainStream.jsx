@@ -141,6 +141,8 @@ export default function MainStream() {
 
   const handleIncomingTracks = useCallback(
     (e) => {
+      console.log(e);
+
       const [stream] = e.streams;
       setRemoteStream(stream);
     },
@@ -171,6 +173,13 @@ export default function MainStream() {
       "negotiationneeded",
       handleNegotiationNeeded
     );
+    webRTCPeer.peer.addEventListener("icecandidate", (e) => {
+      console.log(e);
+    });
+    webRTCPeer.peer.addEventListener("icecandidateerror", (e) => {
+      console.log(e);
+    });
+
     webRTCPeer.peer.addEventListener("track", handleIncomingTracks);
 
     return () => {

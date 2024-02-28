@@ -20,8 +20,8 @@ export default function AdminRAH() {
   const [remoteStream, setRemoteStream] = useState();
 
   const adminConnected = useCallback(() => {
-    socket.emit("admin-connected", { userInfo, streamId: params.idx });
-  }, [params.idx, socket, userInfo]);
+    socket.emit("admin-connected", { userInfo, streamId: params.roomId });
+  }, [params.roomId, socket, userInfo]);
 
   const userConnected = useCallback((userInfo) => {
     setUsers((prev) => [
@@ -169,6 +169,7 @@ export default function AdminRAH() {
 
   const handleIncomingTracks = useCallback(
     (e) => {
+      console.log(e);
       const [stream] = e.streams;
       setRemoteStream(stream);
     },
@@ -215,6 +216,12 @@ export default function AdminRAH() {
       "negotiationneeded",
       handleNegotiationNeeded
     );
+    webRTCPeer.peer.addEventListener("icecandidate", (e) => {
+      console.log(e);
+    });
+    webRTCPeer.peer.addEventListener("icecandidateerror", (e) => {
+      console.error(e);
+    });
 
     webRTCPeer.peer.addEventListener("track", handleIncomingTracks);
 

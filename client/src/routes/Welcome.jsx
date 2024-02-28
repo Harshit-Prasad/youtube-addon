@@ -22,8 +22,8 @@ export default function ProtectedRoute() {
   };
 
   return (
-    <div className="h-dvh items-start flex flex-col p-2">
-      <>
+    <div className="h-dvh items-center justify-between flex flex-col p-2">
+      <div className="w-full flex items-center justify-between">
         {userInfo.role === "user" ? (
           <Link
             className="button bg-slate-800 hover:bg-slate-950"
@@ -39,7 +39,11 @@ export default function ProtectedRoute() {
             Dashboard
           </Link>
         )}
-      </>
+
+        <Link className="button bg-slate-800 hover:bg-slate-950" to="/settings">
+          Settings
+        </Link>
+      </div>
       <div className="flex w-full grow flex-col justify-center items-center">
         <div className="flex flex-col max-w-[400px] ">
           <ul className="flex flex-col p-4 gap-4">
