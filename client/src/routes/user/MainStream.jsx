@@ -21,6 +21,7 @@ export default function MainStream() {
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [remoteStream, setRemoteStream] = useState();
   const [callStarted, setCallStarted] = useState(false);
+  const [muted, setMuted] = useState(false)
 
   const userConnected = useCallback(() => {
     socket.emit("user-connected", {
@@ -207,6 +208,15 @@ export default function MainStream() {
 
   // Media Controls
 
+  useEffect(() => {
+    if (!localStream) return;
+
+    const audioTrack = localStream
+      .getTracks()
+      .find((track) => track.kind === "audio");
+    audioTrack.enabled = !muted;
+  }, [muted, localStream]);
+
   const handleEndCall = useCallback(() => {
     const tracks = localStream.getTracks();
     tracks.forEach((track) => {
@@ -256,8 +266,10 @@ export default function MainStream() {
       {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
       {callStarted && (
         <>
-          <button className="button bg-slate-800 hover:bg-slate-950">
-            Mute
+          <button onClick={() => {
+            setMuted(prev => !prev)
+          }} className="button bg-slate-800 hover:bg-slate-950">
+            {muted ? 'Unmute' : 'Mute'}
           </button>
           <button
             onClick={handleEndCall}

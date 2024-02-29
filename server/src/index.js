@@ -52,12 +52,13 @@ server.listen(PORT, function () {
 
 // Socket io event emmitters
 
-const socketToUserID = new Map();
+const userIDToSocketID = new Map();
+const socketIDToUserID = new Map();
 const usersInRooms = new Map();
 
 io.on("connection", (socket) => {
   socket.on("user-connected", ({ userInfo, adminId, streamId }) => {
-    socketToUserID.set(socket.id, { ...userInfo, adminId, streamId });
+    socketIDToUserID.set(socket.id, { ...userInfo, adminId, streamId });
     if (usersInRooms.get(streamId) === undefined) {
       const set = new Set([socket.id]);
       usersInRooms.set(streamId, set);
@@ -71,31 +72,31 @@ io.on("connection", (socket) => {
   });
 
   socket.on("admin-connected", ({ userInfo, streamId }) => {
-    socketToUserID.set(socket.id, { ...userInfo, streamId });
+    socketIDToUserID.set(socket.id, { ...userInfo, streamId });
     socket.join(userInfo.id);
     socket.join(streamId);
     socket.broadcast.to(streamId).emit("admin-connected");
   });
 
   socket.on("hand-raised", ({ id, adminId, handRaised }) => {
-    const userInfo = socketToUserID.get(socket.id);
+    const userInfo = socketIDToUserID.get(socket.id);
     userInfo.handRaised = handRaised;
-    socketToUserID.set(socket.id, userInfo);
+    socketIDToUserID.set(socket.id, userInfo);
     io.to(adminId).emit("hand-raised", { id, handRaised });
   });
 
   socket.on("disconnect", () => {
-    const userInfo = socketToUserID.get(socket.id);
+    const userInfo = socketIDToUserID.get(socket.id);
 
     if (userInfo?.role === "admin") {
-      socketToUserID.delete(socket.id);
+      socketIDToUserID.delete(socket.id);
       socket.broadcast.to(userInfo.streamId).emit("admin-disconnected");
     }
 
     if (userInfo?.role === "user") {
       io.to(userInfo.adminId).emit("user-disconnected", { id: userInfo.id });
       usersInRooms.get(userInfo.streamId).delete(socket.id);
-      socketToUserID.delete(socket.id);
+      socketIDToUserID.delete(socket.id);
     }
   });
 
@@ -118,17 +119,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("admin-end-call", ({ to, from }) => {
-    const userInfo = socketToUserID.get(socket.id);
+    const userInfo = socketIDToUserID.get(socket.id);
     userInfo.handRaised = false;
-    socketToUserID.set(socket.id, userInfo);
+    socketIDToUserID.set(socket.id, userInfo);
 
     io.to(to).emit("admin-ended-call", { from });
   });
 
   socket.on("user-end-call", ({ to, from }) => {
-    const userInfo = socketToUserID.get(socket.id);
+    const userInfo = socketIDToUserID.get(socket.id);
     userInfo.handRaised = false;
-    socketToUserID.set(socket.id, userInfo);
+    socketIDToUserID.set(socket.id, userInfo);
 
     io.to(to).emit("user-ended-call", { from });
   });
@@ -143,7 +144,7 @@ app.get("/api/audience-list/:streamId", (req, res) => {
     const audience = streamAudience.values();
 
     for (let cur of audience) {
-      const { id, name, handRaised } = socketToUserID.get(cur);
+      const { id, name, handRaised } = socketIDToUserID.get(cur);
       audienceList.push({ id, name, handRaised });
     }
   }

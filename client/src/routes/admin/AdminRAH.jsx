@@ -14,6 +14,7 @@ export default function AdminRAH() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [callStarted, setCallStarted] = useState(false);
+  const [muted, setMuted] = useState(false);
 
   const [webRTCPeer, setWebRTCPeer] = useState(new WebRTCPeer());
   const [localStream, setLocalStream] = useState();
@@ -250,6 +251,15 @@ export default function AdminRAH() {
 
   // Media Controls
 
+  useEffect(() => {
+    if (!localStream) return;
+
+    const audioTrack = localStream
+      .getTracks()
+      .find((track) => track.kind === "audio");
+    audioTrack.enabled = !muted;
+  }, [muted, localStream]);
+
   const handleEndCall = useCallback(
     (userId) => {
       const tracks = localStream.getTracks();
@@ -314,8 +324,13 @@ export default function AdminRAH() {
                   </button>
                   {selectedUser === user.id && callStarted && (
                     <>
-                      <button className="button bg-slate-800 hover:bg-slate-950">
-                        Mute
+                      <button
+                        onClick={() => {
+                          setMuted((prev) => !prev);
+                        }}
+                        className="button bg-slate-800 hover:bg-slate-950"
+                      >
+                        {muted ? "Unmute" : "Mute"}
                       </button>
                       <button
                         onClick={() => {

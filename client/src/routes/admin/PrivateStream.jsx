@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import LiveStream from "../../components/LiveStream";
@@ -12,7 +11,7 @@ export default function PrivateStream() {
     import.meta.env.VITE_CLIENT_URL
   }/main-stream/${userId}:${streamId}`;
 
-  async function handleCopyLink(e) {
+  async function handleCopyLink() {
     try {
       await navigator.clipboard.writeText(streamLink);
       toast.success("Link Copied");
@@ -37,7 +36,12 @@ export default function PrivateStream() {
         >
           Copy Stream Link
         </button>
-        <span>Stream Link: {streamLink}</span>
+        <Link
+          className="button bg-slate-800 hover:bg-slate-950"
+          to={`/admin-rah/${userId}:${streamId}`}
+        >
+          To RAH Page
+        </Link>
       </div>
       <LiveChat streamId={streamId} />
     </div>

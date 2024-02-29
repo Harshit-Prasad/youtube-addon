@@ -20,6 +20,8 @@ import UserProtected from "./protected-route/UserProtected";
 import NavigateTo from "./routes/user/NavigateTo";
 import MainStream from "./routes/user/MainStream";
 import Settings from "./routes/Settings";
+import PublicStream from "./routes/PublicStream";
+import PublicStreamProtected from "./protected-route/PublicStreamProtected";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,6 +29,9 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<Home />} />
       <Route element={<AuthProtector />}>
         <Route path="/auth" element={<Auth />} />
+      </Route>
+      <Route element={<PublicStreamProtected />}>
+        <Route path="/public-stream/:roomId" element={<PublicStream />} />
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/welcome" element={<Welcome />} />
