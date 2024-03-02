@@ -55,10 +55,13 @@ server.listen(PORT, function () {
 const userIDToSocketID = new Map();
 const socketIDToUserID = new Map();
 const usersInRooms = new Map();
+const recentInteractions = new Map();
 
 io.on("connection", (socket) => {
   socket.on("user-connected", ({ userInfo, adminId, streamId }) => {
+    userIDToSocketID.set(userInfo.id, socket.id);
     socketIDToUserID.set(socket.id, { ...userInfo, adminId, streamId });
+
     if (usersInRooms.get(streamId) === undefined) {
       const set = new Set([socket.id]);
       usersInRooms.set(streamId, set);
@@ -118,10 +121,26 @@ io.on("connection", (socket) => {
     io.to(to).emit("nego-final", { from, answer });
   });
 
+  socket.on("add-ice-candidate", ({ to, from, ic }) => {
+    console.log(to, from, ic);
+    io.to(to).emit("add-ice-candidate", { from, ic });
+  });
+
   socket.on("admin-end-call", ({ to, from }) => {
-    const userInfo = socketIDToUserID.get(socket.id);
+    const userSocketID = userIDToSocketID.get(to);
+    const userInfo = socketIDToUserID.get(userSocketID);
     userInfo.handRaised = false;
-    socketIDToUserID.set(socket.id, userInfo);
+    socketIDToUserID.set(userSocketID, userInfo);
+
+    const room = recentInteractions.get(userInfo.streamId);
+
+    if (room) {
+      recentInteractions.get(userInfo.streamId).unshift(userSocketID);
+    } else {
+      const room = [];
+      room.unshift(userSocketID);
+      recentInteractions.set(userInfo.streamId, room);
+    }
 
     io.to(to).emit("admin-ended-call", { from });
   });
@@ -131,6 +150,16 @@ io.on("connection", (socket) => {
     userInfo.handRaised = false;
     socketIDToUserID.set(socket.id, userInfo);
 
+    const room = recentInteractions.get(userInfo.streamId);
+
+    if (room) {
+      recentInteractions.get(userInfo.streamId).unshift(socket.id);
+    } else {
+      const room = [];
+      room.unshift(socket.id);
+      recentInteractions.set(userInfo.streamId, room);
+    }
+
     io.to(to).emit("user-ended-call", { from });
   });
 });
@@ -138,18 +167,27 @@ io.on("connection", (socket) => {
 app.get("/api/audience-list/:streamId", (req, res) => {
   const streamId = req.params.streamId;
   const streamAudience = usersInRooms.get(streamId);
+  const streamRecentInteractions = recentInteractions.get(streamId);
   let audienceList = [];
+  let recentInteractionsList = [];
 
   if (streamAudience) {
     const audience = streamAudience.values();
 
     for (let cur of audience) {
-      const { id, name, handRaised } = socketIDToUserID.get(cur);
-      audienceList.push({ id, name, handRaised });
+      const { id, name, handRaised, picture } = socketIDToUserID.get(cur);
+      audienceList.push({ id, name, handRaised, picture });
     }
   }
 
-  return res.json(audienceList);
+  if (streamRecentInteractions) {
+    for (let cur of streamRecentInteractions) {
+      const { id, name, handRaised, picture } = socketIDToUserID.get(cur);
+      recentInteractionsList.push({ id, name, handRaised, picture });
+    }
+  }
+
+  return res.json({ audienceList, recentInteractionsList });
 });
 
 // Error
