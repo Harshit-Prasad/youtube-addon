@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSocket } from "../../providers/SocketProvider";
 import { useUserInfoStore } from "../../services/store";
 import axios from "../../api/axios";
@@ -7,10 +7,12 @@ import WebRTCPeer from "../../services/webRTC";
 import MediaPlayer from "../../components/MediaPlayer";
 
 export default function AdminRAH() {
-  const params = useParams();
   const socket = useSocket();
+  const params = useParams();
+  const navigate = useNavigate();
   const userInfo = useUserInfoStore((state) => state);
   const [users, setUsers] = useState([]);
+  const [recentInteractions, setRecentInteractions] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [callStarted, setCallStarted] = useState(false);
@@ -78,7 +80,9 @@ export default function AdminRAH() {
       const response = await axios.get(`/api/audience-list/${params.roomId}`);
 
       if (response?.data) {
-        setUsers(response.data);
+        console.log(response);
+        setUsers(response.data.audienceList);
+        setRecentInteractions(response.data.recentInteractionsList);
       }
     } catch (error) {
       console.log(error.message);
@@ -170,7 +174,6 @@ export default function AdminRAH() {
 
   const handleIncomingTracks = useCallback(
     (e) => {
-      console.log(e);
       const [stream] = e.streams;
       setRemoteStream(stream);
     },
@@ -190,7 +193,11 @@ export default function AdminRAH() {
       setCallStarted(false);
       setWebRTCPeer(new WebRTCPeer());
       setSelectedUser(null);
+      console.log(users);
+
       setUsers((users) => {
+        console.log(users);
+
         const u = users.map((user) => {
           if (user.id === userId) {
             return {
@@ -201,27 +208,69 @@ export default function AdminRAH() {
 
           return user;
         });
+
         return u;
       });
+      const recentInteraction = users.find((user) => user.id === userId);
+      console.log(users);
+      recentInteraction.handRaised = false;
+      setRecentInteractions((interactions) => {
+        return [recentInteraction, ...interactions];
+      });
     },
-    [webRTCPeer, localStream]
+    [webRTCPeer, localStream, users]
   );
+
+  const handleIncomingICECandidate = useCallback(
+    ({ from, ic }) => {
+      console.log(ic);
+      if (ic) {
+        webRTCPeer.peer.addIceCandidate(new RTCIceCandidate(ic));
+      }
+    },
+    [webRTCPeer]
+  );
+
+  const handleICECandidate = useCallback(
+    (e) => {
+      if (e.candidate) {
+        socket.emit("add-ice-candidate", {
+          from: userInfo.id,
+          to: selectedUser,
+          ic: e.candidate,
+        });
+      }
+    },
+    [socket, userInfo.id, selectedUser]
+  );
+
+  const handleEndStream = useCallback(() => {
+    socket.emit("end-stream", { streamId: params.roomId });
+    navigate("/dashboard", {
+      replace: true,
+    });
+  }, [socket, params.roomId, navigate]);
 
   useEffect(() => {
     socket.on("call-accepted", handleCallAccepted);
     socket.on("nego-incoming", handleNegotiationIncoming);
     socket.on("nego-final", handleNegotiationFinal);
     socket.on("user-ended-call", handleCallEnded);
+    socket.on("add-ice-candidate", handleIncomingICECandidate);
 
     webRTCPeer.peer.addEventListener(
       "negotiationneeded",
       handleNegotiationNeeded
     );
-    webRTCPeer.peer.addEventListener("icecandidate", (e) => {
-      console.log(e);
-    });
+    webRTCPeer.peer.addEventListener("icecandidate", handleICECandidate);
     webRTCPeer.peer.addEventListener("icecandidateerror", (e) => {
       console.error(e);
+    });
+    webRTCPeer.peer.addEventListener("iceconnectionstatechange", (e) => {
+      console.log("ice-con", e);
+    });
+    webRTCPeer.peer.addEventListener("icegatheringstatechange", (e) => {
+      console.log("ice-gat", e);
     });
 
     webRTCPeer.peer.addEventListener("track", handleIncomingTracks);
@@ -231,12 +280,14 @@ export default function AdminRAH() {
       socket.off("nego-incoming", handleNegotiationIncoming);
       socket.off("nego-final", handleNegotiationFinal);
       socket.off("user-call-ended", handleCallEnded);
+      socket.off("add-ice-candidate", handleIncomingICECandidate);
 
       webRTCPeer.peer.removeEventListener(
         "negotiationneeded",
         handleNegotiationNeeded
       );
       webRTCPeer.peer.removeEventListener("track", handleIncomingTracks);
+      webRTCPeer.peer.removeEventListener("icecandidate", handleICECandidate);
     };
   }, [
     webRTCPeer,
@@ -246,6 +297,8 @@ export default function AdminRAH() {
     handleNegotiationFinal,
     handleIncomingTracks,
     handleCallEnded,
+    handleICECandidate,
+    handleIncomingICECandidate,
     socket,
   ]);
 
@@ -253,6 +306,7 @@ export default function AdminRAH() {
 
   useEffect(() => {
     if (!localStream) return;
+    console.log(localStream, !muted);
 
     const audioTrack = localStream
       .getTracks()
@@ -271,7 +325,6 @@ export default function AdminRAH() {
       setLocalStream(null);
       webRTCPeer.peer.close();
       socket.emit("admin-end-call", { to: selectedUser, from: userInfo.id });
-
       setCallStarted(false);
       setWebRTCPeer(new WebRTCPeer());
       setSelectedUser(null);
@@ -289,20 +342,35 @@ export default function AdminRAH() {
         });
         return u;
       });
+
+      setRecentInteractions((interactions) => {
+        const recentInteraction = users.find((user) => user.id === userId);
+        recentInteraction.handRaised = false;
+        return [recentInteraction, ...interactions];
+      });
     },
-    [webRTCPeer, selectedUser, localStream, socket, userInfo.id]
+    [webRTCPeer, selectedUser, localStream, socket, userInfo.id, users]
   );
 
   return (
     <>
       <header>
         <div className="flex items-center m-4">
-          <Link className="button bg-slate-800 hover:bg-slate-950" to="/">
-            To Home
+          <Link
+            className="button bg-slate-800 hover:bg-slate-950"
+            to="/dashboard"
+          >
+            Dashboard
           </Link>
           <div className="flex-grow">
             <h1 className="text-center font-bold text-lg">Raise a hand</h1>
           </div>
+          <button
+            onClick={handleEndStream}
+            className="button bg-red-800 hover:bg-red-800"
+          >
+            End Stream
+          </button>
         </div>
       </header>
       {users.length === 0 ? (
@@ -310,10 +378,10 @@ export default function AdminRAH() {
       ) : (
         <div className="w-full flex justify-center items-center flex-col">
           <h2 className="text-center font-bold text-lg">Raised hand</h2>
-          {users.map((user) => {
+          {users.map((user, i) => {
             if (user.handRaised) {
               return (
-                <div key={user.id}>
+                <div key={user.id + i}>
                   <button
                     onClick={() => handleCallAudience(user.id)}
                     className="button bg-slate-800 hover:bg-slate-950"
@@ -348,11 +416,11 @@ export default function AdminRAH() {
 
             return null;
           })}
-          <h2 className="text-center font-bold text-lg">Live users</h2>
-          {users.map((user) => {
+          <h2 className="text-center font-bold text-lg">Recent Interactions</h2>
+          {recentInteractions.map((user, i) => {
             if (!user.handRaised) {
               return (
-                <div key={user.id}>
+                <div key={user.id + i}>
                   <p>{user.name} </p>
                 </div>
               );

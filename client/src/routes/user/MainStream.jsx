@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSocket } from "../../providers/SocketProvider";
 import { useUserInfoStore } from "../../services/store";
 import toast from "react-hot-toast";
@@ -13,6 +13,7 @@ import MediaPlayer from "../../components/MediaPlayer";
 export default function MainStream() {
   const userInfo = useUserInfoStore((state) => state);
   const params = useParams();
+  const navigate = useNavigate();
   const [adminId, streamId] = params.roomId.split(":");
   const socket = useSocket();
   const [toggleRaiseHand, setToggleRaiseHand] = useState(false);
@@ -21,7 +22,7 @@ export default function MainStream() {
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [remoteStream, setRemoteStream] = useState();
   const [callStarted, setCallStarted] = useState(false);
-  const [muted, setMuted] = useState(false)
+  const [muted, setMuted] = useState(false);
 
   const userConnected = useCallback(() => {
     socket.emit("user-connected", {
@@ -164,19 +165,49 @@ export default function MainStream() {
     setWebRTCPeer(new WebRTCPeer());
   }, [webRTCPeer, localStream]);
 
+  const handleIncomingICECandidate = useCallback(
+    ({ from, ic }) => {
+      console.log(ic);
+      if (ic) {
+        webRTCPeer.peer.addIceCandidate(new RTCIceCandidate(ic));
+      }
+    },
+    [webRTCPeer]
+  );
+
+  const handleICECandidate = useCallback(
+    (e) => {
+      if (e.candidate) {
+        socket.emit("add-ice-candidate", {
+          from: userInfo.id,
+          to: selectedAdmin,
+          ic: e.candidate,
+        });
+      }
+    },
+    [socket, userInfo.id, selectedAdmin]
+  );
+
+  const handleStreamEnded = useCallback(() => {
+    socket.emit("user-end-stream", { userId: userInfo.id });
+    navigate("/welcome", {
+      replace: true,
+    });
+  }, [navigate, socket, userInfo.id]);
+
   useEffect(() => {
     socket.on("incoming-call", handleIncomingCall);
     socket.on("nego-incoming", handleNegotiationIncoming);
     socket.on("nego-final", handleNegotiationFinal);
     socket.on("admin-ended-call", handleCallEnded);
+    socket.on("add-ice-candidate", handleIncomingICECandidate);
+    socket.on("stream-ended", handleStreamEnded);
 
     webRTCPeer.peer.addEventListener(
       "negotiationneeded",
       handleNegotiationNeeded
     );
-    webRTCPeer.peer.addEventListener("icecandidate", (e) => {
-      console.log(e);
-    });
+    webRTCPeer.peer.addEventListener("icecandidate", handleICECandidate);
     webRTCPeer.peer.addEventListener("icecandidateerror", (e) => {
       console.log(e);
     });
@@ -188,7 +219,10 @@ export default function MainStream() {
       socket.off("nego-incoming", handleNegotiationIncoming);
       socket.off("nego-final", handleNegotiationFinal);
       socket.off("admin-ended-call", handleCallEnded);
+      socket.off("add-ice-candidate", handleIncomingICECandidate);
+      socket.off("stream-ended", handleStreamEnded);
 
+      webRTCPeer.peer.removeEventListener("icecandidate", handleICECandidate);
       webRTCPeer.peer.removeEventListener(
         "negotiationneeded",
         handleNegotiationNeeded
@@ -203,6 +237,9 @@ export default function MainStream() {
     handleIncomingTracks,
     handleCallEnded,
     handleNegotiationIncoming,
+    handleIncomingICECandidate,
+    handleICECandidate,
+    handleStreamEnded,
     socket,
   ]);
 
@@ -210,7 +247,7 @@ export default function MainStream() {
 
   useEffect(() => {
     if (!localStream) return;
-
+    console.log(localStream);
     const audioTrack = localStream
       .getTracks()
       .find((track) => track.kind === "audio");
@@ -266,10 +303,13 @@ export default function MainStream() {
       {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
       {callStarted && (
         <>
-          <button onClick={() => {
-            setMuted(prev => !prev)
-          }} className="button bg-slate-800 hover:bg-slate-950">
-            {muted ? 'Unmute' : 'Mute'}
+          <button
+            onClick={() => {
+              setMuted((prev) => !prev);
+            }}
+            className="button bg-slate-800 hover:bg-slate-950"
+          >
+            {muted ? "Unmute" : "Mute"}
           </button>
           <button
             onClick={handleEndCall}
