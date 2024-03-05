@@ -165,28 +165,28 @@ export default function MainStream() {
     setWebRTCPeer(new WebRTCPeer());
   }, [webRTCPeer, localStream]);
 
-  const handleIncomingICECandidate = useCallback(
-    ({ from, ic }) => {
-      console.log(ic);
-      if (ic) {
-        webRTCPeer.peer.addIceCandidate(new RTCIceCandidate(ic));
-      }
-    },
-    [webRTCPeer]
-  );
+  // const handleIncomingICECandidate = useCallback(
+  //   ({ from, ic }) => {
+  //     console.log(ic);
+  //     if (ic) {
+  //       webRTCPeer.peer.addIceCandidate(new RTCIceCandidate(ic));
+  //     }
+  //   },
+  //   [webRTCPeer]
+  // );
 
-  const handleICECandidate = useCallback(
-    (e) => {
-      if (e.candidate) {
-        socket.emit("add-ice-candidate", {
-          from: userInfo.id,
-          to: selectedAdmin,
-          ic: e.candidate,
-        });
-      }
-    },
-    [socket, userInfo.id, selectedAdmin]
-  );
+  // const handleICECandidate = useCallback(
+  //   (e) => {
+  //     if (e.candidate) {
+  //       socket.emit("add-ice-candidate", {
+  //         from: userInfo.id,
+  //         to: selectedAdmin,
+  //         ic: e.candidate,
+  //       });
+  //     }
+  //   },
+  //   [socket, userInfo.id, selectedAdmin]
+  // );
 
   const handleStreamEnded = useCallback(() => {
     socket.emit("user-end-stream", { userId: userInfo.id });
@@ -200,14 +200,14 @@ export default function MainStream() {
     socket.on("nego-incoming", handleNegotiationIncoming);
     socket.on("nego-final", handleNegotiationFinal);
     socket.on("admin-ended-call", handleCallEnded);
-    socket.on("add-ice-candidate", handleIncomingICECandidate);
+    // socket.on("add-ice-candidate", handleIncomingICECandidate);
     socket.on("stream-ended", handleStreamEnded);
 
     webRTCPeer.peer.addEventListener(
       "negotiationneeded",
       handleNegotiationNeeded
     );
-    webRTCPeer.peer.addEventListener("icecandidate", handleICECandidate);
+    // webRTCPeer.peer.addEventListener("icecandidate", handleICECandidate);
     webRTCPeer.peer.addEventListener("icecandidateerror", (e) => {
       console.log(e);
     });
@@ -219,10 +219,10 @@ export default function MainStream() {
       socket.off("nego-incoming", handleNegotiationIncoming);
       socket.off("nego-final", handleNegotiationFinal);
       socket.off("admin-ended-call", handleCallEnded);
-      socket.off("add-ice-candidate", handleIncomingICECandidate);
+      // socket.off("add-ice-candidate", handleIncomingICECandidate);
       socket.off("stream-ended", handleStreamEnded);
 
-      webRTCPeer.peer.removeEventListener("icecandidate", handleICECandidate);
+      // webRTCPeer.peer.removeEventListener("icecandidate", handleICECandidate);
       webRTCPeer.peer.removeEventListener(
         "negotiationneeded",
         handleNegotiationNeeded
@@ -237,8 +237,8 @@ export default function MainStream() {
     handleIncomingTracks,
     handleCallEnded,
     handleNegotiationIncoming,
-    handleIncomingICECandidate,
-    handleICECandidate,
+    // handleIncomingICECandidate,
+    // handleICECandidate,
     handleStreamEnded,
     socket,
   ]);

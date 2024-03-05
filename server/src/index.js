@@ -59,14 +59,6 @@ const recentInteractionsInRooms = new Map();
 const recentInteractions = new Map();
 
 io.on("connection", (socket) => {
-  console.log(
-    userIDToSocketID,
-    socketIDToUserID,
-    usersInRooms,
-    recentInteractionsInRooms,
-    recentInteractions
-  );
-
   socket.on("user-connected", ({ userInfo, adminId, streamId }) => {
     userIDToSocketID.set(userInfo.id, socket.id);
     socketIDToUserID.set(socket.id, { ...userInfo, adminId, streamId });
@@ -149,9 +141,9 @@ io.on("connection", (socket) => {
     io.to(to).emit("nego-final", { from, answer });
   });
 
-  socket.on("add-ice-candidate", ({ to, from, ic }) => {
-    io.to(to).emit("add-ice-candidate", { from, ic });
-  });
+  // socket.on("add-ice-candidate", ({ to, from, ic }) => {
+  //   io.to(to).emit("add-ice-candidate", { from, ic });
+  // });
 
   socket.on("admin-end-call", ({ to, from }) => {
     const userSocketID = userIDToSocketID.get(to);

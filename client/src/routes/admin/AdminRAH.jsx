@@ -193,11 +193,8 @@ export default function AdminRAH() {
       setCallStarted(false);
       setWebRTCPeer(new WebRTCPeer());
       setSelectedUser(null);
-      console.log(users);
 
       setUsers((users) => {
-        console.log(users);
-
         const u = users.map((user) => {
           if (user.id === userId) {
             return {
@@ -212,7 +209,6 @@ export default function AdminRAH() {
         return u;
       });
       const recentInteraction = users.find((user) => user.id === userId);
-      console.log(users);
       recentInteraction.handRaised = false;
       setRecentInteractions((interactions) => {
         return [recentInteraction, ...interactions];
@@ -223,7 +219,6 @@ export default function AdminRAH() {
 
   const handleIncomingICECandidate = useCallback(
     ({ from, ic }) => {
-      console.log(ic);
       if (ic) {
         webRTCPeer.peer.addIceCandidate(new RTCIceCandidate(ic));
       }
