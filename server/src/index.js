@@ -141,9 +141,9 @@ io.on("connection", (socket) => {
     io.to(to).emit("nego-final", { from, answer });
   });
 
-  // socket.on("add-ice-candidate", ({ to, from, ic }) => {
-  //   io.to(to).emit("add-ice-candidate", { from, ic });
-  // });
+  socket.on("add-ice-candidate", ({ to, from, ic }) => {
+    io.to(to).emit("add-ice-candidate", { from, ic });
+  });
 
   socket.on("admin-end-call", ({ to, from }) => {
     const userSocketID = userIDToSocketID.get(to);
