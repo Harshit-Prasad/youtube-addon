@@ -100,6 +100,9 @@ export default function MainStream() {
       });
       setLocalStream(stream);
       const answer = await webRTCPeer.getAnswer(offer);
+
+      console.log("offer received, answer created");
+
       setSelectedAdmin(from);
       socket.emit("call-accepted", { answer, to: from, from: userInfo.id });
     },
@@ -113,12 +116,16 @@ export default function MainStream() {
   }, [localStream, webRTCPeer]);
 
   const handleAnswerCall = useCallback(() => {
+    console.log("media sent");
     sendStream();
     setCallStarted(true);
   }, [sendStream]);
 
   const handleNegotiationNeeded = useCallback(async () => {
     const offer = await webRTCPeer.getOffer();
+
+    console.log("negotiation needed");
+
     socket.emit("nego-needed", {
       offer,
       to: selectedAdmin,
@@ -128,6 +135,8 @@ export default function MainStream() {
 
   const handleNegotiationIncoming = useCallback(
     async ({ from, offer }) => {
+      console.log("negotiation incoming");
+
       const answer = await webRTCPeer.getAnswer(offer);
       socket.emit("nego-done", { to: from, answer, from: userInfo.id });
     },
@@ -136,6 +145,8 @@ export default function MainStream() {
 
   const handleNegotiationFinal = useCallback(
     async ({ answer }) => {
+      console.log("negotiation final");
+
       await webRTCPeer.setLocalDescription(answer);
     },
     [webRTCPeer]
@@ -143,7 +154,7 @@ export default function MainStream() {
 
   const handleIncomingTracks = useCallback(
     (e) => {
-      console.log(e);
+      console.log("tracks received");
 
       const [stream] = e.streams;
       setRemoteStream(stream);
@@ -167,7 +178,7 @@ export default function MainStream() {
 
   const handleIncomingICECandidate = useCallback(
     ({ from, ic }) => {
-      console.log(ic);
+      console.log("ice candidates incoming");
       if (ic) {
         webRTCPeer.peer.addIceCandidate(new RTCIceCandidate(ic));
       }
@@ -177,6 +188,8 @@ export default function MainStream() {
 
   const handleICECandidate = useCallback(
     (e) => {
+      console.log("ice candidates sent");
+
       if (e.candidate) {
         socket.emit("add-ice-candidate", {
           from: userInfo.id,

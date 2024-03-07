@@ -128,6 +128,9 @@ export default function AdminRAH() {
       });
       setLocalStream(stream);
       const offer = await webRTCPeer.getOffer();
+
+      console.log("offer created");
+
       socket.emit("call-peer", { from: userInfo.id, to: userId, offer });
       setCallStarted(true);
     },
@@ -142,6 +145,7 @@ export default function AdminRAH() {
 
   const handleCallAccepted = useCallback(
     async ({ answer }) => {
+      console.log("answer received, media sent");
       await webRTCPeer.setLocalDescription(answer);
       sendStream();
     },
@@ -150,6 +154,9 @@ export default function AdminRAH() {
 
   const handleNegotiationNeeded = useCallback(async () => {
     const offer = await webRTCPeer.getOffer();
+
+    console.log("negotiation needed");
+
     socket.emit("nego-needed", {
       offer,
       to: selectedUser,
@@ -159,6 +166,8 @@ export default function AdminRAH() {
 
   const handleNegotiationIncoming = useCallback(
     async ({ from, offer }) => {
+      console.log("negotiation incoming");
+
       const answer = await webRTCPeer.getAnswer(offer);
       socket.emit("nego-done", { to: from, answer, from: userInfo.id });
     },
@@ -167,6 +176,8 @@ export default function AdminRAH() {
 
   const handleNegotiationFinal = useCallback(
     async ({ answer }) => {
+      console.log("negotiation final");
+
       await webRTCPeer.setLocalDescription(answer);
     },
     [webRTCPeer]
@@ -175,6 +186,9 @@ export default function AdminRAH() {
   const handleIncomingTracks = useCallback(
     (e) => {
       const [stream] = e.streams;
+
+      console.log("tracks received");
+
       setRemoteStream(stream);
     },
     [setRemoteStream]
@@ -219,6 +233,8 @@ export default function AdminRAH() {
 
   const handleIncomingICECandidate = useCallback(
     ({ from, ic }) => {
+      console.log("ice candidates incoming");
+
       if (ic) {
         webRTCPeer.peer.addIceCandidate(new RTCIceCandidate(ic));
       }
@@ -228,6 +244,8 @@ export default function AdminRAH() {
 
   const handleICECandidate = useCallback(
     (e) => {
+      console.log("ice candidates sent");
+
       if (e.candidate) {
         socket.emit("add-ice-candidate", {
           from: userInfo.id,
@@ -262,10 +280,10 @@ export default function AdminRAH() {
       console.error(e);
     });
     webRTCPeer.peer.addEventListener("iceconnectionstatechange", (e) => {
-      console.log("ice-con", e);
+      console.log("ice connection state change");
     });
     webRTCPeer.peer.addEventListener("icegatheringstatechange", (e) => {
-      console.log("ice-gat", e);
+      console.log("ice gathering state change");
     });
 
     webRTCPeer.peer.addEventListener("track", handleIncomingTracks);
