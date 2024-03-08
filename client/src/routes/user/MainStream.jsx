@@ -20,7 +20,6 @@ export default function MainStream() {
   const [webRTCPeer, setWebRTCPeer] = useState(new WebRTCPeer());
   const [localStream, setLocalStream] = useState();
   const [selectedAdmin, setSelectedAdmin] = useState(null);
-  const [incomingOffer, setIncomingOffer] = useState(null);
   const [remoteStream, setRemoteStream] = useState();
   const [callStarted, setCallStarted] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -91,18 +90,19 @@ export default function MainStream() {
 
   // }, [localStream, webRTCPeer]);
 
-  const handleIncomingCall = useCallback(async ({ from, offer }) => {
-    setSelectedAdmin(from);
-    setIncomingOffer(offer);
-  }, []);
+  const handleIncomingCall = useCallback(
+    async ({ from, offer }) => {
+      setSelectedAdmin(from);
+      webRTCPeer.peer.setRemoteDescription(offer);
+    },
+    [webRTCPeer]
+  );
 
   const handleAnswerCall = useCallback(async () => {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: false,
       audio: true,
     });
-
-    console.log(incomingOffer.sdp);
 
     setLocalStream(stream);
     for (const track of stream.getTracks()) {
@@ -111,7 +111,7 @@ export default function MainStream() {
 
     console.log(webRTCPeer);
 
-    const answer = await webRTCPeer.getAnswer(incomingOffer);
+    const answer = await webRTCPeer.getAnswer();
 
     console.log(answer.sdp);
 
@@ -124,7 +124,7 @@ export default function MainStream() {
 
     setCallStarted(true);
     // }, 5000);
-  }, [webRTCPeer, socket, userInfo.id, incomingOffer, selectedAdmin]);
+  }, [webRTCPeer, socket, userInfo.id, selectedAdmin]);
 
   // const handleNegotiationNeeded = useCallback(async () => {
   //   const offer = await webRTCPeer.getOffer();
@@ -308,7 +308,7 @@ export default function MainStream() {
           <Hand />
         </span>
       </button>
-      {selectedAdmin && incomingOffer && (
+      {selectedAdmin && (
         <button
           onClick={handleAnswerCall}
           className="button bg-slate-800 hover:bg-slate-950"
