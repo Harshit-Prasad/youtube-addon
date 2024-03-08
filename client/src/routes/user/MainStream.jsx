@@ -20,6 +20,7 @@ export default function MainStream() {
   const [webRTCPeer, setWebRTCPeer] = useState(new WebRTCPeer());
   const [localStream, setLocalStream] = useState();
   const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [incomingOffer, setIncomingOffer] = useState(null);
   const [remoteStream, setRemoteStream] = useState();
   const [callStarted, setCallStarted] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -86,76 +87,79 @@ export default function MainStream() {
 
   // WebRTC
 
-  const handleIncomingCall = useCallback(
-    async ({ from, offer }) => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: false,
-        audio: true,
-      });
-      const audioTrack = stream.getAudioTracks()[0];
-      audioTrack.applyConstraints({
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      });
-      setLocalStream(stream);
-      const answer = await webRTCPeer.getAnswer(offer);
+  // const sendStream = useCallback(() => {
 
-      console.log("offer received, answer created");
+  // }, [localStream, webRTCPeer]);
 
-      setSelectedAdmin(from);
-      socket.emit("call-accepted", { answer, to: from, from: userInfo.id });
-    },
-    [webRTCPeer, socket, userInfo.id]
-  );
+  const handleIncomingCall = useCallback(async ({ from, offer }) => {
+    setSelectedAdmin(from);
+    setIncomingOffer(offer);
+  }, []);
 
-  const sendStream = useCallback(() => {
-    for (const track of localStream.getTracks()) {
-      webRTCPeer.peer.addTrack(track, localStream);
+  const handleAnswerCall = useCallback(async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true,
+    });
+
+    console.log(incomingOffer.sdp);
+
+    setLocalStream(stream);
+    for (const track of stream.getTracks()) {
+      webRTCPeer.peer.addTrack(track, stream);
     }
-  }, [localStream, webRTCPeer]);
 
-  const handleAnswerCall = useCallback(() => {
-    console.log("media sent");
-    sendStream();
-    setCallStarted(true);
-  }, [sendStream]);
+    console.log(webRTCPeer);
 
-  const handleNegotiationNeeded = useCallback(async () => {
-    const offer = await webRTCPeer.getOffer();
+    const answer = await webRTCPeer.getAnswer(incomingOffer);
 
-    console.log("negotiation needed");
+    console.log(answer.sdp);
 
-    socket.emit("nego-needed", {
-      offer,
+    // setTimeout(() => {
+    socket.emit("call-accepted", {
+      answer,
       to: selectedAdmin,
       from: userInfo.id,
     });
-  }, [webRTCPeer, selectedAdmin, socket, userInfo.id]);
 
-  const handleNegotiationIncoming = useCallback(
-    async ({ from, offer }) => {
-      console.log("negotiation incoming");
+    setCallStarted(true);
+    // }, 5000);
+  }, [webRTCPeer, socket, userInfo.id, incomingOffer, selectedAdmin]);
 
-      const answer = await webRTCPeer.getAnswer(offer);
-      socket.emit("nego-done", { to: from, answer, from: userInfo.id });
-    },
-    [webRTCPeer, socket, userInfo.id]
-  );
+  // const handleNegotiationNeeded = useCallback(async () => {
+  //   const offer = await webRTCPeer.getOffer();
 
-  const handleNegotiationFinal = useCallback(
-    async ({ answer }) => {
-      console.log("negotiation final");
+  //   console.log("negotiation needed");
 
-      await webRTCPeer.setLocalDescription(answer);
-    },
-    [webRTCPeer]
-  );
+  //   socket.emit("nego-needed", {
+  //     offer,
+  //     to: selectedAdmin,
+  //     from: userInfo.id,
+  //   });
+  // }, [webRTCPeer, selectedAdmin, socket, userInfo.id]);
+
+  // const handleNegotiationIncoming = useCallback(
+  //   async ({ from, offer }) => {
+  //     console.log("negotiation incoming");
+
+  //     const answer = await webRTCPeer.getAnswer(offer);
+  //     socket.emit("nego-done", { to: from, answer, from: userInfo.id });
+  //   },
+  //   [webRTCPeer, socket, userInfo.id]
+  // );
+
+  // const handleNegotiationFinal = useCallback(
+  //   async ({ answer }) => {
+  //     console.log("negotiation final");
+
+  //     await webRTCPeer.setLocalDescription(answer);
+  //   },
+  //   [webRTCPeer]
+  // );
 
   const handleIncomingTracks = useCallback(
     (e) => {
-      console.log("tracks received");
-
+      console.log("tracks received", e);
       const [stream] = e.streams;
       setRemoteStream(stream);
     },
@@ -180,7 +184,7 @@ export default function MainStream() {
     ({ from, ic }) => {
       console.log("ice candidates incoming");
       if (ic) {
-        webRTCPeer.peer.addIceCandidate(new RTCIceCandidate(ic));
+        webRTCPeer.peer.addIceCandidate(ic);
       }
     },
     [webRTCPeer]
@@ -188,9 +192,8 @@ export default function MainStream() {
 
   const handleICECandidate = useCallback(
     (e) => {
-      console.log("ice candidates sent");
-
       if (e.candidate) {
+        console.log("ice candidates sent", selectedAdmin);
         socket.emit("add-ice-candidate", {
           from: userInfo.id,
           to: selectedAdmin,
@@ -210,16 +213,10 @@ export default function MainStream() {
 
   useEffect(() => {
     socket.on("incoming-call", handleIncomingCall);
-    socket.on("nego-incoming", handleNegotiationIncoming);
-    socket.on("nego-final", handleNegotiationFinal);
     socket.on("admin-ended-call", handleCallEnded);
     socket.on("add-ice-candidate", handleIncomingICECandidate);
     socket.on("stream-ended", handleStreamEnded);
 
-    webRTCPeer.peer.addEventListener(
-      "negotiationneeded",
-      handleNegotiationNeeded
-    );
     webRTCPeer.peer.addEventListener("icecandidate", handleICECandidate);
     webRTCPeer.peer.addEventListener("icecandidateerror", (e) => {
       console.log(e);
@@ -227,33 +224,41 @@ export default function MainStream() {
 
     webRTCPeer.peer.addEventListener("track", handleIncomingTracks);
 
+    // socket.on("nego-incoming", handleNegotiationIncoming);
+    // socket.on("nego-final", handleNegotiationFinal);
+    // webRTCPeer.peer.addEventListener(
+    //   "negotiationneeded",
+    //   handleNegotiationNeeded
+    // );
+
     return () => {
       socket.off("incoming-call", handleIncomingCall);
-      socket.off("nego-incoming", handleNegotiationIncoming);
-      socket.off("nego-final", handleNegotiationFinal);
       socket.off("admin-ended-call", handleCallEnded);
       socket.off("add-ice-candidate", handleIncomingICECandidate);
       socket.off("stream-ended", handleStreamEnded);
 
       webRTCPeer.peer.removeEventListener("icecandidate", handleICECandidate);
-      webRTCPeer.peer.removeEventListener(
-        "negotiationneeded",
-        handleNegotiationNeeded
-      );
       webRTCPeer.peer.removeEventListener("track", handleIncomingTracks);
+
+      // socket.off("nego-incoming", handleNegotiationIncoming);
+      // socket.off("nego-final", handleNegotiationFinal);
+      // webRTCPeer.peer.removeEventListener(
+      //   "negotiationneeded",
+      //   handleNegotiationNeeded
+      // );
     };
   }, [
     webRTCPeer,
     handleIncomingCall,
-    handleNegotiationNeeded,
-    handleNegotiationFinal,
     handleIncomingTracks,
     handleCallEnded,
-    handleNegotiationIncoming,
     handleIncomingICECandidate,
     handleICECandidate,
     handleStreamEnded,
     socket,
+    // handleNegotiationNeeded,
+    // handleNegotiationFinal,
+    // handleNegotiationIncoming,
   ]);
 
   // Media Controls
@@ -303,7 +308,7 @@ export default function MainStream() {
           <Hand />
         </span>
       </button>
-      {selectedAdmin && (
+      {selectedAdmin && incomingOffer && (
         <button
           onClick={handleAnswerCall}
           className="button bg-slate-800 hover:bg-slate-950"

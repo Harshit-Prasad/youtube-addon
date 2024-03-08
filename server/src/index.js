@@ -130,16 +130,17 @@ io.on("connection", (socket) => {
   });
 
   socket.on("call-accepted", ({ answer, to, from }) => {
+    console.log(answer.sdp, to);
     io.to(to).emit("call-accepted", { from, answer });
   });
 
-  socket.on("nego-needed", ({ offer, to, from }) => {
-    io.to(to).emit("nego-incoming", { from, offer });
-  });
+  // socket.on("nego-needed", ({ offer, to, from }) => {
+  //   io.to(to).emit("nego-incoming", { from, offer });
+  // });
 
-  socket.on("nego-done", ({ answer, to, from }) => {
-    io.to(to).emit("nego-final", { from, answer });
-  });
+  // socket.on("nego-done", ({ answer, to, from }) => {
+  //   io.to(to).emit("nego-final", { from, answer });
+  // });
 
   socket.on("add-ice-candidate", ({ to, from, ic }) => {
     io.to(to).emit("add-ice-candidate", { from, ic });

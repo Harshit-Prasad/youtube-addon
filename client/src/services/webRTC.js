@@ -3,14 +3,17 @@ class WebRTCPeer {
     this.peer = new RTCPeerConnection({
       iceServers: [
         {
-          urls: ["stun:stun.l.google.com:19302"],
+          urls: [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+          ],
         },
-        { urls: "stun:freeturn.net:5349" },
-        {
-          urls: "turns:freeturn.tel:5349",
-          username: "free",
-          credential: "free",
-        },
+        // { urls: "stun:freeturn.net:5349" },
+        // {
+        //   urls: "turns:freeturn.tel:5349",
+        //   username: "free",
+        //   credential: "free",
+        // },
       ],
     });
   }
