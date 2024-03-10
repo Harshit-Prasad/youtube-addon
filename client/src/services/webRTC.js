@@ -1,4 +1,4 @@
-class WebRTCPeer {
+export class WebRTCPeer {
   constructor() {
     this.peer = new RTCPeerConnection({
       iceServers: [
@@ -8,12 +8,6 @@ class WebRTCPeer {
             "stun:stun1.l.google.com:19302",
           ],
         },
-        // { urls: "stun:freeturn.net:5349" },
-        // {
-        //   urls: "turns:freeturn.tel:5349",
-        //   username: "free",
-        //   credential: "free",
-        // },
       ],
     });
   }
@@ -21,7 +15,7 @@ class WebRTCPeer {
   async getOffer() {
     if (this.peer) {
       const offer = await this.peer.createOffer();
-      await this.peer.setLocalDescription(new RTCSessionDescription(offer));
+      await this.peer.setLocalDescription(offer);
       return offer;
     }
   }
@@ -29,16 +23,10 @@ class WebRTCPeer {
   async getAnswer() {
     if (this.peer) {
       const answer = await this.peer.createAnswer();
-      await this.peer.setLocalDescription(new RTCSessionDescription(answer));
+      await this.peer.setLocalDescription(answer);
       return answer;
-    }
-  }
-
-  async setLocalDescription(answer) {
-    if (this.peer) {
-      await this.peer.setRemoteDescription(new RTCSessionDescription(answer));
     }
   }
 }
 
-export default WebRTCPeer;
+export default new WebRTCPeer();

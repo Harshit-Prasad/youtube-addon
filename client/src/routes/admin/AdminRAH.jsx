@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSocket } from "../../providers/SocketProvider";
 import { useUserInfoStore } from "../../services/store";
 import axios from "../../api/axios";
-import WebRTCPeer from "../../services/webRTC";
+import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
 import MediaPlayer from "../../components/MediaPlayer";
 
 export default function AdminRAH() {
@@ -18,7 +18,7 @@ export default function AdminRAH() {
   const [callStarted, setCallStarted] = useState(false);
   const [muted, setMuted] = useState(false);
 
-  const [webRTCPeer, setWebRTCPeer] = useState(new WebRTCPeer());
+  const [webRTCPeer, setWebRTCPeer] = useState(WebRTCPeer);
   const [localStream, setLocalStream] = useState();
   const [remoteStream, setRemoteStream] = useState();
 
@@ -137,11 +137,9 @@ export default function AdminRAH() {
 
       console.log("offer created", offer.sdp);
 
-      // setTimeout(() => {
       socket.emit("call-peer", { from: userInfo.id, to: userId, offer });
 
       setCallStarted(true);
-      // }, 5000);
     },
     [webRTCPeer, socket, userInfo.id]
   );
@@ -149,7 +147,7 @@ export default function AdminRAH() {
   const handleCallAccepted = useCallback(
     async ({ answer }) => {
       console.log(answer.sdp);
-      await webRTCPeer.setLocalDescription(answer);
+      await webRTCPeer.peer.setRemoteDescription(answer);
     },
     [webRTCPeer]
   );
@@ -207,7 +205,7 @@ export default function AdminRAH() {
       setRemoteStream(null);
       setLocalStream(null);
       setCallStarted(false);
-      setWebRTCPeer(new WebRTCPeer());
+      setWebRTCPeer(new NewWebRTCPeer());
       setSelectedUser(null);
 
       setUsers((users) => {
@@ -246,14 +244,15 @@ export default function AdminRAH() {
 
   const handleICECandidate = useCallback(
     (e) => {
-      console.log("ice candidates sent", e);
-
       if (e.candidate) {
+        console.log("ice candidates sent");
+        // setTimeout(() => {
         socket.emit("add-ice-candidate", {
           from: userInfo.id,
           to: selectedUser,
           ic: e.candidate,
         });
+        // }, 5000);
       }
     },
     [socket, userInfo.id, selectedUser]
@@ -334,7 +333,7 @@ export default function AdminRAH() {
       webRTCPeer.peer.close();
       socket.emit("admin-end-call", { to: selectedUser, from: userInfo.id });
       setCallStarted(false);
-      setWebRTCPeer(new WebRTCPeer());
+      setWebRTCPeer(new NewWebRTCPeer());
       setSelectedUser(null);
 
       setUsers((users) => {

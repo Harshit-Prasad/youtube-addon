@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import LiveStream from "../../components/LiveStream";
 import LiveChat from "../../components/LiveChat";
 import { Hand } from "lucide-react";
-import WebRTCPeer from "../../services/webRTC";
+import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
 import MediaPlayer from "../../components/MediaPlayer";
 // import AmountSlider from "../../components/AmountSlider";
 
@@ -17,7 +17,7 @@ export default function MainStream() {
   const [adminId, streamId] = params.roomId.split(":");
   const socket = useSocket();
   const [toggleRaiseHand, setToggleRaiseHand] = useState(false);
-  const [webRTCPeer, setWebRTCPeer] = useState(new WebRTCPeer());
+  const [webRTCPeer, setWebRTCPeer] = useState(WebRTCPeer);
   const [localStream, setLocalStream] = useState();
   const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [remoteStream, setRemoteStream] = useState();
@@ -109,13 +109,10 @@ export default function MainStream() {
       webRTCPeer.peer.addTrack(track, stream);
     }
 
-    console.log(webRTCPeer);
-
     const answer = await webRTCPeer.getAnswer();
 
     console.log(answer.sdp);
 
-    // setTimeout(() => {
     socket.emit("call-accepted", {
       answer,
       to: selectedAdmin,
@@ -123,7 +120,6 @@ export default function MainStream() {
     });
 
     setCallStarted(true);
-    // }, 5000);
   }, [webRTCPeer, socket, userInfo.id, selectedAdmin]);
 
   // const handleNegotiationNeeded = useCallback(async () => {
@@ -177,7 +173,7 @@ export default function MainStream() {
     setCallStarted(false);
     setToggleRaiseHand(false);
     setSelectedAdmin(null);
-    setWebRTCPeer(new WebRTCPeer());
+    setWebRTCPeer(new NewWebRTCPeer());
   }, [webRTCPeer, localStream]);
 
   const handleIncomingICECandidate = useCallback(
@@ -218,6 +214,9 @@ export default function MainStream() {
     socket.on("stream-ended", handleStreamEnded);
 
     webRTCPeer.peer.addEventListener("icecandidate", handleICECandidate);
+    webRTCPeer.peer.addEventListener("signalingstatechange", () => {
+      console.log(webRTCPeer.peer.signalingState);
+    });
     webRTCPeer.peer.addEventListener("icecandidateerror", (e) => {
       console.log(e);
     });
@@ -286,7 +285,7 @@ export default function MainStream() {
     socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin });
 
     setSelectedAdmin(null);
-    setWebRTCPeer(new WebRTCPeer());
+    setWebRTCPeer(new NewWebRTCPeer());
   }, [selectedAdmin, socket, userInfo.id, webRTCPeer.peer, localStream]);
 
   return (

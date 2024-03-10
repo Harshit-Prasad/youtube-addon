@@ -130,7 +130,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("call-accepted", ({ answer, to, from }) => {
-    console.log(answer.sdp, to);
     io.to(to).emit("call-accepted", { from, answer });
   });
 
