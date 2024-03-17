@@ -3,11 +3,29 @@ export class WebRTCPeer {
     this.peer = new RTCPeerConnection({
       iceServers: [
         {
-          urls: [
-            // "stun:stun.l.google.com:19302",
-            // "stun:stun1.l.google.com:19302",
-            "stun:global.stun.twilio.com:3478",
-          ],
+          url: "stun:global.stun.twilio.com:3478",
+          urls: "stun:global.stun.twilio.com:3478",
+        },
+        {
+          url: "turn:global.turn.twilio.com:3478?transport=udp",
+          username:
+            "8d404463a01a3784584fed7a8dc40b6adb09842dd059d59c2950d41d5f4ec1a3",
+          urls: "turn:global.turn.twilio.com:3478?transport=udp",
+          credential: "R4O8a3pkVYeL4lRBKGnl8G5x1W0+PnM9HEDKAHsn/OY=",
+        },
+        {
+          url: "turn:global.turn.twilio.com:3478?transport=tcp",
+          username:
+            "8d404463a01a3784584fed7a8dc40b6adb09842dd059d59c2950d41d5f4ec1a3",
+          urls: "turn:global.turn.twilio.com:3478?transport=tcp",
+          credential: "R4O8a3pkVYeL4lRBKGnl8G5x1W0+PnM9HEDKAHsn/OY=",
+        },
+        {
+          url: "turn:global.turn.twilio.com:443?transport=tcp",
+          username:
+            "8d404463a01a3784584fed7a8dc40b6adb09842dd059d59c2950d41d5f4ec1a3",
+          urls: "turn:global.turn.twilio.com:443?transport=tcp",
+          credential: "R4O8a3pkVYeL4lRBKGnl8G5x1W0+PnM9HEDKAHsn/OY=",
         },
       ],
     });
