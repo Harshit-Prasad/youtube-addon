@@ -9,23 +9,23 @@ export class WebRTCPeer {
         {
           url: "turn:global.turn.twilio.com:3478?transport=udp",
           username:
-            "8d404463a01a3784584fed7a8dc40b6adb09842dd059d59c2950d41d5f4ec1a3",
+            "6912950f7f9e560f19c121309f46f103b411ebbcd8ff9f51f02ab8775d4a96e2",
           urls: "turn:global.turn.twilio.com:3478?transport=udp",
-          credential: "R4O8a3pkVYeL4lRBKGnl8G5x1W0+PnM9HEDKAHsn/OY=",
+          credential: "JZC8Gem+Aqoyhs+cAxHFcdWfxteAnmowFZ/m/vEy9K0=",
         },
         {
           url: "turn:global.turn.twilio.com:3478?transport=tcp",
           username:
-            "8d404463a01a3784584fed7a8dc40b6adb09842dd059d59c2950d41d5f4ec1a3",
+            "6912950f7f9e560f19c121309f46f103b411ebbcd8ff9f51f02ab8775d4a96e2",
           urls: "turn:global.turn.twilio.com:3478?transport=tcp",
-          credential: "R4O8a3pkVYeL4lRBKGnl8G5x1W0+PnM9HEDKAHsn/OY=",
+          credential: "JZC8Gem+Aqoyhs+cAxHFcdWfxteAnmowFZ/m/vEy9K0=",
         },
         {
           url: "turn:global.turn.twilio.com:443?transport=tcp",
           username:
-            "8d404463a01a3784584fed7a8dc40b6adb09842dd059d59c2950d41d5f4ec1a3",
+            "6912950f7f9e560f19c121309f46f103b411ebbcd8ff9f51f02ab8775d4a96e2",
           urls: "turn:global.turn.twilio.com:443?transport=tcp",
-          credential: "R4O8a3pkVYeL4lRBKGnl8G5x1W0+PnM9HEDKAHsn/OY=",
+          credential: "JZC8Gem+Aqoyhs+cAxHFcdWfxteAnmowFZ/m/vEy9K0=",
         },
       ],
     });

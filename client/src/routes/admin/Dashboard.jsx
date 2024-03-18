@@ -30,19 +30,16 @@ export default function Dashboard() {
   return (
     <main className="h-dvh flex flex-col items-center gap-3 p-5">
       <div className="w-full  flex justify-between">
-        <Link className="button bg-slate-800 hover:bg-slate-950" to="/">
+        <Link className="button text-primary" to="/">
           To Home
         </Link>
-        <Link className="button bg-slate-800 hover:bg-slate-950" to="/settings">
+        <Link className="button text-primary" to="/settings">
           Settings
         </Link>
       </div>
 
       <div>
-        <Link
-          className="button bg-slate-800 hover:bg-slate-950"
-          to="/create-page"
-        >
+        <Link className="button text-primary" to="/create-page">
           Create a new Page
         </Link>
       </div>
@@ -67,20 +64,20 @@ export default function Dashboard() {
                   </h3>
                   <div className="flex gap-2">
                     <Link
-                      className="button bg-slate-800 hover:bg-slate-950"
+                      className="button text-primary"
                       to={`/admin-rah/${upcomingStream.url}`}
                     >
                       RHA
                     </Link>
                     <Link
-                      className="button bg-slate-800 hover:bg-slate-950"
+                      className="button text-primary"
                       to={`/private-stream/${upcomingStream.url}`}
                     >
                       Go to create page
                     </Link>
                     <button
                       disabled={deleteStreamLoading}
-                      className="button bg-slate-800 hover:bg-slate-950"
+                      className="button text-primary"
                       onClick={async () => {
                         try {
                           setDeleteStreamLoading(true);

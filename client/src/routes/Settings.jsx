@@ -9,7 +9,7 @@ export default function Settings() {
         onClick={() => {
           navigate(-1);
         }}
-        className="button bg-slate-800 hover:bg-slate-950"
+        className="button text-primary"
       >
         Go Back
       </button>

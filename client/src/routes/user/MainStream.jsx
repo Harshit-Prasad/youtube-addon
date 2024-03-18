@@ -290,13 +290,13 @@ export default function MainStream() {
 
   return (
     <>
-      <Link to="/welcome" className="button bg-slate-800 hover:bg-slate-950">
+      <Link to="/welcome" className="button text-primary">
         To Home
       </Link>
       <LiveStream streamId={streamId} />
       <button
         onClick={handleRaiseHand}
-        className="button bg-slate-800 hover:bg-slate-950 flex items-center justify-center gap-3"
+        className="button text-primary flex items-center justify-center gap-3"
       >
         Hand Raised
         <span
@@ -308,10 +308,7 @@ export default function MainStream() {
         </span>
       </button>
       {selectedAdmin && (
-        <button
-          onClick={handleAnswerCall}
-          className="button bg-slate-800 hover:bg-slate-950"
-        >
+        <button onClick={handleAnswerCall} className="button text-primary">
           Start Call
         </button>
       )}
@@ -324,7 +321,7 @@ export default function MainStream() {
             onClick={() => {
               setMuted((prev) => !prev);
             }}
-            className="button bg-slate-800 hover:bg-slate-950"
+            className="button text-primary"
           >
             {muted ? "Unmute" : "Mute"}
           </button>

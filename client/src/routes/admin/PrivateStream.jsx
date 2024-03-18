@@ -22,22 +22,16 @@ export default function PrivateStream() {
 
   return (
     <div className="bg-slate-300 p-5">
-      <Link
-        to={"/dashboard"}
-        className="button bg-slate-800 hover:bg-slate-950"
-      >
+      <Link to={"/dashboard"} className="button text-primary">
         Go back
       </Link>
       <LiveStream streamId={streamId} />
       <div className="flex justify-center items-center gap-5 my-5">
-        <button
-          onClick={handleCopyLink}
-          className="button bg-slate-800 hover:bg-slate-950"
-        >
+        <button onClick={handleCopyLink} className="button text-primary">
           Copy Stream Link
         </button>
         <Link
-          className="button bg-slate-800 hover:bg-slate-950"
+          className="button text-primary"
           to={`/admin-rah/${userId}:${streamId}`}
         >
           To RAH Page

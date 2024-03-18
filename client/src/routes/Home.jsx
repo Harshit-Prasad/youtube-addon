@@ -11,30 +11,21 @@ export default function Home() {
       {isAuth ? (
         <>
           {role === "admin" ? (
-            <Link
-              className="button bg-slate-800 hover:bg-slate-950"
-              to="/dashboard"
-            >
+            <Link className="button text-primary" to="/dashboard">
               Dashboard
             </Link>
           ) : (
-            <Link
-              className="button bg-slate-800 hover:bg-slate-950"
-              to="/navigate-to"
-            >
+            <Link className="button text-primary" to="/navigate-to">
               Join Room
             </Link>
           )}
 
-          <Link
-            to="/settings"
-            className="button bg-slate-800 hover:bg-slate-950"
-          >
+          <Link to="/settings" className="button text-primary">
             Settings
           </Link>
         </>
       ) : (
-        <Link to="/auth" className="button bg-slate-800 hover:bg-slate-950">
+        <Link to="/auth" className="button text-primary">
           Authenticate
         </Link>
       )}

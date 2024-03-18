@@ -43,7 +43,7 @@ export default function Login({ children }) {
   return (
     <div className="flex flex-col gap-4 p-4 justify-center items-center">
       <button
-        className="button bg-slate-700 text-white"
+        className="button text-primary"
         onClick={() => {
           login();
         }}

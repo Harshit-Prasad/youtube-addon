@@ -25,22 +25,16 @@ export default function ProtectedRoute() {
     <div className="h-dvh items-center justify-between flex flex-col p-2">
       <div className="w-full flex items-center justify-between">
         {userInfo.role === "user" ? (
-          <Link
-            className="button bg-slate-800 hover:bg-slate-950"
-            to="/navigate-to"
-          >
+          <Link className="button text-primary" to="/navigate-to">
             Join Room
           </Link>
         ) : (
-          <Link
-            className="button bg-slate-800 hover:bg-slate-950"
-            to="/dashboard"
-          >
+          <Link className="button text-primary" to="/dashboard">
             Dashboard
           </Link>
         )}
 
-        <Link className="button bg-slate-800 hover:bg-slate-950" to="/settings">
+        <Link className="button text-primary" to="/settings">
           Settings
         </Link>
       </div>

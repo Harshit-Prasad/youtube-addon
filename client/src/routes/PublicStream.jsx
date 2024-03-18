@@ -15,10 +15,7 @@ export default function PublicStream() {
 
   return (
     <div className="p-5">
-      <Link
-        to={"/dashboard"}
-        className="button bg-slate-800 hover:bg-slate-950"
-      >
+      <Link to={"/dashboard"} className="button text-primary">
         Go back
       </Link>
       <LiveStream streamId={streamId} />
@@ -27,7 +24,7 @@ export default function PublicStream() {
           onClick={() => {
             handleRedirect();
           }}
-          className="button bg-slate-800 hover:bg-slate-950"
+          className="button text-primary"
         >
           Raise a hand
         </button>

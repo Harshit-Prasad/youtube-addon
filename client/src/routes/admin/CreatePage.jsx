@@ -59,10 +59,7 @@ export default function CreatePage() {
             onChange={handleURLInputChange}
           />
         </div>
-        <button
-          type="submit"
-          className="button bg-slate-800 hover:bg-slate-950"
-        >
+        <button type="submit" className="button text-primary">
           Create new page
         </button>
         {getStreamsLoading && <p className="text-center">Loading...</p>}

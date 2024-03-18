@@ -5,6 +5,7 @@ import { useUserInfoStore } from "../../services/store";
 import axios from "../../api/axios";
 import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
 import MediaPlayer from "../../components/MediaPlayer";
+import { Mic, MicOff } from "lucide-react";
 
 export default function AdminRAH() {
   const socket = useSocket();
@@ -363,10 +364,7 @@ export default function AdminRAH() {
     <>
       <header>
         <div className="flex items-center m-4">
-          <Link
-            className="button bg-slate-800 hover:bg-slate-950"
-            to="/dashboard"
-          >
+          <Link className="button text-primary" to="/dashboard">
             Dashboard
           </Link>
           <div className="flex-grow">
@@ -391,7 +389,7 @@ export default function AdminRAH() {
                 <div key={user.id + i}>
                   <button
                     onClick={() => handleCallAudience(user.id)}
-                    className="button bg-slate-800 hover:bg-slate-950"
+                    className="button text-primary"
                     key={user.id}
                     disabled={selectedUser !== null}
                   >
@@ -403,9 +401,9 @@ export default function AdminRAH() {
                         onClick={() => {
                           setMuted((prev) => !prev);
                         }}
-                        className="button bg-slate-800 hover:bg-slate-950"
+                        className="button text-primary "
                       >
-                        {muted ? "Unmute" : "Mute"}
+                        {muted ? <Mic /> : <MicOff />}
                       </button>
                       <button
                         onClick={() => {
