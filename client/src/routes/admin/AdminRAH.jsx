@@ -5,7 +5,7 @@ import { useUserInfoStore } from "../../services/store";
 import axios from "../../api/axios";
 import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
 import MediaPlayer from "../../components/MediaPlayer";
-import { Mic, MicOff } from "lucide-react";
+import { Mic, MicOff, X } from "lucide-react";
 
 export default function AdminRAH() {
   const socket = useSocket();
@@ -386,7 +386,10 @@ export default function AdminRAH() {
           {users.map((user, i) => {
             if (user.handRaised) {
               return (
-                <div key={user.id + i}>
+                <div
+                  key={user.id + i}
+                  className="flex items-center justify-center"
+                >
                   <button
                     onClick={() => handleCallAudience(user.id)}
                     className="button text-primary"
@@ -401,17 +404,17 @@ export default function AdminRAH() {
                         onClick={() => {
                           setMuted((prev) => !prev);
                         }}
-                        className="button text-primary "
+                        className="media-button text-primary rounded-full"
                       >
-                        {muted ? <Mic /> : <MicOff />}
+                        {muted ? <MicOff /> : <Mic />}
                       </button>
                       <button
                         onClick={() => {
                           handleEndCall(user.id);
                         }}
-                        className="button bg-red-700 hover:bg-red-500"
+                        className="media-button bg-red-700 hover:bg-red-500 rounded-full"
                       >
-                        End Call
+                        <X />
                       </button>
                     </>
                   )}

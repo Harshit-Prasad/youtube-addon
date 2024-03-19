@@ -7,6 +7,10 @@
     @apply inline-block text-white py-2 px-4 rounded-lg bg-[#272727] hover:bg-[#767676];
   }
 
+  .media-button {
+    @apply inline-block text-white py-2 px-2 rounded-lg bg-[#272727] hover:bg-[#767676];
+  }
+
   .bg-main {
     @apply bg-[#0f0f0f];
   }

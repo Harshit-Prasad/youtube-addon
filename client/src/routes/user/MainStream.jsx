@@ -5,7 +5,7 @@ import { useUserInfoStore } from "../../services/store";
 import toast from "react-hot-toast";
 import LiveStream from "../../components/LiveStream";
 import LiveChat from "../../components/LiveChat";
-import { Hand } from "lucide-react";
+import { Hand, Mic, MicOff, X } from "lucide-react";
 import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
 import MediaPlayer from "../../components/MediaPlayer";
 // import AmountSlider from "../../components/AmountSlider";
@@ -321,15 +321,15 @@ export default function MainStream() {
             onClick={() => {
               setMuted((prev) => !prev);
             }}
-            className="button text-primary"
+            className="media-button text-primary rounded-full"
           >
-            {muted ? "Unmute" : "Mute"}
+            {muted ? <MicOff /> : <Mic />}
           </button>
           <button
             onClick={handleEndCall}
-            className="button bg-red-700 hover:bg-red-500"
+            className="media-button bg-red-700 hover:bg-red-500 rounded-full"
           >
-            End Call
+            <X />{" "}
           </button>
         </>
       )}
