@@ -13,7 +13,10 @@ export default function ProtectedRoute() {
         ) : (
           <>
             {params.roomId ? (
-              <Navigate to={`/public-stream/${params.roomId}`} replace />
+              <Navigate
+                to={`/public-stream/${params.roomId}`}
+                state={{ redirectToMain: true }}
+              />
             ) : (
               <Navigate to="/auth" replace />
             )}

@@ -1,14 +1,15 @@
-import React from "react";
+import { useGoogleLogin } from "@react-oauth/google";
 import axios from "../../api/axios";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUserInfoStore } from "../../services/store";
-import { useGoogleLogin } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
 
-export default function Login({ children }) {
+export default function Signup({ redirectToMain }) {
   const { setIsAuth } = useAuth();
   const { setUserInfo } = useUserInfoStore((state) => state);
+  const navigate = useNavigate();
 
-  const login = useGoogleLogin({
+  const signup = useGoogleLogin({
     onSuccess: async (codeResponse) => {
       try {
         const userInfo = await axios.get(
@@ -16,7 +17,7 @@ export default function Login({ children }) {
           { headers: { Authorization: `Bearer ${codeResponse.access_token}` } }
         );
 
-        const createdUser = await axios.post("/api/user/login", {
+        const createdUser = await axios.post("/api/user/signup", {
           name: userInfo.data.name,
           email: userInfo.data.email,
           picture: userInfo.data.picture,
@@ -34,6 +35,10 @@ export default function Login({ children }) {
           "auth_tokens",
           JSON.stringify(createdUser.data.auth_tokens)
         );
+
+        if (redirectToMain) {
+          navigate(-1);
+        }
       } catch (error) {
         console.log(error.message);
       }
@@ -45,10 +50,10 @@ export default function Login({ children }) {
       <button
         className="button text-primary"
         onClick={() => {
-          login();
+          signup();
         }}
       >
-        Login
+        Signup
       </button>
     </div>
   );

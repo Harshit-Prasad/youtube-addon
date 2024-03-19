@@ -23,6 +23,10 @@ export default function Home() {
           <Link to="/settings" className="button text-primary">
             Settings
           </Link>
+
+          <Link to="/welcome" className="button text-primary">
+            Profile
+          </Link>
         </>
       ) : (
         <Link to="/auth" className="button text-primary">
