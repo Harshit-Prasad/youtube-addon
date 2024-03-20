@@ -1,9 +1,10 @@
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useParams } from "react-router-dom";
 import { useAuth } from "../providers/AuthProvider";
 
 export default function ProtectedRoute() {
   const { isAuth } = useAuth();
   const params = useParams();
+  const location = useLocation();
 
   return (
     <>
@@ -15,7 +16,7 @@ export default function ProtectedRoute() {
             {params.roomId ? (
               <Navigate
                 to={`/public-stream/${params.roomId}`}
-                state={{ redirectToMain: true }}
+                state={{ redirectToMain: true, pathname: location.pathname }}
               />
             ) : (
               <Navigate to="/auth" replace />

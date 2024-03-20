@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSocket } from "../../providers/SocketProvider";
 import { useUserInfoStore } from "../../services/store";
 import toast from "react-hot-toast";
@@ -16,7 +16,10 @@ export default function MainStream() {
   const navigate = useNavigate();
   const [adminId, streamId] = params.roomId.split(":");
   const socket = useSocket();
-  const [toggleRaiseHand, setToggleRaiseHand] = useState(false);
+  const location = useLocation();
+  const [toggleRaiseHand, setToggleRaiseHand] = useState(
+    location.state.handRaise
+  );
   const [webRTCPeer, setWebRTCPeer] = useState(WebRTCPeer);
   const [localStream, setLocalStream] = useState();
   const [selectedAdmin, setSelectedAdmin] = useState(null);

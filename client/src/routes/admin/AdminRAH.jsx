@@ -114,12 +114,6 @@ export default function AdminRAH() {
 
   // WebRTC
 
-  // const sendStream = useCallback((localStream, webRTCPeer) => {
-  //   for (const track of localStream.getTracks()) {
-  //     webRTCPeer.peer.addTrack(track, localStream);
-  //   }
-  // }, []);
-
   const handleCallAudience = useCallback(
     async (userId) => {
       setSelectedUser(userId);
@@ -152,37 +146,6 @@ export default function AdminRAH() {
     },
     [webRTCPeer]
   );
-
-  // const handleNegotiationNeeded = useCallback(async () => {
-  //   const offer = await webRTCPeer.getOffer();
-
-  //   console.log("negotiation needed");
-
-  //   socket.emit("nego-needed", {
-  //     offer,
-  //     to: selectedUser,
-  //     from: userInfo.id,
-  //   });
-  // }, [webRTCPeer, selectedUser, socket, userInfo.id]);
-
-  // const handleNegotiationIncoming = useCallback(
-  //   async ({ from, offer }) => {
-  //     console.log("negotiation incoming");
-
-  //     const answer = await webRTCPeer.getAnswer(offer);
-  //     socket.emit("nego-done", { to: from, answer, from: userInfo.id });
-  //   },
-  //   [webRTCPeer, socket, userInfo.id]
-  // );
-
-  // const handleNegotiationFinal = useCallback(
-  //   async ({ answer }) => {
-  //     console.log("negotiation final");
-
-  //     await webRTCPeer.setLocalDescription(answer);
-  //   },
-  //   [webRTCPeer]
-  // );
 
   const handleIncomingTracks = useCallback(
     (e) => {
@@ -247,13 +210,12 @@ export default function AdminRAH() {
     (e) => {
       if (e.candidate) {
         console.log("ice candidates sent");
-        // setTimeout(() => {
+
         socket.emit("add-ice-candidate", {
           from: userInfo.id,
           to: selectedUser,
           ic: e.candidate,
         });
-        // }, 5000);
       }
     },
     [socket, userInfo.id, selectedUser]
@@ -278,12 +240,6 @@ export default function AdminRAH() {
 
     webRTCPeer.peer.addEventListener("track", handleIncomingTracks);
 
-    // socket.on("nego-incoming", handleNegotiationIncoming);
-    // socket.on("nego-final", handleNegotiationFinal);
-    // webRTCPeer.peer.addEventListener(
-    //   "negotiationneeded",
-    //   handleNegotiationNeeded
-    //   );
     return () => {
       socket.off("call-accepted", handleCallAccepted);
       socket.off("user-call-ended", handleCallEnded);
@@ -292,12 +248,6 @@ export default function AdminRAH() {
       webRTCPeer.peer.removeEventListener("track", handleIncomingTracks);
       webRTCPeer.peer.removeEventListener("icecandidate", handleICECandidate);
     };
-    // socket.off("nego-incoming", handleNegotiationIncoming);
-    // socket.off("nego-final", handleNegotiationFinal);
-    // webRTCPeer.peer.removeEventListener(
-    //   "negotiationneeded",
-    //   handleNegotiationNeeded
-    // );
   }, [
     webRTCPeer,
     handleCallAccepted,
@@ -306,9 +256,6 @@ export default function AdminRAH() {
     handleICECandidate,
     handleIncomingICECandidate,
     socket,
-    // handleNegotiationNeeded,
-    // handleNegotiationIncoming,
-    // handleNegotiationFinal,
   ]);
 
   // Media Controls

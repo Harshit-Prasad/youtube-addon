@@ -14,8 +14,6 @@ export default function PublicStream() {
   const [_, streamId] = roomId.split(":");
   const location = useLocation();
 
-  console.log(location);
-
   function handleOpenAuthTab() {
     toast.error("Must Sign up in order to use this feature.");
     setIsOpen(true);
@@ -40,7 +38,7 @@ export default function PublicStream() {
       {createPortal(
         isOpen && (
           <Popup setIsOpen={setIsOpen}>
-            <AuthTabs />
+            <AuthTabs pathname={location.state.pathname} />
           </Popup>
         ),
         document.getElementById("auth-tab")

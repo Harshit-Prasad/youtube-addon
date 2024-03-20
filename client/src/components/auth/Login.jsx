@@ -3,12 +3,13 @@ import axios from "../../api/axios";
 import { useAuth } from "../../providers/AuthProvider";
 import { useUserInfoStore } from "../../services/store";
 import { useGoogleLogin } from "@react-oauth/google";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 
-export default function Login({ redirectToMain }) {
+export default function Login({ pathname }) {
   const { setIsAuth } = useAuth();
   const { setUserInfo } = useUserInfoStore((state) => state);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const login = useGoogleLogin({
     onSuccess: async (codeResponse) => {
@@ -37,8 +38,9 @@ export default function Login({ redirectToMain }) {
           JSON.stringify(createdUser.data.auth_tokens)
         );
 
-        if (redirectToMain) {
-          navigate(-1);
+        if (location.state.redirectToMain) {
+          navigate(pathname, { state: { handRaise: true } });
+          console.log("login");
         }
       } catch (error) {
         console.log(error.message);
