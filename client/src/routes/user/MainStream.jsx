@@ -18,7 +18,7 @@ export default function MainStream() {
   const socket = useSocket();
   const location = useLocation();
   const [toggleRaiseHand, setToggleRaiseHand] = useState(
-    location.state.handRaise
+    location.state?.handRaise || false
   );
   const [webRTCPeer, setWebRTCPeer] = useState(WebRTCPeer);
   const [localStream, setLocalStream] = useState();
