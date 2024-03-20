@@ -4,7 +4,7 @@ import { useAuth } from "../../providers/AuthProvider";
 import { useUserInfoStore } from "../../services/store";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export default function Signup() {
+export default function Signup({ pathname }) {
   const { setIsAuth } = useAuth();
   const { setUserInfo } = useUserInfoStore((state) => state);
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ export default function Signup() {
         );
 
         if (location.state.redirectToMain) {
-          navigate(-1, { state: { handRaise: true } });
+          navigate(pathname, { state: { handRaise: true } });
         }
       } catch (error) {
         console.log(error.message);
