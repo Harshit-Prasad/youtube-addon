@@ -27,21 +27,30 @@ export default function AdminRAH() {
     socket.emit("admin-connected", { userInfo, streamId: params.roomId });
   }, [params.roomId, socket, userInfo]);
 
-  const userConnected = useCallback((userInfo) => {
-    setUsers((prev) => [
-      {
-        id: userInfo.id,
-        name: userInfo.name,
-        picture: userInfo.picture,
-        handRaised: userInfo.handRaised,
-      },
-      ...prev,
-    ]);
-  }, []);
+  const userConnected = useCallback(
+    ({ id, name, picture, handRaised }) => {
+      const exists = users.find((userInfo) => userInfo.id === id);
+      console.log(exists);
+      if (!exists) {
+        setUsers((prev) => [
+          {
+            id,
+            name,
+            picture,
+            handRaised,
+          },
+          ...prev,
+        ]);
+      }
+    },
+    [users]
+  );
 
   const userDisconnected = useCallback(
     ({ id }) => {
       let disconnectedUserId;
+
+      console.log(id);
 
       users.forEach((cur, i) => {
         if (cur.id === id) {

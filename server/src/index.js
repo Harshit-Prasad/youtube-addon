@@ -3,6 +3,7 @@ import { createServer } from "node:http";
 import dotenv from "dotenv";
 import cors from "cors";
 import { Server } from "socket.io";
+import asyncHandler from "express-async-handler";
 
 import connectDB from "./config/db.js";
 import userRoute from "./routes/user.route.js";
@@ -52,9 +53,14 @@ server.listen(PORT, function () {
 
 // Socket io event emmitters
 
+// Users in different rooms
+const usersInRooms = new Map();
+
+// Socket-User and User-Socket mapping
 const userIDToSocketID = new Map();
 const socketIDToUserID = new Map();
-const usersInRooms = new Map();
+
+// Recent Interactions
 const recentInteractionsInRooms = new Map();
 const recentInteractions = new Map();
 
@@ -85,6 +91,7 @@ io.on("connection", (socket) => {
 
   socket.on("admin-connected", ({ userInfo, streamId }) => {
     socketIDToUserID.set(socket.id, { ...userInfo, streamId });
+    userIDToSocketID.set(userInfo.id, socket.id);
     socket.join(userInfo.id);
     socket.join(streamId);
     socket.broadcast.to(streamId).emit("admin-connected");
@@ -92,9 +99,14 @@ io.on("connection", (socket) => {
 
   socket.on("hand-raised", ({ id, adminId, handRaised }) => {
     const userInfo = socketIDToUserID.get(socket.id);
-    userInfo.handRaised = handRaised;
-    socketIDToUserID.set(socket.id, userInfo);
-    io.to(adminId).emit("hand-raised", { id, handRaised });
+
+    const socketID = userIDToSocketID.get(userInfo.id);
+
+    if (socketID === socket.id) {
+      userInfo.handRaised = handRaised;
+      socketIDToUserID.set(socket.id, userInfo);
+      io.to(adminId).emit("hand-raised", { id, handRaised });
+    }
   });
 
   socket.on("disconnect", () => {
@@ -109,6 +121,7 @@ io.on("connection", (socket) => {
       io.to(userInfo.adminId).emit("user-disconnected", { id: userInfo.id });
       usersInRooms.get(userInfo.streamId)?.delete(socket.id);
       socketIDToUserID.delete(socket.id);
+      // userIDToSocketID.delete(socketIDToUserID(userInfo.id));
     }
   });
 
@@ -126,23 +139,18 @@ io.on("connection", (socket) => {
   // WebRTC
 
   socket.on("call-peer", ({ from, to, offer }) => {
-    io.to(to).emit("incoming-call", { from, offer });
+    const socketID = userIDToSocketID.get(to);
+    io.to(socketID).emit("incoming-call", { from, offer });
   });
 
   socket.on("call-accepted", ({ answer, to, from }) => {
-    io.to(to).emit("call-accepted", { from, answer });
+    const socketID = userIDToSocketID.get(to);
+    io.to(socketID).emit("call-accepted", { from, answer });
   });
 
-  // socket.on("nego-needed", ({ offer, to, from }) => {
-  //   io.to(to).emit("nego-incoming", { from, offer });
-  // });
-
-  // socket.on("nego-done", ({ answer, to, from }) => {
-  //   io.to(to).emit("nego-final", { from, answer });
-  // });
-
   socket.on("add-ice-candidate", ({ to, from, ic }) => {
-    io.to(to).emit("add-ice-candidate", { from, ic });
+    const socketID = userIDToSocketID.get(to);
+    io.to(socketID).emit("add-ice-candidate", { from, ic });
   });
 
   socket.on("admin-end-call", ({ to, from }) => {
@@ -161,7 +169,7 @@ io.on("connection", (socket) => {
       recentInteractions.set(userInfo.streamId, room);
     }
 
-    io.to(to).emit("admin-ended-call", { from });
+    io.to(userSocketID).emit("admin-ended-call", { from });
   });
 
   socket.on("user-end-call", ({ to, from }) => {
@@ -183,33 +191,40 @@ io.on("connection", (socket) => {
   });
 });
 
-app.get("/api/audience-list/:streamId", (req, res) => {
-  const streamId = req.params.streamId;
-  const streamAudience = usersInRooms.get(streamId);
-  const streamRecentInteractions = recentInteractions.get(streamId);
-  let audienceList = [];
-  let recentInteractionsList = [];
+app.get(
+  "/api/audience-list/:streamId",
+  asyncHandler((req, res) => {
+    const streamId = req.params.streamId;
+    const streamAudience = usersInRooms.get(streamId);
+    const streamRecentInteractions = recentInteractions.get(streamId);
+    let audienceList = [];
+    let recentInteractionsList = [];
 
-  if (streamAudience) {
-    const audience = streamAudience.values();
+    if (streamAudience) {
+      const audience = streamAudience.values();
 
-    for (let cur of audience) {
-      const { id, name, handRaised, picture } = socketIDToUserID.get(cur);
-      audienceList.push({ id, name, handRaised, picture });
+      for (let cur of audience) {
+        const { id, name, handRaised, picture } = socketIDToUserID.get(cur);
+        const socketID = userIDToSocketID.get(id);
+
+        if (socketID) {
+          audienceList.push({ id, name, handRaised, picture });
+        }
+      }
     }
-  }
 
-  if (streamRecentInteractions) {
-    const historyAudience = recentInteractionsInRooms.get(streamId);
+    if (streamRecentInteractions) {
+      const historyAudience = recentInteractionsInRooms.get(streamId);
 
-    for (let cur of streamRecentInteractions) {
-      const { id, name, handRaised, picture } = historyAudience.get(cur);
-      recentInteractionsList.push({ id, name, handRaised, picture });
+      for (let cur of streamRecentInteractions) {
+        const { id, name, handRaised, picture } = historyAudience.get(cur);
+        recentInteractionsList.push({ id, name, handRaised, picture });
+      }
     }
-  }
 
-  return res.json({ audienceList, recentInteractionsList });
-});
+    return res.json({ audienceList, recentInteractionsList });
+  })
+);
 
 // Error
 app.use(notFound);
