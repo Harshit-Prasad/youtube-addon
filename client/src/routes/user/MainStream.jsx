@@ -95,6 +95,10 @@ export default function MainStream() {
 
   const handleIncomingCall = useCallback(
     async ({ from, offer }) => {
+      toast.error('Please mute the video for better calling experience.', {
+        icon: '⚠️',
+        duration: 5000,
+      })
       setSelectedAdmin(from);
       webRTCPeer.peer.setRemoteDescription(offer);
     },
