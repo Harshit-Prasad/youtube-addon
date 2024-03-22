@@ -9,7 +9,6 @@ export default function LiveStream({ streamId }) {
         src={`https://www.youtube.com/embed/${streamId}`}
         title="YouTube video player"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowFullScreen="false"
       ></iframe>
     </div>
   );
