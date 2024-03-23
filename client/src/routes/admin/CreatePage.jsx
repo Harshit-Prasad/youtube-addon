@@ -24,8 +24,9 @@ export default function CreatePage() {
     try {
       setGetStreamsLoading(true);
       const url = new URL(videoLink);
-      const searchParam = url.searchParams.get("v");
-      const streamId = `${userInfo.id}:${searchParam}`;
+      const segments = url.pathname.split("/");
+      const youtubeStreamId = segments[segments.length - 1];
+      const streamId = `${userInfo.id}:${youtubeStreamId}`;
 
       const addedStream = await axiosProtectedRoute.post(`/api/stream/`, {
         url: streamId,
