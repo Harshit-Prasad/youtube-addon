@@ -20,7 +20,7 @@ export default function PublicStream() {
   }
 
   return (
-    <div className="p-5">
+    <div className="pt-5">
       <Link to={"/dashboard"} className="button text-primary">
         Go back
       </Link>
