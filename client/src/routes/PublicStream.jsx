@@ -21,9 +21,9 @@ export default function PublicStream() {
 
   return (
     <div className="pt-5">
-      <Link to={"/dashboard"} className="button text-primary">
+      {/* <Link to={"/dashboard"} className="button text-primary">
         Go back
-      </Link>
+      </Link> */}
       <LiveStream streamId={streamId} />
       <div className="flex justify-center items-center gap-5 my-5">
         <button

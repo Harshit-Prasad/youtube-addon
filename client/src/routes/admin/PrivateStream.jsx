@@ -22,9 +22,9 @@ export default function PrivateStream() {
 
   return (
     <div className="bg-slate-300 p-5">
-      <Link to={"/dashboard"} className="button text-primary">
+      {/* <Link to={"/dashboard"} className="button text-primary">
         Go back
-      </Link>
+      </Link> */}
       <LiveStream streamId={streamId} />
       <div className="flex justify-center items-center gap-5 my-5">
         <button onClick={handleCopyLink} className="button text-primary">

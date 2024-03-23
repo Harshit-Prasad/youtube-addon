@@ -174,7 +174,7 @@ export default function AdminRAH() {
         track.stop();
       });
 
-      webRTCPeer.peer.close();
+      webRTCPeer?.peer.close();
       setRemoteStream(null);
       setLocalStream(null);
       setCallStarted(false);

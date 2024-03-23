@@ -95,10 +95,10 @@ export default function MainStream() {
 
   const handleIncomingCall = useCallback(
     async ({ from, offer }) => {
-      toast.error('Please mute the video for better calling experience.', {
-        icon: '⚠️',
+      toast.error("Please mute the video for better calling experience.", {
+        icon: "⚠️",
         duration: 5000,
-      })
+      });
       setSelectedAdmin(from);
       webRTCPeer.peer.setRemoteDescription(offer);
     },
@@ -170,9 +170,9 @@ export default function MainStream() {
   );
 
   const handleCallEnded = useCallback(() => {
-    const tracks = localStream.getTracks();
-    tracks.forEach((track) => {
-      track.stop();
+    const tracks = localStream?.getTracks();
+    tracks?.forEach((track) => {
+      track?.stop();
     });
     setRemoteStream(null);
     setLocalStream(null);
@@ -180,6 +180,7 @@ export default function MainStream() {
     setCallStarted(false);
     setToggleRaiseHand(false);
     setSelectedAdmin(null);
+
     setWebRTCPeer(new NewWebRTCPeer());
   }, [webRTCPeer, localStream]);
 
@@ -230,13 +231,6 @@ export default function MainStream() {
 
     webRTCPeer.peer.addEventListener("track", handleIncomingTracks);
 
-    // socket.on("nego-incoming", handleNegotiationIncoming);
-    // socket.on("nego-final", handleNegotiationFinal);
-    // webRTCPeer.peer.addEventListener(
-    //   "negotiationneeded",
-    //   handleNegotiationNeeded
-    // );
-
     return () => {
       socket.off("incoming-call", handleIncomingCall);
       socket.off("admin-ended-call", handleCallEnded);
@@ -279,9 +273,9 @@ export default function MainStream() {
   }, [muted, localStream]);
 
   const handleEndCall = useCallback(() => {
-    const tracks = localStream.getTracks();
-    tracks.forEach((track) => {
-      track.stop();
+    const tracks = localStream?.getTracks();
+    tracks?.forEach((track) => {
+      track?.stop();
     });
 
     setRemoteStream(null);
@@ -297,9 +291,9 @@ export default function MainStream() {
 
   return (
     <>
-      <Link to="/welcome" className="button text-primary">
+      {/* <Link to="/welcome" className="button text-primary">
         To Home
-      </Link>
+      </Link> */}
       <LiveStream streamId={streamId} />
       <button
         onClick={handleRaiseHand}
@@ -315,9 +309,17 @@ export default function MainStream() {
         </span>
       </button>
       {selectedAdmin && (
-        <button onClick={handleAnswerCall} className="button text-primary">
-          Start Call
-        </button>
+        <>
+          <button onClick={handleAnswerCall} className="button text-primary">
+            Accept Call
+          </button>
+          <button
+            onClick={handleEndCall}
+            className="media-button bg-red-700 hover:bg-red-500"
+          >
+            Reject Call
+          </button>
+        </>
       )}
 
       {localStream && <MediaPlayer muted={true} url={localStream} />}
