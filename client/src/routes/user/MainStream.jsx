@@ -8,6 +8,8 @@ import LiveChat from "../../components/LiveChat";
 import { Hand, Mic, MicOff, X } from "lucide-react";
 import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
 import MediaPlayer from "../../components/MediaPlayer";
+import { createPortal } from "react-dom";
+import Popup from "../../components/Popup";
 // import AmountSlider from "../../components/AmountSlider";
 
 export default function MainStream() {
@@ -26,6 +28,8 @@ export default function MainStream() {
   const [remoteStream, setRemoteStream] = useState();
   const [callStarted, setCallStarted] = useState(false);
   const [muted, setMuted] = useState(false);
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const userConnected = useCallback(() => {
     socket.emit("user-connected", {
@@ -101,6 +105,7 @@ export default function MainStream() {
       });
       setSelectedAdmin(from);
       webRTCPeer.peer.setRemoteDescription(offer);
+      setIsOpen(true);
     },
     [webRTCPeer]
   );
@@ -127,38 +132,8 @@ export default function MainStream() {
     });
 
     setCallStarted(true);
+    setIsOpen(false);
   }, [webRTCPeer, socket, userInfo.id, selectedAdmin]);
-
-  // const handleNegotiationNeeded = useCallback(async () => {
-  //   const offer = await webRTCPeer.getOffer();
-
-  //   console.log("negotiation needed");
-
-  //   socket.emit("nego-needed", {
-  //     offer,
-  //     to: selectedAdmin,
-  //     from: userInfo.id,
-  //   });
-  // }, [webRTCPeer, selectedAdmin, socket, userInfo.id]);
-
-  // const handleNegotiationIncoming = useCallback(
-  //   async ({ from, offer }) => {
-  //     console.log("negotiation incoming");
-
-  //     const answer = await webRTCPeer.getAnswer(offer);
-  //     socket.emit("nego-done", { to: from, answer, from: userInfo.id });
-  //   },
-  //   [webRTCPeer, socket, userInfo.id]
-  // );
-
-  // const handleNegotiationFinal = useCallback(
-  //   async ({ answer }) => {
-  //     console.log("negotiation final");
-
-  //     await webRTCPeer.setLocalDescription(answer);
-  //   },
-  //   [webRTCPeer]
-  // );
 
   const handleIncomingTracks = useCallback(
     (e) => {
@@ -281,6 +256,7 @@ export default function MainStream() {
     setRemoteStream(null);
     setLocalStream(null);
     setCallStarted(false);
+    setIsOpen(false);
     webRTCPeer.peer.close();
     setToggleRaiseHand(false);
     socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin });
@@ -296,6 +272,7 @@ export default function MainStream() {
       </Link> */}
       <LiveStream streamId={streamId} />
       <button
+        disabled={callStarted}
         onClick={handleRaiseHand}
         className="button text-primary flex items-center justify-center gap-3"
       >
@@ -308,19 +285,28 @@ export default function MainStream() {
           <Hand />
         </span>
       </button>
-      {selectedAdmin && (
-        <>
-          <button onClick={handleAnswerCall} className="button text-primary">
-            Accept Call
-          </button>
-          <button
-            onClick={handleEndCall}
-            className="media-button bg-red-700 hover:bg-red-500"
-          >
-            Reject Call
-          </button>
-        </>
-      )}
+      {selectedAdmin &&
+        createPortal(
+          isOpen && (
+            <Popup>
+              <div className="flex justify-between items-center py-6">
+                <button
+                  onClick={handleAnswerCall}
+                  className="button text-primary"
+                >
+                  Accept Call
+                </button>
+                <button
+                  onClick={handleEndCall}
+                  className="media-button bg-red-700 hover:bg-red-500"
+                >
+                  Reject Call
+                </button>
+              </div>
+            </Popup>
+          ),
+          document.getElementById("incoming-call")
+        )}
 
       {localStream && <MediaPlayer muted={true} url={localStream} />}
       {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
