@@ -12,7 +12,7 @@
   }
 
   .bg-main {
-    @apply bg-[#0f0f0f];
+    @apply bg-[#0f0f0f] h-dvh w-full flex flex-col sm:flex-row gap-4 items-start justify-between;
   }
 
   .text-primary {

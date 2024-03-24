@@ -5,11 +5,12 @@ import { useUserInfoStore } from "../../services/store";
 import toast from "react-hot-toast";
 import LiveStream from "../../components/LiveStream";
 import LiveChat from "../../components/LiveChat";
-import { Hand, Mic, MicOff, X } from "lucide-react";
+import { Hand, Mic, MicOff, X, Share2 } from "lucide-react";
 import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
 import MediaPlayer from "../../components/MediaPlayer";
 import { createPortal } from "react-dom";
 import Popup from "../../components/Popup";
+import StreamContainer from "../../components/StreamContainer";
 // import AmountSlider from "../../components/AmountSlider";
 
 export default function MainStream() {
@@ -30,6 +31,17 @@ export default function MainStream() {
   const [muted, setMuted] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleShareLink = useCallback(async (e) => {
+    try {
+      await navigator.clipboard.writeText(
+        `${import.meta.env.VITE_CLIENT_URL}/main-stream/${params.roomId}`
+      );
+      toast.success("Link Copied");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }, []);
 
   const userConnected = useCallback(() => {
     socket.emit("user-connected", {
@@ -266,69 +278,83 @@ export default function MainStream() {
   }, [selectedAdmin, socket, userInfo.id, webRTCPeer.peer, localStream]);
 
   return (
-    <>
+    <StreamContainer>
       {/* <Link to="/welcome" className="button text-primary">
         To Home
       </Link> */}
-      <LiveStream streamId={streamId} />
-      <button
-        disabled={callStarted}
-        onClick={handleRaiseHand}
-        className="button text-primary flex items-center justify-center gap-3"
-      >
-        Hand Raised
-        <span
-          className={`flex justify-center items-center p-1 rounded-full border-2 border-solid ${
-            toggleRaiseHand ? "border-white" : "border-transparent"
-          }`}
-        >
-          <Hand />
-        </span>
-      </button>
-      {selectedAdmin &&
-        createPortal(
-          isOpen && (
-            <Popup>
-              <div className="flex justify-between items-center py-6">
-                <button
-                  onClick={handleAnswerCall}
-                  className="button text-primary"
-                >
-                  Accept Call
-                </button>
-                <button
-                  onClick={handleEndCall}
-                  className="media-button bg-red-700 hover:bg-red-500"
-                >
-                  Reject Call
-                </button>
-              </div>
-            </Popup>
-          ),
-          document.getElementById("incoming-call")
-        )}
+      <div className="w-full flex flex-col gap-4">
+        <LiveStream streamId={streamId} />
+        <div className="flex justify-evenly items-center gap-4">
+          <button
+            disabled={callStarted}
+            onClick={handleRaiseHand}
+            className="button text-primary flex items-center justify-center gap-3"
+          >
+            Hand Raised
+            <span
+              className={`flex justify-center items-center p-1 rounded-full border-2 border-solid ${
+                toggleRaiseHand ? "border-white" : "border-transparent"
+              }`}
+            >
+              <Hand />
+            </span>
+          </button>
+          {callStarted && (
+            <>
+              <button
+                onClick={() => {
+                  setMuted((prev) => !prev);
+                }}
+                className="media-button text-primary rounded-full"
+              >
+                {muted ? <MicOff /> : <Mic />}
+              </button>
+              <button
+                onClick={handleEndCall}
+                className="media-button bg-red-700 hover:bg-red-500 rounded-full"
+              >
+                <X />{" "}
+              </button>
+            </>
+          )}
+          <button
+            className="button text-primary flex items-center justify-center gap-3"
+            onClick={handleShareLink}
+          >
+            Share
+            <span className="flex justify-center items-center p-1 rounded-full">
+              <Share2 />
+            </span>
+          </button>
+        </div>
+        {selectedAdmin &&
+          createPortal(
+            isOpen && (
+              <Popup>
+                <div className="flex justify-between items-center py-6">
+                  <button
+                    onClick={handleAnswerCall}
+                    className="button text-primary"
+                  >
+                    Accept Call
+                  </button>
+                  <button
+                    onClick={handleEndCall}
+                    className="media-button bg-red-700 hover:bg-red-500"
+                  >
+                    Reject Call
+                  </button>
+                </div>
+              </Popup>
+            ),
+            document.getElementById("incoming-call")
+          )}
+      </div>
 
       {localStream && <MediaPlayer muted={true} url={localStream} />}
       {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
-      {callStarted && (
-        <>
-          <button
-            onClick={() => {
-              setMuted((prev) => !prev);
-            }}
-            className="media-button text-primary rounded-full"
-          >
-            {muted ? <MicOff /> : <Mic />}
-          </button>
-          <button
-            onClick={handleEndCall}
-            className="media-button bg-red-700 hover:bg-red-500 rounded-full"
-          >
-            <X />{" "}
-          </button>
-        </>
-      )}
+
       <LiveChat streamId={streamId} />
-    </>
+    </StreamContainer>
   );
 }

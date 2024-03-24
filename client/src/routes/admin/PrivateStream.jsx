@@ -21,7 +21,7 @@ export default function PrivateStream() {
   }
 
   return (
-    <div className="bg-slate-300">
+    <div className="bg-main">
       {/* <Link to={"/dashboard"} className="button text-primary">
         Go back
       </Link> */}
