@@ -4,11 +4,11 @@
 
 @layer components {
   .button {
-    @apply inline-block text-white py-2 px-4 rounded-lg bg-[#272727] hover:bg-[#767676];
+    @apply inline-block text-white py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out bg-[#272727] hover:bg-[#767676];
   }
 
   .media-button {
-    @apply inline-block text-white py-2 px-2 rounded-lg bg-[#272727] hover:bg-[#767676];
+    @apply inline-block text-white py-2 px-2 rounded-full bg-[#272727] hover:bg-[#767676];
   }
 
   .bg-main {
