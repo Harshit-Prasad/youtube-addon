@@ -282,7 +282,7 @@ export default function MainStream() {
       {/* <Link to="/welcome" className="button text-primary">
         To Home
       </Link> */}
-      <div className="w-full flex flex-col gap-4">
+      <div className="w-full h-full flex flex-col gap-4">
         <LiveStream streamId={streamId} />
         <div className="flex justify-evenly items-center gap-4">
           <button
