@@ -11,6 +11,7 @@ import MediaPlayer from "../../components/MediaPlayer";
 import { createPortal } from "react-dom";
 import Popup from "../../components/Popup";
 import StreamContainer from "../../components/StreamContainer";
+import UserNavbar from "../../components/navbars/UserNavbar";
 // import AmountSlider from "../../components/AmountSlider";
 
 export default function MainStream() {
@@ -279,54 +280,55 @@ export default function MainStream() {
 
   return (
     <StreamContainer>
-      {/* <Link to="/welcome" className="button text-primary">
-        To Home
-      </Link> */}
-      <div className="w-full h-full flex flex-col gap-4">
-        <LiveStream streamId={streamId} />
-        <div className="flex justify-evenly items-center gap-4">
-          <button
-            disabled={callStarted}
-            onClick={handleRaiseHand}
-            className="button text-primary flex items-center justify-center gap-3"
-          >
-            Hand Raised
-            <span
-              className={`flex justify-center items-center p-1 rounded-full border-2 border-solid ${
-                toggleRaiseHand ? "border-white" : "border-transparent"
-              }`}
+      <UserNavbar />
+      <div className="flex-grow stream-layout bg-[#0f0f0f] flex flex-col">
+        <div className="flex flex-col gap-4 md:p-4">
+          <LiveStream streamId={streamId} />
+          <div className="flex justify-evenly items-center gap-4">
+            <button
+              disabled={callStarted}
+              onClick={handleRaiseHand}
+              className="button text-primary flex items-center justify-center gap-3"
             >
-              <Hand />
-            </span>
-          </button>
-          {callStarted && (
-            <>
-              <button
-                onClick={() => {
-                  setMuted((prev) => !prev);
-                }}
-                className="media-button text-primary rounded-full"
+              Hand Raised
+              <span
+                className={`flex justify-center items-center p-1 rounded-full border-2 border-solid ${
+                  toggleRaiseHand ? "border-white" : "border-transparent"
+                }`}
               >
-                {muted ? <MicOff /> : <Mic />}
-              </button>
-              <button
-                onClick={handleEndCall}
-                className="media-button bg-red-700 hover:bg-red-500 rounded-full"
-              >
-                <X />{" "}
-              </button>
-            </>
-          )}
-          <button
-            className="button text-primary flex items-center justify-center gap-3"
-            onClick={handleShareLink}
-          >
-            Share
-            <span className="flex justify-center items-center p-1 rounded-full">
-              <Share2 />
-            </span>
-          </button>
+                <Hand />
+              </span>
+            </button>
+            {callStarted && (
+              <>
+                <button
+                  onClick={() => {
+                    setMuted((prev) => !prev);
+                  }}
+                  className="media-button text-primary rounded-full"
+                >
+                  {muted ? <MicOff /> : <Mic />}
+                </button>
+                <button
+                  onClick={handleEndCall}
+                  className="media-button bg-red-700 hover:bg-red-500 rounded-full"
+                >
+                  <X />{" "}
+                </button>
+              </>
+            )}
+            <button
+              className="button text-primary flex items-center justify-center gap-3"
+              onClick={handleShareLink}
+            >
+              Share
+              <span className="flex justify-center items-center p-1 rounded-full">
+                <Share2 />
+              </span>
+            </button>
+          </div>
         </div>
+
         {selectedAdmin &&
           createPortal(
             isOpen && (
@@ -349,12 +351,10 @@ export default function MainStream() {
             ),
             document.getElementById("incoming-call")
           )}
+        {localStream && <MediaPlayer muted={true} url={localStream} />}
+        {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
+        <LiveChat streamId={streamId} />
       </div>
-
-      {localStream && <MediaPlayer muted={true} url={localStream} />}
-      {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
-
-      <LiveChat streamId={streamId} />
     </StreamContainer>
   );
 }

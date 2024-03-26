@@ -1,5 +1,5 @@
 import React from "react";
 
 export default function StreamContainer({ children }) {
-  return <main className="bg-main">{children}</main>;
+  return <main className="h-dvh bg-[#0f0f0f] flex flex-col">{children}</main>;
 }

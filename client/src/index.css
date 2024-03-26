@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@media (min-width: 768px) {
+  .stream-layout {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: 1fr;
+  }
+}
+
 @layer components {
   .button {
     @apply inline-block text-white py-2 px-4 rounded-lg transition-colors duration-300 ease-in-out bg-[#272727] hover:bg-[#767676];
