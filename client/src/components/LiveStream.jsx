@@ -2,7 +2,7 @@ import React from "react";
 
 export default function LiveStream({ streamId }) {
   return (
-    <div className="aspect-video md:aspect-auto w-full md:mb-4 flex-1 relative">
+    <div className="w-full h-[80%] relative">
       <iframe
         width="100%"
         height="100%"

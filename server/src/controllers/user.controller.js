@@ -160,7 +160,7 @@ const refreshToken = asyncHandler(async (req, res) => {
     process.env.ACCESS_TOKEN_SECRET
   );
 
-  const userData = await User.findById(id);
+  const userData = await User.findOne({ _id: id });
 
   res.json({
     auth_tokens: {
