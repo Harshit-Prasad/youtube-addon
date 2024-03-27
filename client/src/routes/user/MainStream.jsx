@@ -282,9 +282,9 @@ export default function MainStream() {
     <StreamContainer>
       <UserNavbar />
       <div className="flex-grow stream-layout bg-[#0f0f0f] flex flex-col">
-        <div className="flex flex-col gap-2 md:p-4">
+        <div className="flex flex-col md:p-4">
           <LiveStream streamId={streamId} />
-          <div className="flex justify-evenly items-center gap-2 md:gap-4">
+          <div className="flex justify-evenly items-center p-2 md:gap-4 bg-[url('../../../public/stream-bg.jpg')]">
             <button
               disabled={callStarted}
               onClick={handleRaiseHand}
