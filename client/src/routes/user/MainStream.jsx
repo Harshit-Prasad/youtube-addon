@@ -290,7 +290,7 @@ export default function MainStream() {
               onClick={handleRaiseHand}
               className="button text-primary flex items-center justify-center gap-3"
             >
-              <span className="hidden md:inline-block">Hand Raised</span>
+              <span>{toggleRaiseHand ? "Hand Raised" : "Raise a hand"}</span>
               <span
                 className={`flex justify-center items-center p-1 rounded-full`}
               >
@@ -328,7 +328,7 @@ export default function MainStream() {
               className="button text-primary flex items-center justify-center gap-3"
               onClick={handleShareLink}
             >
-              <span className="hidden md:inline-block">Share</span>
+              <span>Share</span>
               <span className="flex justify-center items-center p-1 rounded-full">
                 <Share2 className="h-[24px] w-[24px] md:h-[24px] md:w-[24px]" />
               </span>
