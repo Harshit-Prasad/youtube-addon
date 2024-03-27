@@ -292,11 +292,18 @@ export default function MainStream() {
             >
               <span className="hidden md:inline-block">Hand Raised</span>
               <span
-                className={`flex justify-center items-center p-1 rounded-full border-2 border-solid ${
-                  toggleRaiseHand ? "border-white" : "border-transparent"
-                }`}
+                className={`flex justify-center items-center p-1 rounded-full`}
               >
-                <Hand />
+                <Hand
+                  style={{
+                    filter: toggleRaiseHand
+                      ? "drop-shadow(1px 1px 2px rgb(33, 111, 108))"
+                      : "none",
+                  }}
+                  className="h-[24px] w-[24px] md:h-[24px] md:w-[24px]"
+                  strokeWidth={2}
+                  color={toggleRaiseHand ? "rgba(159, 248, 245)" : "white"}
+                />
               </span>
             </button>
             {callStarted && (
@@ -323,7 +330,7 @@ export default function MainStream() {
             >
               <span className="hidden md:inline-block">Share</span>
               <span className="flex justify-center items-center p-1 rounded-full">
-                <Share2 />
+                <Share2 className="h-[24px] w-[24px] md:h-[24px] md:w-[24px]" />
               </span>
             </button>
           </div>
