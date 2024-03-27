@@ -332,7 +332,7 @@ export default function MainStream() {
         {selectedAdmin &&
           createPortal(
             isOpen && (
-              <Popup>
+              <Popup closeBtn={false}>
                 <div className="flex justify-between items-center py-6">
                   <button
                     onClick={handleAnswerCall}

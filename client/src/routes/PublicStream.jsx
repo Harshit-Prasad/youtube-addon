@@ -37,7 +37,7 @@ export default function PublicStream() {
       </div>
       {createPortal(
         isOpen && (
-          <Popup setIsOpen={setIsOpen}>
+          <Popup setIsOpen={setIsOpen} closeBtn={true}>
             <AuthTabs pathname={location.state.pathname} />
           </Popup>
         ),
