@@ -24,9 +24,16 @@ export default function CreatePage() {
     try {
       setGetStreamsLoading(true);
       const url = new URL(videoLink);
-      const segments = url.pathname.split("/");
-      const youtubeStreamId = segments[segments.length - 1];
-      const streamId = `${userInfo.id}:${youtubeStreamId}`;
+      const idFromURLBar = url.searchParams.get("v");
+      let streamId;
+
+      if (idFromURLBar) {
+        streamId = `${userInfo.id}:${idFromURLBar}`;
+      } else {
+        const segments = url.pathname.split("/");
+        const youtubeStreamId = segments[segments.length - 1];
+        streamId = `${userInfo.id}:${youtubeStreamId}`;
+      }
 
       const addedStream = await axiosProtectedRoute.post(`/api/stream/`, {
         url: streamId,
