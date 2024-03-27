@@ -1,6 +1,6 @@
 export default function LiveChat({ streamId }) {
   return (
-    <div className="md:p-4 md:ps-0 mt-4 md:mt-0 w-full flex-grow">
+    <div className="md:p-4 md:ps-0 mt-2 md:mt-0 w-full flex-grow">
       <iframe
         width="100%"
         height="100%"

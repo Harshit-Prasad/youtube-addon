@@ -282,15 +282,15 @@ export default function MainStream() {
     <StreamContainer>
       <UserNavbar />
       <div className="flex-grow stream-layout bg-[#0f0f0f] flex flex-col">
-        <div className="flex flex-col gap-4 md:p-4">
+        <div className="flex flex-col gap-2 md:p-4">
           <LiveStream streamId={streamId} />
-          <div className="flex justify-evenly items-center gap-4">
+          <div className="flex justify-evenly items-center gap-2 md:gap-4">
             <button
               disabled={callStarted}
               onClick={handleRaiseHand}
               className="button text-primary flex items-center justify-center gap-3"
             >
-              Hand Raised
+              <span className="hidden md:inline-block">Hand Raised</span>
               <span
                 className={`flex justify-center items-center p-1 rounded-full border-2 border-solid ${
                   toggleRaiseHand ? "border-white" : "border-transparent"
@@ -313,7 +313,7 @@ export default function MainStream() {
                   onClick={handleEndCall}
                   className="media-button bg-red-700 hover:bg-red-500 rounded-full"
                 >
-                  <X />{" "}
+                  <X />
                 </button>
               </>
             )}
@@ -321,7 +321,7 @@ export default function MainStream() {
               className="button text-primary flex items-center justify-center gap-3"
               onClick={handleShareLink}
             >
-              Share
+              <span className="hidden md:inline-block">Share</span>
               <span className="flex justify-center items-center p-1 rounded-full">
                 <Share2 />
               </span>
