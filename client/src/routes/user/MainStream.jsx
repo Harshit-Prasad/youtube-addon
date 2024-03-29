@@ -284,7 +284,7 @@ export default function MainStream() {
       <div className="flex-grow stream-layout bg-[#0f0f0f] flex flex-col">
         <div className="flex flex-col md:p-4">
           <LiveStream streamId={streamId} />
-          <div className="flex justify-evenly items-center p-2 md:gap-4 bg-[url('../../assets/stream-bg.jpg')]">
+          <div className="flex justify-evenly items-center p-2 md:gap-4 bg-gradient-to-tl from-[#332f32] to-[#676c7f]">
             <button
               disabled={callStarted}
               onClick={handleRaiseHand}
