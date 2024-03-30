@@ -20,7 +20,19 @@
   }
 
   .bg-main {
-    @apply bg-[#0f0f0f] h-dvh w-full flex flex-col items-center md:flex-row gap-4 md:items-start justify-between;
+    @apply h-dvh bg-[#0f0f0f] flex flex-col md:px-8;
+  }
+
+  .live-stream-container {
+    @apply flex-grow stream-layout bg-[#0f0f0f] flex flex-col;
+  }
+
+  .live-video-container {
+    @apply flex flex-col md:p-4;
+  }
+
+  .live-video__controls-container {
+    @apply flex justify-evenly items-center p-2 md:gap-4 bg-gradient-to-bl from-[#332f32] to-[#333334] md:bg-none;
   }
 
   .text-primary {

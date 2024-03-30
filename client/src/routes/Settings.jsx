@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import ToggleButton from "../components/ToggleButton";
+import ToggleButton from "../components/ui/ToggleButton";
 
 export default function Settings() {
   const navigate = useNavigate();

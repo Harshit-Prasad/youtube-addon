@@ -3,16 +3,14 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useSocket } from "../../providers/SocketProvider";
 import { useUserInfoStore } from "../../services/store";
 import toast from "react-hot-toast";
-import LiveStream from "../../components/LiveStream";
-import LiveChat from "../../components/LiveChat";
-import { Hand, Mic, MicOff, X, Share2 } from "lucide-react";
+import LiveStream from "../../components/live-stream/LiveStream";
+import LiveChat from "../../components/live-stream/LiveChat";
+import { Hand, Mic, MicOff, X, Share2, VolumeX } from "lucide-react";
 import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
-import MediaPlayer from "../../components/MediaPlayer";
+import MediaPlayer from "../../components/ui/MediaPlayer";
 import { createPortal } from "react-dom";
-import Popup from "../../components/Popup";
-import StreamContainer from "../../components/StreamContainer";
-import UserNavbar from "../../components/navbars/UserNavbar";
-// import AmountSlider from "../../components/AmountSlider";
+import Popup from "../../components/ui/Popup";
+import Header from "../../components/layout/Header";
 
 export default function MainStream() {
   const userInfo = useUserInfoStore((state) => state);
@@ -112,10 +110,6 @@ export default function MainStream() {
 
   const handleIncomingCall = useCallback(
     async ({ from, offer }) => {
-      toast.error("Please mute the video for better calling experience.", {
-        icon: "⚠️",
-        duration: 5000,
-      });
       setSelectedAdmin(from);
       webRTCPeer.peer.setRemoteDescription(offer);
       setIsOpen(true);
@@ -227,13 +221,6 @@ export default function MainStream() {
 
       webRTCPeer.peer.removeEventListener("icecandidate", handleICECandidate);
       webRTCPeer.peer.removeEventListener("track", handleIncomingTracks);
-
-      // socket.off("nego-incoming", handleNegotiationIncoming);
-      // socket.off("nego-final", handleNegotiationFinal);
-      // webRTCPeer.peer.removeEventListener(
-      //   "negotiationneeded",
-      //   handleNegotiationNeeded
-      // );
     };
   }, [
     webRTCPeer,
@@ -244,9 +231,6 @@ export default function MainStream() {
     handleICECandidate,
     handleStreamEnded,
     socket,
-    // handleNegotiationNeeded,
-    // handleNegotiationFinal,
-    // handleNegotiationIncoming,
   ]);
 
   // Media Controls
@@ -278,19 +262,26 @@ export default function MainStream() {
     setWebRTCPeer(new NewWebRTCPeer());
   }, [selectedAdmin, socket, userInfo.id, webRTCPeer.peer, localStream]);
 
+  useEffect(() => {
+    (async function () {
+      const userDevices = await enumerateDevices();
+      console.log(userDevices);
+    })();
+  }, []);
+
   return (
-    <StreamContainer>
-      <UserNavbar />
-      <div className="flex-grow stream-layout bg-[#0f0f0f] flex flex-col">
-        <div className="flex flex-col md:p-4">
+    <div className="bg-main">
+      <Header />
+      <div className="live-stream-container">
+        <div className="live-video-container">
           <LiveStream streamId={streamId} />
-          <div className="flex justify-evenly items-center p-2 md:gap-4 bg-gradient-to-tl from-[#332f32] to-[#676c7f]">
+          <div className="live-video__controls-container">
             <button
               disabled={callStarted}
               onClick={handleRaiseHand}
               className="button text-primary flex items-center justify-center gap-3"
             >
-              <span>{toggleRaiseHand ? "Hand Raised" : "Raise a hand"}</span>
+              <span>{toggleRaiseHand ? "Ask to call" : "Asked to call"}</span>
               <span
                 className={`flex justify-center items-center p-1 rounded-full`}
               >
@@ -318,6 +309,7 @@ export default function MainStream() {
                 </button>
                 <button
                   onClick={handleEndCall}
+                  disabled={true}
                   className="media-button bg-red-700 hover:bg-red-500 rounded-full"
                 >
                   <X />
@@ -340,6 +332,7 @@ export default function MainStream() {
           createPortal(
             isOpen && (
               <Popup closeBtn={false}>
+                <h1 className="text-2xl text-center">Youtuber calling...</h1>
                 <div className="flex justify-between items-center py-6">
                   <button
                     onClick={handleAnswerCall}
@@ -349,11 +342,20 @@ export default function MainStream() {
                   </button>
                   <button
                     onClick={handleEndCall}
-                    className="media-button bg-red-700 hover:bg-red-500"
+                    disabled={true}
+                    className="button bg-red-700 hover:bg-red-500"
                   >
                     Reject Call
                   </button>
                 </div>
+                <span>
+                  Please&ensp;
+                  <strong>
+                    mute <VolumeX className="inline-block" />
+                    &ensp;
+                  </strong>
+                  the youtube video for better calling experience.
+                </span>
               </Popup>
             ),
             document.getElementById("incoming-call")
@@ -362,6 +364,6 @@ export default function MainStream() {
         {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
         <LiveChat streamId={streamId} />
       </div>
-    </StreamContainer>
+    </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "../api/axios";
-import { useUserInfoStore } from "../services/store";
+import axios from "../../api/axios";
+import { useUserInfoStore } from "../../services/store";
 
 export default function ToggleButton() {
   const { role, setRole, id } = useUserInfoStore((state) => state);

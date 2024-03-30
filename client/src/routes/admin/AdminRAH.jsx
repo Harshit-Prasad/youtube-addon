@@ -4,7 +4,7 @@ import { useSocket } from "../../providers/SocketProvider";
 import { useUserInfoStore } from "../../services/store";
 import axios from "../../api/axios";
 import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
-import MediaPlayer from "../../components/MediaPlayer";
+import MediaPlayer from "../../components/ui/MediaPlayer";
 import { Mic, MicOff, X } from "lucide-react";
 
 export default function AdminRAH() {
