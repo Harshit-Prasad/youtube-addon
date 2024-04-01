@@ -1,24 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-    <style>
-      .popup {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    <div class="popup" id="auth-tab"></div>
-    <div class="popup" id="incoming-call"></div>
-    <div class="popup" id="profile-popup"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vite + React</title>
+  <style>
+    .popup {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 2;
+    }
+
+    .pointer-events-none {
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root"></div>
+  <div class="popup" id="auth-tab"></div>
+  <div class="popup" id="incoming-call"></div>
+  <div class="popup pointer-events-none" id="call-status"></div>
+  <div class="popup" id="profile-popup"></div>
+  <div class="popup" id="media-device-settings"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

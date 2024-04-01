@@ -11,6 +11,7 @@ import MediaPlayer from "../../components/ui/MediaPlayer";
 import { createPortal } from "react-dom";
 import Popup from "../../components/ui/Popup";
 import Header from "../../components/layout/Header";
+import MediaDevices from '../../components/ui/MediaDevices';
 
 export default function MainStream() {
   const userInfo = useUserInfoStore((state) => state);
@@ -30,6 +31,10 @@ export default function MainStream() {
   const [muted, setMuted] = useState(false);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [mediaDevicesModal, setMediaDevicesModal] = useState(true);
+  const [loadingMediaDevices, setLoadingMediaDevices] = useState(true);
+  const [mediaDevices, setMediaDevices] = useState([]);
+  const [selectedInputAudioDevice, setSelectedInputAudioDevice] = useState('default')
 
   const handleShareLink = useCallback(async (e) => {
     try {
@@ -118,9 +123,12 @@ export default function MainStream() {
   );
 
   const handleAnswerCall = useCallback(async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
       video: false,
-      audio: true,
+      audio: {
+        deviceId: selectedInputAudioDevice
+      },
     });
 
     setLocalStream(stream);
@@ -130,7 +138,6 @@ export default function MainStream() {
 
     const answer = await webRTCPeer.getAnswer();
 
-    console.log(answer.sdp);
 
     socket.emit("call-accepted", {
       answer,
@@ -140,11 +147,19 @@ export default function MainStream() {
 
     setCallStarted(true);
     setIsOpen(false);
-  }, [webRTCPeer, socket, userInfo.id, selectedAdmin]);
+    } catch (error) {
+      toast.error(
+        'Please grant microphone access in order to answer the call.', 
+        {icon: '⚠️', duration: 5000}
+      )
+      handleCallEnded()
+      setIsOpen(false);
+      socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin, type: 'permission-not-granted' });
+    }
+  }, [webRTCPeer, socket, userInfo.id, selectedAdmin, selectedInputAudioDevice]);
 
   const handleIncomingTracks = useCallback(
     (e) => {
-      console.log("tracks received", e);
       const [stream] = e.streams;
       setRemoteStream(stream);
     },
@@ -168,7 +183,6 @@ export default function MainStream() {
 
   const handleIncomingICECandidate = useCallback(
     ({ from, ic }) => {
-      console.log("ice candidates incoming");
       if (ic) {
         webRTCPeer.peer.addIceCandidate(ic);
       }
@@ -179,7 +193,6 @@ export default function MainStream() {
   const handleICECandidate = useCallback(
     (e) => {
       if (e.candidate) {
-        console.log("ice candidates sent", selectedAdmin);
         socket.emit("add-ice-candidate", {
           from: userInfo.id,
           to: selectedAdmin,
@@ -237,18 +250,19 @@ export default function MainStream() {
 
   useEffect(() => {
     if (!localStream) return;
-    console.log(localStream);
     const audioTrack = localStream
       .getTracks()
       .find((track) => track.kind === "audio");
     audioTrack.enabled = !muted;
   }, [muted, localStream]);
 
-  const handleEndCall = useCallback(() => {
+  const handleEndCall = useCallback((type = 'call-ended') => {
     const tracks = localStream?.getTracks();
     tracks?.forEach((track) => {
       track?.stop();
     });
+
+    socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin, type });
 
     setRemoteStream(null);
     setLocalStream(null);
@@ -256,114 +270,133 @@ export default function MainStream() {
     setIsOpen(false);
     webRTCPeer.peer.close();
     setToggleRaiseHand(false);
-    socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin });
-
+    console.log('-->');
+    
     setSelectedAdmin(null);
     setWebRTCPeer(new NewWebRTCPeer());
   }, [selectedAdmin, socket, userInfo.id, webRTCPeer.peer, localStream]);
 
   useEffect(() => {
     (async function () {
-      const userDevices = await enumerateDevices();
-      console.log(userDevices);
+      const userDevices = await navigator.mediaDevices.enumerateDevices()
+
+      setMediaDevices(userDevices)
+      setLoadingMediaDevices(false)
     })();
   }, []);
 
-  return (
-    <div className="bg-main">
-      <Header />
-      <div className="live-stream-container">
-        <div className="live-video-container">
-          <LiveStream streamId={streamId} />
-          <div className="live-video__controls-container">
-            <button
-              disabled={callStarted}
-              onClick={handleRaiseHand}
-              className="button text-primary flex items-center justify-center gap-3"
-            >
-              <span>{toggleRaiseHand ? "Ask to call" : "Asked to call"}</span>
-              <span
-                className={`flex justify-center items-center p-1 rounded-full`}
-              >
-                <Hand
-                  style={{
-                    filter: toggleRaiseHand
-                      ? "drop-shadow(1px 1px 2px rgb(33, 111, 108))"
-                      : "none",
-                  }}
-                  className="h-[24px] w-[24px] md:h-[24px] md:w-[24px]"
-                  strokeWidth={2}
-                  color={toggleRaiseHand ? "rgba(159, 248, 245)" : "white"}
-                />
-              </span>
-            </button>
-            {callStarted && (
-              <>
-                <button
-                  onClick={() => {
-                    setMuted((prev) => !prev);
-                  }}
-                  className="media-button text-primary rounded-full"
-                >
-                  {muted ? <MicOff /> : <Mic />}
-                </button>
-                <button
-                  onClick={handleEndCall}
-                  disabled={true}
-                  className="media-button bg-red-700 hover:bg-red-500 rounded-full"
-                >
-                  <X />
-                </button>
-              </>
-            )}
-            <button
-              className="button text-primary flex items-center justify-center gap-3"
-              onClick={handleShareLink}
-            >
-              <span>Share</span>
-              <span className="flex justify-center items-center p-1 rounded-full">
-                <Share2 className="h-[24px] w-[24px] md:h-[24px] md:w-[24px]" />
-              </span>
-            </button>
-          </div>
-        </div>
+  console.log(selectedInputAudioDevice);
 
-        {selectedAdmin &&
-          createPortal(
-            isOpen && (
-              <Popup closeBtn={false}>
-                <h1 className="text-2xl text-center">Youtuber calling...</h1>
-                <div className="flex justify-between items-center py-6">
+  return (
+    <>
+      <div className="bg-main">
+        <Header />
+        <div className="live-stream-container">
+          <div className="live-video-container">
+            <LiveStream streamId={streamId} />
+            <div className="live-video__controls-container">
+              <button
+                disabled={callStarted}
+                onClick={handleRaiseHand}
+                className="button text-primary flex items-center justify-center gap-3"
+              >
+                <span>{toggleRaiseHand ? "Asked to call" : "Ask to call"}</span>
+                <span
+                  className={`flex justify-center items-center p-1 rounded-full`}
+                >
+                  <Hand
+                    style={{
+                      filter: toggleRaiseHand
+                        ? "drop-shadow(1px 1px 2px rgb(33, 111, 108))"
+                        : "none",
+                    }}
+                    className="h-[24px] w-[24px] md:h-[24px] md:w-[24px]"
+                    strokeWidth={2}
+                    color={toggleRaiseHand ? "rgba(159, 248, 245)" : "white"}
+                  />
+                </span>
+              </button>
+              {callStarted && (
+                <>
                   <button
-                    onClick={handleAnswerCall}
-                    className="button text-primary"
+                    onClick={() => {
+                      setMuted((prev) => !prev);
+                    }}
+                    className="media-button text-primary rounded-full"
                   >
-                    Accept Call
+                    {muted ? <MicOff /> : <Mic />}
                   </button>
                   <button
                     onClick={handleEndCall}
                     disabled={true}
-                    className="button bg-red-700 hover:bg-red-500"
+                    className="media-button bg-red-700 hover:bg-red-500 rounded-full"
                   >
-                    Reject Call
+                    <X />
                   </button>
-                </div>
-                <span>
-                  Please&ensp;
-                  <strong>
-                    mute <VolumeX className="inline-block" />
-                    &ensp;
-                  </strong>
-                  the youtube video for better calling experience.
+                </>
+              )}
+              <button
+                className="button text-primary flex items-center justify-center gap-3"
+                onClick={handleShareLink}
+              >
+                <span>Share</span>
+                <span className="flex justify-center items-center p-1 rounded-full">
+                  <Share2 className="h-[24px] w-[24px] md:h-[24px] md:w-[24px]" />
                 </span>
-              </Popup>
-            ),
-            document.getElementById("incoming-call")
-          )}
-        {localStream && <MediaPlayer muted={true} url={localStream} />}
-        {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
-        <LiveChat streamId={streamId} />
+              </button>
+            </div>
+          </div>
+
+          {localStream && <MediaPlayer muted={true} url={localStream} />}
+          {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
+          <LiveChat streamId={streamId} />
+        </div>
       </div>
-    </div>
+      {selectedAdmin &&
+        createPortal(
+          isOpen && (
+            <Popup closeBtn={false}>
+              <h1 className="text-2xl text-center">Youtuber calling...</h1>
+              <div className="flex justify-between items-center py-6">
+                <button
+                  onClick={handleAnswerCall}
+                  className="button text-primary"
+                >
+                  Accept Call
+                </button>
+                <button
+                  onClick={() => {
+                    handleEndCall('call-rejected')
+                  }}
+                  className="button bg-red-700 hover:bg-red-500"
+                >
+                  Reject Call
+                </button>
+              </div>
+              <span>
+                Please&ensp;
+                <strong>
+                  mute <VolumeX className="inline-block" />
+                  &ensp;
+                </strong>
+                the youtube video for better calling experience.
+              </span>
+            </Popup>
+          ),
+          document.getElementById("incoming-call")
+        )}
+
+        { mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
+            {loadingMediaDevices ? <span>Loading...</span> : 
+              <MediaDevices 
+                setModalDisplay={setMediaDevicesModal}
+                setSelectedInputAudioDevice={setSelectedInputAudioDevice} 
+                mediaDevices={mediaDevices}
+              />
+            }
+          </Popup>, 
+          document.getElementById('media-device-settings'))
+        }
+    </>
   );
 }

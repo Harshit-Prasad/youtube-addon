@@ -6,6 +6,8 @@ import axios from "../../api/axios";
 import WebRTCPeer, { WebRTCPeer as NewWebRTCPeer } from "../../services/webRTC";
 import MediaPlayer from "../../components/ui/MediaPlayer";
 import { Mic, MicOff, X } from "lucide-react";
+import { createPortal } from 'react-dom';
+import toast from 'react-hot-toast';
 
 export default function AdminRAH() {
   const socket = useSocket();
@@ -17,6 +19,7 @@ export default function AdminRAH() {
   const [selectedUser, setSelectedUser] = useState(null);
 
   const [callStarted, setCallStarted] = useState(false);
+  const [callStatus, setCallStatus] = useState('')
   const [muted, setMuted] = useState(false);
 
   const [webRTCPeer, setWebRTCPeer] = useState(WebRTCPeer);
@@ -30,7 +33,6 @@ export default function AdminRAH() {
   const userConnected = useCallback(
     ({ id, name, picture, handRaised }) => {
       const exists = users.find((userInfo) => userInfo.id === id);
-      console.log(exists);
       if (!exists) {
         setUsers((prev) => [
           {
@@ -49,8 +51,6 @@ export default function AdminRAH() {
   const userDisconnected = useCallback(
     ({ id }) => {
       let disconnectedUserId;
-
-      console.log(id);
 
       users.forEach((cur, i) => {
         if (cur.id === id) {
@@ -90,7 +90,6 @@ export default function AdminRAH() {
       const response = await axios.get(`/api/audience-list/${params.roomId}`);
 
       if (response?.data) {
-        console.log(response);
         setUsers(response.data.audienceList);
         setRecentInteractions(response.data.recentInteractionsList);
       }
@@ -139,19 +138,25 @@ export default function AdminRAH() {
 
       const offer = await webRTCPeer.getOffer();
 
-      console.log("offer created", offer.sdp);
-
       socket.emit("call-peer", { from: userInfo.id, to: userId, offer });
 
       setCallStarted(true);
+
+      setCallStatus('Ringing...')
     },
     [webRTCPeer, socket, userInfo.id]
   );
 
   const handleCallAccepted = useCallback(
     async ({ answer }) => {
-      console.log(answer.sdp);
       await webRTCPeer.peer.setRemoteDescription(answer);
+      setCallStatus('Connected...');
+      setTimeout(() => {
+        setCallStatus('You May Speak...')
+      }, 1000);
+      setTimeout(() => {
+        setCallStatus('')
+      }, 3000);
     },
     [webRTCPeer]
   );
@@ -160,15 +165,26 @@ export default function AdminRAH() {
     (e) => {
       const [stream] = e.streams;
 
-      console.log("tracks received", e);
 
       setRemoteStream(stream);
     },
     [setRemoteStream]
   );
 
+  const resetRecentInteractions = useCallback((userId) => {
+      const recentInteraction = users.find((user) => user.id === userId);
+
+      if(recentInteraction?.handRaised) {
+        recentInteraction.handRaised = false;
+      }
+      
+      setRecentInteractions((interactions) => {
+        return [recentInteraction, ...interactions];
+      });
+  }, [users])
+
   const handleCallEnded = useCallback(
-    ({ from: userId }) => {
+    ({ from: userId, type }) => {
       const tracks = localStream?.getTracks();
       tracks?.forEach((track) => {
         track.stop();
@@ -181,8 +197,8 @@ export default function AdminRAH() {
       setWebRTCPeer(new NewWebRTCPeer());
       setSelectedUser(null);
 
-      setUsers((users) => {
-        const u = users.map((user) => {
+      setUsers((prevUsers) => {
+        const u = prevUsers.slice().map((user) => {
           if (user.id === userId) {
             return {
               ...user,
@@ -195,18 +211,28 @@ export default function AdminRAH() {
 
         return u;
       });
-      const recentInteraction = users.find((user) => user.id === userId);
-      recentInteraction.handRaised = false;
-      setRecentInteractions((interactions) => {
-        return [recentInteraction, ...interactions];
-      });
+
+      if (type === 'call-rejected') {
+        toast.error('Viewer rejected the call.', {
+          icon: '🔴'
+        })
+      }
+
+      if (type === 'permission-not-granted') {
+        toast.error('Tell viewer to grant microphone permission.', {
+          icon: '⚠️'
+        })
+      }
+
+      if (type === 'call-ended') {
+        resetRecentInteractions(userId)
+      }
     },
     [webRTCPeer, localStream, users]
   );
 
   const handleIncomingICECandidate = useCallback(
     ({ ic }) => {
-      console.log("ice candidates incoming");
 
       if (ic) {
         webRTCPeer.peer.addIceCandidate(ic);
@@ -218,7 +244,6 @@ export default function AdminRAH() {
   const handleICECandidate = useCallback(
     (e) => {
       if (e.candidate) {
-        console.log("ice candidates sent");
 
         socket.emit("add-ice-candidate", {
           from: userInfo.id,
@@ -319,13 +344,11 @@ export default function AdminRAH() {
   return (
     <>
       <header>
-        <div className="flex items-center m-4">
+        <div className="flex items-center justify-between m-4">
           <Link className="button text-primary" to="/dashboard">
             Dashboard
           </Link>
-          <div className="flex-grow">
-            <h1 className="text-center font-bold text-lg">Raise a hand</h1>
-          </div>
+          
           <button
             onClick={handleEndStream}
             className="button bg-red-800 hover:bg-red-800"
@@ -380,6 +403,10 @@ export default function AdminRAH() {
 
             return null;
           })}
+        </div>
+      )}
+      {recentInteractions.length > 0 && 
+        <div className='w-full flex justify-center items-center flex-col'>
           <h2 className="text-center font-bold text-lg">Recent Interactions</h2>
           {recentInteractions.map((user, i) => {
             if (!user.handRaised) {
@@ -393,10 +420,13 @@ export default function AdminRAH() {
             return null;
           })}
         </div>
-      )}
+      }
       {selectedUser && <></>}
       {localStream && <MediaPlayer muted={true} url={localStream} />}
       {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
+      {callStarted && callStatus && createPortal(<div className="relative h-dvh w-full">
+        <strong className='absolute bottom-0 left-0 m-4 p-2 bg-white shadow-md shadow-black rounded-md'>{callStatus}</strong>,
+      </div> , document.getElementById('call-status'))}
     </>
   );
 }

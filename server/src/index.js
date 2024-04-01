@@ -172,7 +172,7 @@ io.on("connection", (socket) => {
     io.to(userSocketID).emit("admin-ended-call", { from });
   });
 
-  socket.on("user-end-call", ({ to, from }) => {
+  socket.on("user-end-call", ({ to, from, type }) => {
     const userInfo = socketIDToUserID.get(socket.id);
     userInfo.handRaised = false;
     socketIDToUserID.set(socket.id, userInfo);
@@ -187,7 +187,7 @@ io.on("connection", (socket) => {
       recentInteractions.set(userInfo.streamId, room);
     }
 
-    io.to(to).emit("user-ended-call", { from });
+    io.to(to).emit("user-ended-call", { from, type });
   });
 });
 
