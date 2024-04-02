@@ -324,13 +324,13 @@ export default function MainStream() {
                   >
                     {muted ? <MicOff /> : <Mic />}
                   </button>
-                  <button
+                  {/* <button
                     onClick={handleEndCall}
                     disabled={true}
                     className="media-button bg-red-700 hover:bg-red-500 rounded-full"
                   >
                     <X />
-                  </button>
+                  </button> */}
                 </>
               )}
               <button
@@ -344,12 +344,11 @@ export default function MainStream() {
               </button>
             </div>
           </div>
-
-          {localStream && <MediaPlayer muted={true} url={localStream} />}
-          {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
           <LiveChat streamId={streamId} />
         </div>
       </div>
+      {localStream && <MediaPlayer muted={true} url={localStream} />}
+      {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
       {selectedAdmin &&
         createPortal(
           isOpen && (

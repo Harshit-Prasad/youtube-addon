@@ -8,6 +8,8 @@ import MediaPlayer from "../../components/ui/MediaPlayer";
 import { Mic, MicOff, X } from "lucide-react";
 import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
+import Popup from '../../components/ui/Popup';
+import MediaDevices from '../../components/ui/MediaDevices';
 
 export default function AdminRAH() {
   const socket = useSocket();
@@ -25,6 +27,11 @@ export default function AdminRAH() {
   const [webRTCPeer, setWebRTCPeer] = useState(WebRTCPeer);
   const [localStream, setLocalStream] = useState();
   const [remoteStream, setRemoteStream] = useState();
+
+  const [mediaDevicesModal, setMediaDevicesModal] = useState(true);
+  const [loadingMediaDevices, setLoadingMediaDevices] = useState(true);
+  const [mediaDevices, setMediaDevices] = useState([]);
+  const [selectedInputAudioDevice, setSelectedInputAudioDevice] = useState('default')
 
   const adminConnected = useCallback(() => {
     socket.emit("admin-connected", { userInfo, streamId: params.roomId });
@@ -127,7 +134,9 @@ export default function AdminRAH() {
       setSelectedUser(userId);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: false,
-        audio: true,
+        audio: {
+          deviceId: selectedInputAudioDevice
+        },
       });
 
       setLocalStream(stream);
@@ -144,7 +153,7 @@ export default function AdminRAH() {
 
       setCallStatus('Ringing...')
     },
-    [webRTCPeer, socket, userInfo.id]
+    [webRTCPeer, socket, userInfo.id, selectedInputAudioDevice]
   );
 
   const handleCallAccepted = useCallback(
@@ -341,6 +350,15 @@ export default function AdminRAH() {
     [webRTCPeer, selectedUser, localStream, socket, userInfo.id, users]
   );
 
+  useEffect(() => {
+    (async function () {
+      const userDevices = await navigator.mediaDevices.enumerateDevices()
+
+      setMediaDevices(userDevices)
+      setLoadingMediaDevices(false)
+    })();
+  }, []);
+
   return (
     <>
       <header>
@@ -427,6 +445,17 @@ export default function AdminRAH() {
       {callStarted && callStatus && createPortal(<div className="relative h-dvh w-full">
         <strong className='absolute bottom-0 left-0 m-4 p-2 bg-white shadow-md shadow-black rounded-md'>{callStatus}</strong>,
       </div> , document.getElementById('call-status'))}
+      { mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
+            {loadingMediaDevices ? <span>Loading...</span> : 
+              <MediaDevices 
+                setModalDisplay={setMediaDevicesModal}
+                setSelectedInputAudioDevice={setSelectedInputAudioDevice} 
+                mediaDevices={mediaDevices}
+              />
+            }
+          </Popup>, 
+          document.getElementById('media-device-settings'))
+        }
     </>
   );
 }
