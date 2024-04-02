@@ -285,8 +285,6 @@ export default function MainStream() {
     })();
   }, []);
 
-  console.log(selectedInputAudioDevice);
-
   return (
     <>
       <div className="bg-main">
