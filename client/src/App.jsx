@@ -22,13 +22,17 @@ import MainStream from "./routes/user/MainStream";
 import Settings from "./routes/Settings";
 import PublicStream from "./routes/PublicStream";
 import PublicStreamProtected from "./protected-route/PublicStreamProtected";
+import ExploreUseCases from './routes/ExploreUseCases';
+import JoinWaitlist from './routes/JoinWaitlist';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
       <Route index={true} path="/" element={<Home />} />
+      <Route path='/explore-use-cases' element={<ExploreUseCases/>} />
+      <Route path='/join-waitlist' element={<JoinWaitlist/>} />
       <Route element={<AuthProtector />}>
-        <Route path="/auth" element={<Auth />} />
+        <Route path="/auth" ele ment={<Auth />} />
       </Route>
       <Route element={<PublicStreamProtected />}>
         <Route path="/public-stream/:roomId" element={<PublicStream />} />

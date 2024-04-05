@@ -11,6 +11,22 @@
 }
 
 @layer components {
+  .landing-page__bg {
+    @apply bg-gradient-to-r from-[#080808] via-[#056755] to-[#00e5bc]
+  }
+
+  .waitlist-form__input-container {
+    @apply flex w-full items-center my-6 gap-2;
+  }
+
+  .waitlist-form__label {
+    @apply text-2xl font-bold;
+  }
+
+  .waitlist-form__input {
+    @apply active:outline-0 focus:outline-0 grow rounded-full px-3 py-2 bg-[#232e2c84];
+  }
+
   .button {
     @apply flex text-white py-1 px-3 md:py-2 md:px-4 rounded-full transition-colors duration-300 ease-in-out bg-[#272727] hover:bg-[#767676];
   }
@@ -42,4 +58,12 @@
   .text-secondary {
     @apply text-[#AAAAAA];
   }
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  display: none;
 }
