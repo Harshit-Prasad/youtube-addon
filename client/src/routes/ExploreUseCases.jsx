@@ -100,7 +100,7 @@ export default function ExploreUseCases() {
 
         {
           pageContent.map((section, i) => {
-            return <section key={i} className='my-4'>
+            return <section key={i} className='my-6 w-[60%]'>
               <h3 className='text-lg md:text-2xl font-bold my-2'>{section.heading}</h3>
               <ul>
                 {section.points.map((point, i) => {
@@ -114,7 +114,7 @@ export default function ExploreUseCases() {
           })
         }
 
-        <Link to='/join-waitlist' className='ff-hughs text-xl font-bold inline-block px-8 py-2 text-black bg-[#00E5BC] rounded-full'>
+        <Link to='/join-waitlist' className='ff-hughs text-xl font-bold inline-block mt-4 md:mt-8 px-8 py-2 text-black bg-[#00E5BC] rounded-full'>
           Join the Waitlist
         </Link>
       </main>
