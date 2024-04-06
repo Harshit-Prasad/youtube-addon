@@ -9,7 +9,7 @@ export default function Home() {
 
   return (
     <div className='h-dvh flex flex-col landing-page__bg'>
-      <nav className='bg-black flex justify-between items-center px-2 md:px-6 py-2 md:py-4 font-bold'>
+      <nav className='bg-black flex justify-between items-center px-2 md:px-6 py-2 md:py-4 font-bold border-b-[0.1px] border-white border-solid'>
         <span className='text-xl md:text-4xl text-white ff-hughs'>
           Zuptalk
         </span>
@@ -28,7 +28,7 @@ export default function Home() {
       </nav>
 
       <main className='text-white px-6 py-4 md:py-0 grow flex flex-col justify-start items-start md:justify-center'>
-        <h1 className="text-3xl md:text-6xl font-bold mb-4 md:mb-24 md:leading-[4.5rem]">
+        <h1 className="text-2xl md:text-[2.75rem] xl:text-6xl font-bold mb-4 md:mb-24 md:leading-[4.5rem]">
           Introducing the world's first <br/>
           seamless audio chat experience for <br/>
           YouTube <span className='text-[#ff2323]'>•Livestreams</span>
@@ -43,6 +43,5 @@ export default function Home() {
         </Link>
       </main>
     </div>
-
   )
 }

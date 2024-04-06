@@ -45,7 +45,7 @@ export default function JoinWaitlist() {
 
   return (
     <div className='h-dvh md:flex md:flex-col landing-page__bg'>
-      <nav className='bg-black flex justify-between items-center px-2 md:px-6 py-2 md:py-4 font-bold'>
+      <nav className='bg-black flex justify-between items-center px-2 md:px-6 py-2 md:py-4 font-bold border-b-[0.1px] border-white border-solid'>
         <Link to='/' className='text-xl md:text-4xl text-white ff-hughs'>
           Zuptalk
         </Link>
@@ -78,7 +78,7 @@ export default function JoinWaitlist() {
               <label  className='waitlist-form__label' htmlFor="channel-link">Your Channel's link</label>
               <input onChange={(e) => {
                 setChannelLink(e.target.value)
-              }} className='waitlist-form__input' type="url" placeholder={`Your channel's link`} required value={channelLink} id='channel-link' />
+              }} className='waitlist-form__input' type="text" placeholder={`Your channel's link`} required value={channelLink} id='channel-link' />
             </div>
             <div className='waitlist-form__input-container' >
               <label  className='waitlist-form__label' htmlFor="contact-number">Contact Number</label>
