@@ -9,19 +9,19 @@ export default function JoinWaitlist() {
   const [contactNo, setContactNo] = useState('')
 
   return (
-    <div className='h-dvh flex flex-col landing-page__bg'>
-      <nav className='bg-black flex justify-between items-center px-6 py-4 font-bold'>
-        <span className='text-3xl text-white font-hughs'>
+    <div className='h-dvh md:flex md:flex-col landing-page__bg'>
+      <nav className='bg-black flex justify-between items-center px-2 md:px-6 py-2 md:py-4 font-bold'>
+        <Link to='/' className='text-xl md:text-3xl text-white font-hughs'>
           Zuptalk
-        </span>
+        </Link>
 
-        <Link to='/explore-use-cases' className='font-hughs inline-block px-8 py-2 text-black bg-[#00E5BC] rounded-full'>
+        <Link to='/explore-use-cases' className='font-hughs inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
           Explore the Cases
         </Link>
       </nav>
 
-      <main className='text-white px-6 flex-1 flex flex-col items-start justify-center'>
-        <h1 className='text-4xl font-bold mb-12'>
+      <main className='text-white py-4 md:py-0 px-6 flex-1 flex flex-col items-start justify-center'>
+        <h1 className='text-2xl md:text-4xl font-bold mb-6 md:mb-12'>
           Enter your details below & we’ll get back to you shortly
         </h1>
 
@@ -60,7 +60,7 @@ export default function JoinWaitlist() {
             </div>
           </div>
           
-          <button className='font-hughs block font-bold mt-16 px-16 py-2 text-black bg-[#00E5BC] rounded-full mx-auto'>
+          <button className='font-hughs block font-bold mt-8 md:mt-16 px-16 py-2 text-black bg-[#00E5BC] rounded-full mx-auto'>
             Submit
           </button>
         </form>
