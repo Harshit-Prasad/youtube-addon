@@ -15,7 +15,7 @@ export default function Home() {
         </span>
 
         <div className='flex items-center gap-3 ff-hughs text-xl'>
-          <Link to={isAuth && role === 'admin' ? '/dashboard' : '/navigate-to'} className='ff-hughs inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
+          <Link to={isAuth && role === 'admin' ? '/dashboard' : '/navigate-to'} className={`${!isAuth || !role ? 'hidden' : ''} ff-hughs inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full`}>
             {isAuth && role === 'admin' ? 'Dashboard' : 'Join a stream'}
           </Link>
           <Link to='/explore-use-cases' className='ff-hughs hidden md:inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>

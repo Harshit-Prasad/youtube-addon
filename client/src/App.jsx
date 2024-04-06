@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import SocketProvider from "./providers/SocketProvider";
 import Home from "./routes/Home";
 import Auth from "./routes/Auth";
+import AuthProviderProtected from './protected-route/AuthProviderProtected';
 import AuthProtector from "./protected-route/AuthProtector";
 import ProtectedRoute from "./protected-route/ProtectedRoute";
 import Welcome from "./routes/Welcome";
@@ -31,41 +32,45 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<Home />} />
       <Route path='/explore-use-cases' element={<ExploreUseCases/>} />
       <Route path='/join-waitlist' element={<JoinWaitlist/>} />
-      <Route element={<AuthProtector />}>
-        <Route path="/auth" ele ment={<Auth />} />
-      </Route>
-      <Route element={<PublicStreamProtected />}>
-        <Route path="/public-stream/:roomId" element={<PublicStream />} />
-      </Route>
-      <Route element={<ProtectedRoute />}>
-        <Route path="/welcome" element={<Welcome />} />
-        <Route path="/settings" element={<Settings />} />
 
-        <Route element={<AdminProtected />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/create-page" element={<CreatePage />} />
-          <Route path="/private-stream/:roomId" element={<PrivateStream />} />
-          <Route
-            path="/admin-rah/:roomId"
-            element={
-              <SocketProvider>
-                <AdminRAH />
-              </SocketProvider>
-            }
-          />
+      <Route element={<AuthProviderProtected />}>
+        <Route element={<AuthProtector />}>
+          <Route path="/auth" element={<Auth />} />
         </Route>
-        <Route element={<UserProtected />}>
-          <Route path="/navigate-to" element={<NavigateTo />} />
-          <Route
-            path="/main-stream/:roomId"
-            element={
-              <SocketProvider>
-                <MainStream />
-              </SocketProvider>
-            }
-          />
+        <Route element={<PublicStreamProtected />}>
+          <Route path="/public-stream/:roomId" element={<PublicStream />} />
+        </Route>
+        <Route element={<ProtectedRoute />}>
+          <Route path="/welcome" element={<Welcome />} />
+          <Route path="/settings" element={<Settings />} />
+
+          <Route element={<AdminProtected />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/create-page" element={<CreatePage />} />
+            <Route path="/private-stream/:roomId" element={<PrivateStream />} />
+            <Route
+              path="/admin-rah/:roomId"
+              element={
+                <SocketProvider>
+                  <AdminRAH />
+                </SocketProvider>
+              }
+            />
+          </Route>
+          <Route element={<UserProtected />}>
+            <Route path="/navigate-to" element={<NavigateTo />} />
+            <Route
+              path="/main-stream/:roomId"
+              element={
+                <SocketProvider>
+                  <MainStream />
+                </SocketProvider>
+              }
+            />
+          </Route>
         </Route>
       </Route>
+
     </>
   )
 );

@@ -6,6 +6,7 @@ import { Server } from "socket.io";
 import asyncHandler from "express-async-handler";
 
 import connectDB from "./config/db.js";
+import Wishlist from './models/wishlist.model.js'
 import userRoute from "./routes/user.route.js";
 import userStream from "./routes/stream.route.js";
 import { errorHandler, notFound } from "./middlewares/error.middleware.js";
@@ -46,6 +47,18 @@ const io = new Server(server, {
 // Routes
 app.use("/api/stream", userStream);
 app.use("/api/user", userRoute);
+
+app.post('/save-waitlist', asyncHandler(async (req, res) => {
+  const {fullName, email, channelLink, contactNo} = req.body;
+
+  if (!fullName || !email || !channelLink || !contactNo) {
+    throw new Error('Invalid data')
+  }
+
+  const response = await Wishlist.create(req.body);
+
+  res.send(response)
+}))
 
 server.listen(PORT, function () {
   console.log("Server Started on PORT: " + PORT);
