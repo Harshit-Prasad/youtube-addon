@@ -80,11 +80,11 @@ export default function ExploreUseCases() {
   return (
     <div className='relative flex flex-col landing-page__bg'>
       <nav className='bg-black sticky top-0 flex justify-between items-center px-2 md:px-6 py-2 md:py-4 font-bold'>
-        <Link to='/' className='text-xl md:text-3xl text-white font-hughs'>
+        <Link to='/' className='text-xl md:text-4xl text-white ff-hughs'>
           Zuptalk
         </Link>
 
-        <Link to='/join-waitlist' className='font-hughs inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
+        <Link to='/join-waitlist' className='ff-hughs text-xl inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
           Join the Waitlist
         </Link>
       </nav>
@@ -101,10 +101,10 @@ export default function ExploreUseCases() {
         {
           pageContent.map((section, i) => {
             return <section key={i} className='my-4'>
-              <h3 className='text-lg md:text-xl font-bold my-2'>{section.heading}</h3>
+              <h3 className='text-lg md:text-2xl font-bold my-2'>{section.heading}</h3>
               <ul>
                 {section.points.map((point, i) => {
-                return <li key={i} className='my-2 text-sm md:text-lg'>
+                return <li key={i} className='my-2 text-sm md:text-xl'>
                   <span className='font-bold'>{point.highlight}</span>&nbsp;
                   {point.content}
                 </li>
@@ -114,7 +114,7 @@ export default function ExploreUseCases() {
           })
         }
 
-        <Link to='/join-waitlist' className='font-hughs font-bold inline-block px-8 py-2 text-black bg-[#00E5BC] rounded-full'>
+        <Link to='/join-waitlist' className='ff-hughs text-xl font-bold inline-block px-8 py-2 text-black bg-[#00E5BC] rounded-full'>
           Join the Waitlist
         </Link>
       </main>
