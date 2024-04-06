@@ -360,7 +360,7 @@ export default function AdminRAH() {
   }, []);
 
   return (
-    <>
+    <div className='bg-main'>
       <header>
         <div className="flex items-center justify-between m-4">
           <Link className="button text-primary" to="/dashboard">
@@ -375,70 +375,84 @@ export default function AdminRAH() {
           </button>
         </div>
       </header>
-      {users.length === 0 ? (
-        <p className="text-center">No user joined</p>
-      ) : (
-        <div className="w-full flex justify-center items-center flex-col">
-          <h2 className="text-center font-bold text-lg">Raised hand</h2>
-          {users.map((user, i) => {
-            if (user.handRaised) {
-              return (
-                <div
-                  key={user.id + i}
-                  className="flex items-center justify-center"
-                >
-                  <button
-                    onClick={() => handleCallAudience(user.id)}
-                    className="button text-primary"
-                    key={user.id}
-                    disabled={selectedUser !== null}
+
+      <main className='text-white overflow-y-auto flex flex-wrap px-2 gap-6'>
+        {users.length === 0 ? (
+          <span className="text-center">No user joined</span>
+        ) : (
+          <div className="w-full flex justify-center items-center flex-col">
+            <h2 className="text-center font-bold text-2xl p-4">Raised hand</h2>
+            {users.map((user, i) => {
+              if (user.handRaised) {
+                return (
+                  <div
+                    key={user.id + i}
+                    className="flex flex-col items-center justify-center gap-4"
                   >
-                    <p>{user.name} </p>
-                  </button>
-                  {selectedUser === user.id && callStarted && (
-                    <>
+                    <div className='flex flex-col gap-1 items-center justify-center'>
                       <button
-                        onClick={() => {
-                          setMuted((prev) => !prev);
-                        }}
-                        className="media-button text-primary rounded-full"
+                      onClick={() => handleCallAudience(user.id)}
+                      className={`relative button text-primary h-12 w-12 rounded-full flex justify-center items-center border-4 border-solid ${remoteStream && 'border-[green]'}`}
+                      key={user.id}
+                      disabled={selectedUser !== null}
                       >
-                        {muted ? <MicOff /> : <Mic />}
+                        <img className='absolute cursor-pointer h-full w-full rounded-full' src={user.picture} alt={user.name} />
                       </button>
-                      <button
-                        onClick={() => {
-                          handleEndCall(user.id);
-                        }}
-                        className="media-button bg-red-700 hover:bg-red-500 rounded-full"
-                      >
-                        <X />
-                      </button>
-                    </>
-                  )}
-                </div>
-              );
-            }
+                      <p>{user.name} </p>
+                    </div>
+                    {selectedUser === user.id && callStarted && (
+                      <div className='flex gap-4'>
+                        <button
+                          onClick={() => {
+                            setMuted((prev) => !prev);
+                          }}
+                          className="media-button text-primary rounded-full"
+                        >
+                          {muted ? <MicOff /> : <Mic />}
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleEndCall(user.id);
+                          }}
+                          className="media-button bg-red-700 hover:bg-red-500 rounded-full"
+                        >
+                          <X />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
 
-            return null;
-          })}
-        </div>
-      )}
-      {recentInteractions.length > 0 && 
-        <div className='w-full flex justify-center items-center flex-col'>
-          <h2 className="text-center font-bold text-lg">Recent Interactions</h2>
-          {recentInteractions.map((user, i) => {
-            if (!user.handRaised) {
-              return (
-                <div key={user.id + i}>
-                  <p>{user.name} </p>
-                </div>
-              );
-            }
+              return null;
+            })}
+          </div>
+        )}
+        {recentInteractions.length > 0 && 
+          <div className='w-full flex justify-center items-center flex-col'>
+            <h2 className="text-center font-bold text-lg">Recent Interactions</h2>
+            <div className='flex flex-wrap gap-4 py-4 items-center justify-center'>
+              {recentInteractions.map((user, i) => {
+                if (!user.handRaised) {
+                  return (
+                    <div key={user.id + i} className='flex flex-col gap-4 items-center justify-center'>
+                      <span
+                        className={`relative text-primary h-12 w-12 rounded-full flex justify-center items-center`}
+                        >
+                          <img className='absolute cursor-pointer h-full w-full rounded-full' src={user.picture} alt={user.name} />
+                        </span>
+                      <p>{user.name} </p>
+                    </div>
+                  );
+                }
 
-            return null;
-          })}
-        </div>
-      }
+                return null;
+              })}
+            </div>
+
+          </div>}
+      </main>
+
       {selectedUser && <></>}
       {localStream && <MediaPlayer muted={true} url={localStream} />}
       {remoteStream && <MediaPlayer muted={false} url={remoteStream} />}
@@ -456,6 +470,6 @@ export default function AdminRAH() {
           </Popup>, 
           document.getElementById('media-device-settings'))
         }
-    </>
+    </div>
   );
 }

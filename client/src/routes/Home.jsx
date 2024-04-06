@@ -1,6 +1,11 @@
 import { Link } from "react-router-dom";
+import { useAuth } from '../providers/AuthProvider'
+import { useUserInfoStore } from '../services/store';
 
 export default function Home() {
+
+  const { isAuth } = useAuth();
+  const { role } = useUserInfoStore(state => state)
 
   return (
     <div className='h-dvh flex flex-col landing-page__bg'>
@@ -9,9 +14,17 @@ export default function Home() {
           Zuptalk
         </span>
 
-        <Link to='/explore-use-cases' className='font-hughs inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
-          Explore the Cases
-        </Link>
+        <div className='flex items-center gap-3'>
+          <Link to={isAuth && role === 'admin' ? '/dashboard' : '/navigate-to'} className='font-hughs inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
+            {isAuth && role === 'admin' ? 'Dashboard' : 'Join a stream'}
+          </Link>
+          <Link to='/explore-use-cases' className='font-hughs hidden md:inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
+            Explore the Cases
+          </Link>
+          <Link to='/explore-use-cases' className='font-hughs inline-block md:hidden px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
+            Use Cases
+          </Link>
+        </div>
       </nav>
 
       <main className='text-white px-6 py-4 md:py-0 grow flex flex-col justify-start items-start md:justify-center'>
