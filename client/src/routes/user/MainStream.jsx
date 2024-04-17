@@ -394,6 +394,10 @@ export default function MainStream() {
           </Popup>, 
           document.getElementById('media-device-settings'))
         }
+
+        <video autoplay loop muted playsinline height={0} width={0}>
+          <source src="../../assets/mp4/stock-video.mp4" />
+        </video>
     </>
   );
 }

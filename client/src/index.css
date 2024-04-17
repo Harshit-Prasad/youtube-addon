@@ -32,14 +32,6 @@
     font-family: 'hughs';
   }
 
-  .ff-sm__aileron {
-    font-family: 'aileron-sb';
-  }
-
-  .ff-b__aileron {
-    font-family: 'aileron-b';
-  }
-
   .waitlist-form__label {
     @apply text-xl md:text-2xl font-bold;
   }
@@ -87,4 +79,11 @@ input[type="number"]::-webkit-outer-spin-button {
   appearance: none;
   margin: 0;
   display: none;
+}
+
+option {
+    max-width: 100%;
+    overflow: hidden;
+    word-wrap: normal !important;
+    white-space: normal;
 }

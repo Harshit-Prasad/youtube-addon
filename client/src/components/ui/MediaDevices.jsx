@@ -6,19 +6,19 @@ export default function MediaDevices({mediaDevices, setModalDisplay, setSelected
     const [selectedMediaDevice, setSelectedMediaDevice] = useState(defaultValue?.deviceId || 'default')
 
   return (
-    <div>
+    <div className='w-full'>
         <label className="block text-xl text-center mt-2 mb-4" htmlFor="media-device-select">Select an input audio device</label>
         {
             mediaDevices.length > 0 &&
             <select 
-                className='block mt-2 mb-4 mx-auto cursor-pointer'
+                className='relative block max-w-[100%] whitespace-normal mt-2 mb-4 mx-auto cursor-pointer'
                 onChange={(e) => {
                     setSelectedMediaDevice(e.target.value);
                 }}
                 id='media-device-select'
             >
             {mediaDevices.filter(mediaDevice => mediaDevice.kind === 'audioinput').map((mediaDevice) => {
-                return <option key={mediaDevice?.deviceId} value={mediaDevice?.deviceId}>{mediaDevice?.label}</option>
+                return <option className='block max-w-[100%] whitespace-normal'  key={mediaDevice?.deviceId} value={mediaDevice?.deviceId}>{mediaDevice?.label}</option>
             })}
             </select>
         }
