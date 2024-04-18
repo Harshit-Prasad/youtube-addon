@@ -291,7 +291,11 @@ export default function MainStream() {
     (async function () {
       if ('wakeLock' in navigator) {
         if (!wakeLock) {
-          setWakeLock(await navigator.wakeLock.request('screen'))
+          try {
+            setWakeLock(await navigator.wakeLock.request('screen'));
+          } catch (error) {
+            toast.error('Something went wrong')
+          }
         }
 
         wakeLock.addEventListener('release', (e) => {
