@@ -34,7 +34,9 @@ export default function MainStream() {
   const [mediaDevicesModal, setMediaDevicesModal] = useState(true);
   const [loadingMediaDevices, setLoadingMediaDevices] = useState(true);
   const [mediaDevices, setMediaDevices] = useState([]);
-  const [selectedInputAudioDevice, setSelectedInputAudioDevice] = useState('default')
+  const [selectedInputAudioDevice, setSelectedInputAudioDevice] = useState('default');
+
+  const [wakeLock, setWakeLock] = useState(null);
 
   const handleShareLink = useCallback(async (e) => {
     try {
@@ -285,6 +287,28 @@ export default function MainStream() {
     })();
   }, []);
 
+  useEffect(() => {
+    (async function () {
+      if ('wakeLock' in navigator) {
+        if (!wakeLock) {
+          setWakeLock(await navigator.wakeLock.request('screen'))
+        }
+
+        wakeLock.addEventListener('release', (e) => {
+          console.log(e);
+        });
+      } else {
+        toast.error('Be sure to keep the screen active.')
+      }
+    })();
+
+   return () => {
+    if (wakeLock) {
+      wakeLock.release();
+    }
+   }
+  }, [wakeLock])
+
   return (
     <>
       <div className="bg-main">
@@ -383,7 +407,7 @@ export default function MainStream() {
           document.getElementById("incoming-call")
         )}
 
-        { mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
+        {mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
             {loadingMediaDevices ? <span>Loading...</span> : 
               <MediaDevices 
                 setModalDisplay={setMediaDevicesModal}
@@ -394,10 +418,6 @@ export default function MainStream() {
           </Popup>, 
           document.getElementById('media-device-settings'))
         }
-
-        <video autoplay loop muted playsinline height={0} width={0}>
-          <source src="../../assets/mp4/stock-video.mp4" />
-        </video>
     </>
   );
 }
