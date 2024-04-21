@@ -6,7 +6,6 @@ import {
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import SocketProvider from "./providers/SocketProvider";
-import Home from "./routes/Home";
 import Auth from "./routes/Auth";
 import AuthProviderProtected from './protected-route/AuthProviderProtected';
 import AuthProtector from "./protected-route/AuthProtector";
@@ -18,21 +17,15 @@ import CreatePage from "./routes/admin/CreatePage";
 import AdminRAH from "./routes/admin/AdminRAH";
 import PrivateStream from "./routes/admin/PrivateStream";
 import UserProtected from "./protected-route/UserProtected";
-import NavigateTo from "./routes/user/NavigateTo";
 import MainStream from "./routes/user/MainStream";
-import Settings from "./routes/Settings";
 import PublicStream from "./routes/PublicStream";
 import PublicStreamProtected from "./protected-route/PublicStreamProtected";
-import ExploreUseCases from './routes/ExploreUseCases';
-import JoinWaitlist from './routes/JoinWaitlist';
+import Home from './routes/Home';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
-      <Route index={true} path="/" element={<Home />} />
-      <Route path='/explore-use-cases' element={<ExploreUseCases/>} />
-      <Route path='/join-waitlist' element={<JoinWaitlist/>} />
-
+      <Route path='/' element={<Home />} />
       <Route element={<AuthProviderProtected />}>
         <Route element={<AuthProtector />}>
           <Route path="/auth" element={<Auth />} />
@@ -42,7 +35,6 @@ const router = createBrowserRouter(
         </Route>
         <Route element={<ProtectedRoute />}>
           <Route path="/welcome" element={<Welcome />} />
-          <Route path="/settings" element={<Settings />} />
 
           <Route element={<AdminProtected />}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -58,7 +50,6 @@ const router = createBrowserRouter(
             />
           </Route>
           <Route element={<UserProtected />}>
-            <Route path="/navigate-to" element={<NavigateTo />} />
             <Route
               path="/main-stream/:roomId"
               element={

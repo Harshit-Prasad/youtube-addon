@@ -39,8 +39,7 @@ export default function Login({ pathname }) {
         );
 
         if (location.state.redirectToMain) {
-          navigate(pathname, { state: { handRaise: true } });
-          console.log("login");
+          navigate(pathname || '/welcome', { state: { handRaise: true } });
         }
       } catch (error) {
         console.log(error.message);
@@ -49,14 +48,16 @@ export default function Login({ pathname }) {
   });
 
   return (
-    <div className="flex flex-col gap-4 p-4 justify-center items-center">
+    <div className="flex flex-col mt-2 gap-2 justify-center items-center">
+      <span>First time here?</span>
       <button
-        className="button text-primary"
+        className="flex hover:bg-[#ddd] gap-4 justify-between items-center outline outline-1 outline-black p-2 rounded-lg"
         onClick={() => {
           login();
         }}
       >
-        Login
+        <img height={24} width={24} src="https://www.shareicon.net/data/2016/07/10/119930_google_512x512.png" alt="google logo" />
+        <span>Login with Google</span>
       </button>
     </div>
   );

@@ -1,70 +1,48 @@
-import { useUserInfoStore } from "../services/store";
-import { useAuth } from "../providers/AuthProvider";
+import { useState } from 'react';
 import { Link } from "react-router-dom";
+import { useUserInfoStore } from "../services/store";
+import Profile from '../components/ui/Profile';
+import Popup from '../components/ui/Popup';
+import { createPortal } from 'react-dom';
+import AdminToggle from '../components/ui/AdminToggle';
 
 export default function ProtectedRoute() {
   const userInfo = useUserInfoStore((state) => state);
-  const { setIsAuth } = useAuth();
-  const { setUserInfo } = useUserInfoStore();
-
-  const logout = () => {
-    localStorage.removeItem("auth_tokens");
-
-    setUserInfo({
-      id: "",
-      name: "",
-      role: "",
-      picture: "",
-      email: "",
-    });
-
-    setIsAuth(false);
-  };
+  const [profileIsOpen, setProfileIsOpen] = useState(false)
 
   return (
-    <div className="h-dvh items-center justify-between flex flex-col p-2">
-      <div className="w-full flex items-center justify-between">
-        {userInfo.role === "user" ? (
-          <Link className="button text-primary" to="/navigate-to">
-            Join Room
-          </Link>
-        ) : (
-          <Link className="button text-primary" to="/dashboard">
-            Dashboard
-          </Link>
-        )}
-
-        <Link className="button text-primary" to="/settings">
-          Settings
+    <div className="h-dvh items-center justify-between flex flex-col p-2 landing-page__bg text-white">
+      <nav className="w-full flex items-center justify-between px-6">
+        <Link className="ff-hughs text-2xl" to="/">
+          Zuptalk
         </Link>
-      </div>
-      <div className="flex w-full grow flex-col justify-center items-center">
-        <div className="flex flex-col max-w-[400px] ">
-          <ul className="flex flex-col p-4 gap-4">
-            <li>Name: {userInfo.name}</li>
-            <li>Email: {userInfo.email}</li>
-            <li>User ID: {userInfo.id}</li>
-            <li className="h-24 w-24 mx-auto">
-              <img
-                height="100%"
-                width="100%"
-                className="rounded-full"
-                src={userInfo.picture}
-                alt="Profile photo"
-                loading="lazy"
-              />
-            </li>
-          </ul>
-          <br />
-          <button
-            className="button bg-red-700 hover:bg-red-500"
-            onClick={() => {
-              logout();
-            }}
-          >
-            Logout
-          </button>
+
+        <button onClick={() => {
+          setProfileIsOpen(true)
+        }} className="button">
+          Profile
+        </button>
+      </nav>
+      {profileIsOpen &&
+        createPortal(<Popup setIsOpen={setProfileIsOpen} topCloseBtn={true}>
+          <Profile />
+        </Popup>,
+          document.getElementById('profile-popup__center')
+        )
+      }
+
+      <div className='items-center justify-center flex-col flex grow gap-4'>
+        <div>
+
+          You're logged in as a <span className='font-semibold'>{userInfo.role === 'admin' ? 'admin' : 'user'}</span>, toggle the switch to
+          become a {userInfo.role === 'admin' ? 'creator' : 'viewer'}
+
         </div>
+        <AdminToggle />
+
+        {
+          userInfo.role === 'admin' && <Link className="button" to="/dashboard">Dashboard</Link>
+        }
       </div>
     </div>
   );

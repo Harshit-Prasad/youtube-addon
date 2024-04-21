@@ -19,19 +19,24 @@
   }
 }
 
-.landing-page__bg {
-  background-image: linear-gradient(135deg, #080808 50%, #056755 97.5%);
-}
-
 @layer components {
-  .waitlist-form__input-container {
-    @apply flex w-full items-center my-3 md:my-6 gap-2;
+  
+  .landing-page__bg {
+    background-image: linear-gradient(135deg, #080808 60%, #162522 ,#145247 100%);
   }
-
+  
   .ff-hughs {
     font-family: 'hughs';
   }
 
+  .navbar {
+    @apply w-full flex items-center justify-between px-6 bg-black border-b-[1px] border-b-white; 
+  }
+
+  .waitlist-form__input-container {
+    @apply flex w-full items-center my-3 md:my-6 gap-2;
+  }
+  
   .waitlist-form__label {
     @apply text-xl md:text-2xl font-bold;
   }
@@ -41,7 +46,7 @@
   }
 
   .button {
-    @apply flex text-white py-1 px-3 md:py-2 md:px-4 rounded-full transition-colors duration-300 ease-in-out bg-[#272727] hover:bg-[#767676];
+    @apply flex text-black ff-hughs my-2 py-1 px-3 md:py-2 md:px-4 rounded-full transition-colors duration-300 ease-in-out bg-[#00E5BC] hover:bg-[#00e5bb8a];
   }
 
   .media-button {

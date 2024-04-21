@@ -28,97 +28,95 @@ export default function Dashboard() {
   const endedStreams = streams.filter((stream) => stream.ended);
 
   return (
-    <main className="h-dvh flex flex-col items-center gap-3 p-5">
-      <div className="w-full  flex justify-between">
-        <Link className="button text-primary" to="/">
-          To Home
+    <div className='h-dvh items-center justify-between flex flex-col p-2 landing-page__bg text-white'>
+      <nav className="w-full flex items-center justify-between px-6">
+        <Link className="ff-hughs text-2xl" to="/">
+          Zuptalk
         </Link>
-        <Link className="button text-primary" to="/settings">
-          Settings
-        </Link>
-      </div>
 
-      <div>
-        <Link className="button text-primary" to="/create-page">
+        <Link className="button" to="/create-page">
           Create a new Page
         </Link>
-      </div>
-      <h2 className="text-2xl py-5">Upcoming Streams</h2>
-      {upcomingStreams.length === 0 && !getStreamLoading && (
-        <p className="text-center">No upcoming streams</p>
-      )}
+      </nav>
+      <main className="grow flex flex-col items-center gap-3 p-5">
+        <h2 className="text-2xl py-5">Upcoming Streams</h2>
+        {upcomingStreams.length === 0 && !getStreamLoading && (
+          <p className="text-center">No upcoming streams</p>
+        )}
 
-      {getStreamLoading && <p>Loading...</p>}
+        {getStreamLoading && <p>Loading...</p>}
 
-      {upcomingStreams.length > 0 && (
-        <div>
-          {upcomingStreams.map((upcomingStream) => {
-            if (!upcomingStream.ended) {
-              return (
-                <div
-                  className="flex justify-evenly gap-5 mt-1"
-                  key={upcomingStream._id}
-                >
-                  <h3 className="font-bold text-slate-800">
-                    {upcomingStream.url}
-                  </h3>
-                  <div className="flex gap-2">
-                    <Link
-                      className="button text-primary"
-                      to={`/admin-rah/${upcomingStream.url}`}
-                    >
-                      RHA
-                    </Link>
-                    <Link
-                      className="button text-primary"
-                      to={`/private-stream/${upcomingStream.url}`}
-                    >
-                      Go to create page
-                    </Link>
-                    <button
-                      disabled={deleteStreamLoading}
-                      className="button text-primary"
-                      onClick={async () => {
-                        try {
-                          setDeleteStreamLoading(true);
-                          const itemRemoved = await axiosProtectedRoute.patch(
-                            `/api/stream/${upcomingStream._id}`
-                          );
+        {upcomingStreams.length > 0 && (
+          <div>
+            {upcomingStreams.map((upcomingStream) => {
+              if (!upcomingStream.ended) {
+                return (
+                  <div
+                    className="flex justify-evenly items-center gap-5 mt-1 text-black"
+                    key={upcomingStream._id}
+                  >
+                    <h3 className="font-bold text-white">
+                      {upcomingStream.url}
+                    </h3>
+                    <div className="flex gap-2">
+                      <Link
+                        className="button"
+                        to={`/admin-rah/${upcomingStream.url}`}
+                      >
+                        RHA
+                      </Link>
+                      <Link
+                        className="button"
+                        to={`/private-stream/${upcomingStream.url}`}
+                      >
+                        Go to create page
+                      </Link>
+                      <button
+                        disabled={deleteStreamLoading}
+                        className="button"
+                        onClick={async () => {
+                          try {
+                            setDeleteStreamLoading(true);
+                            const itemRemoved = await axiosProtectedRoute.patch(
+                              `/api/stream/${upcomingStream._id}`
+                            );
 
-                          removeStream(upcomingStream._id);
-                        } catch (error) {
-                          console.log(error.message);
-                        } finally {
-                          setDeleteStreamLoading(false);
-                        }
-                      }}
-                    >
-                      Remove
-                    </button>
+                            removeStream(upcomingStream._id);
+                          } catch (error) {
+                            console.log(error.message);
+                          } finally {
+                            setDeleteStreamLoading(false);
+                          }
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
                   </div>
+                );
+              }
+              return <></>;
+            })}
+          </div>
+        )}
+
+        <h2 className="text-2xl py-5">History</h2>
+        {endedStreams.length === 0 && !getStreamLoading && (
+          <p className="text-center">Empty History</p>
+        )}
+        {endedStreams.length > 0 && (
+          <div>
+            {endedStreams.map((endedStream) => {
+              return (
+                <div className="flex justify-evenly gap-5" key={endedStream._id}>
+                  {endedStream._id}
                 </div>
               );
-            }
-            return <></>;
-          })}
-        </div>
-      )}
+            })}
+          </div>
+        )}
+      </main>
+    </div>
 
-      <h2 className="text-2xl py-5">History</h2>
-      {endedStreams.length === 0 && !getStreamLoading && (
-        <p className="text-center">Empty History</p>
-      )}
-      {endedStreams.length > 0 && (
-        <div>
-          {endedStreams.map((endedStream) => {
-            return (
-              <div className="flex justify-evenly gap-5" key={endedStream._id}>
-                {endedStream._id}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </main>
   );
 }

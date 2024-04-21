@@ -1,47 +1,18 @@
-import { Link } from "react-router-dom";
-import { useAuth } from '../providers/AuthProvider'
-import { useUserInfoStore } from '../services/store';
-
+import React from 'react'
+import { Link } from 'react-router-dom'
 export default function Home() {
 
-  const { isAuth } = useAuth();
-  const { role } = useUserInfoStore(state => state)
+    return (
+        <div className='landing-page__bg text-white flex flex-col h-dvh'>
+            <nav className="navbar">
+                <Link className="ff-hughs text-2xl" to="/">
+                    Zuptalk
+                </Link>
 
-  return (
-    <div className='h-dvh flex flex-col landing-page__bg'>
-      <nav className='bg-black flex justify-between items-center px-2 md:px-6 py-2 md:py-4 font-bold border-b-[0.1px] border-white border-solid'>
-        <span className='text-xl md:text-4xl text-white ff-hughs'>
-          Zuptalk
-        </span>
-
-        <div className='flex items-center gap-3 ff-hughs text-xl'>
-          <Link to={isAuth && role === 'admin' ? '/dashboard' : '/navigate-to'} className={`${!isAuth || !role ? 'hidden' : ''} ff-hughs inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full`}>
-            {isAuth && role === 'admin' ? 'Dashboard' : 'Join a stream'}
-          </Link>
-          <Link to='/explore-use-cases' className='ff-hughs hidden md:inline-block px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
-            Explore the Cases
-          </Link>
-          <Link to='/explore-use-cases' className='ff-hughs inline-block md:hidden px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
-            Use Cases
-          </Link>
+                <Link className='button capitalize' to='/welcome' >
+                    Profile
+                </Link>
+            </nav>
         </div>
-      </nav>
-
-      <main className='text-white px-6 py-4 md:py-0 grow flex flex-col justify-start items-start md:justify-center'>
-        <h1 className="text-2xl md:text-[2.75rem] xl:text-6xl font-bold mb-4 md:mb-24 md:leading-[4.5rem]">
-          Introducing the world's first <br/>
-          seamless audio chat experience for <br/>
-          YouTube <span className='text-[#ff2323]'>•Livestreams</span>
-        </h1>
-
-        <h2 className='text-2xl md:text-4xl font-bold my-12 md:mb-24'>
-          Now hear what your fans have to say
-        </h2>
-
-         <Link to='/join-waitlist' className='ff-hughs text-xl font-bold inline-block mt-12 md:mt-0 px-4 py-1 md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full'>
-          Join the Waitlist
-        </Link>
-      </main>
-    </div>
-  )
+    )
 }

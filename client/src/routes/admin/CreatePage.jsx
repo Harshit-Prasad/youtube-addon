@@ -50,7 +50,7 @@ export default function CreatePage() {
   }
 
   return (
-    <div className="h-dvh flex justify-center items-center">
+    <div className="h-dvh flex justify-center items-center landing-page__bg text-white">
       <form
         className="w-[400px] p-5 flex flex-col justify-between items-center gap-5"
         onSubmit={handleSubmit}
@@ -61,13 +61,13 @@ export default function CreatePage() {
           </label>
           <input
             id="video-link"
-            className="outline outline-2 outline-slate-950 py-2 px-4 rounded-lg"
+            className="outline outline-2 text-black py-2 px-4 rounded-lg"
             type="text"
             placeholder="Your Video Link"
             onChange={handleURLInputChange}
           />
         </div>
-        <button type="submit" className="button text-primary">
+        <button type="submit" className="button text-black">
           Create new page
         </button>
         {getStreamsLoading && <p className="text-center">Loading...</p>}

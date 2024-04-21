@@ -9,9 +9,8 @@ export default function PrivateStream() {
   const { roomId } = useParams();
   const [userId, streamId] = roomId.split(":");
 
-  const streamLink = `${
-    import.meta.env.VITE_CLIENT_URL
-  }/main-stream/${userId}:${streamId}`;
+  const streamLink = `${import.meta.env.VITE_CLIENT_URL
+    }/main-stream/${userId}:${streamId}`;
 
   async function handleCopyLink() {
     try {
@@ -31,7 +30,7 @@ export default function PrivateStream() {
           <div className="live-video__controls-container">
             <button
               onClick={handleCopyLink}
-              className="button flex items-center text-primary gap-3"
+              className="button flex items-center text-primary gap-3 bg-[#272727] hover:bg-[#767676]"
             >
               <span>Copy Stream Link</span>
               <span
@@ -41,7 +40,7 @@ export default function PrivateStream() {
               </span>
             </button>
             <Link
-              className="button flex items-center text-primary gap-3"
+              className="button flex items-center text-primary gap-3 bg-[#272727] hover:bg-[#767676]"
               to={`/admin-rah/${userId}:${streamId}`}
             >
               <span>To RAH Page</span>
@@ -59,3 +58,5 @@ export default function PrivateStream() {
     </div>
   );
 }
+
+// @apply flex text - white py - 1 px - 3 md: py - 2 md: px - 4 rounded - full transition - colors duration - 300 ease -in -out bg - [#272727] hover: bg - [#767676];

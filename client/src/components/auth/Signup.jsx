@@ -37,8 +37,10 @@ export default function Signup({ pathname }) {
           JSON.stringify(createdUser.data.auth_tokens)
         );
 
-        if (location.state.redirectToMain) {
+        if (location.state?.redirectToMain) {
           navigate(pathname, { state: { handRaise: true } });
+        } else {
+          navigate('/welcome');
         }
       } catch (error) {
         console.log(error.message);
@@ -47,14 +49,16 @@ export default function Signup({ pathname }) {
   });
 
   return (
-    <div className="flex flex-col gap-4 p-4 justify-center items-center">
+    <div className="flex flex-col gap-2 mt-2 justify-center items-center">
+      <span>Already have an account</span>
       <button
-        className="button text-primary"
+        className="flex hover:bg-[#ddd] gap-4 justify-between items-center outline outline-1 outline-black p-2 rounded-lg"
         onClick={() => {
           signup();
         }}
       >
-        Signup
+        <img height={24} width={24} src="https://www.shareicon.net/data/2016/07/10/119930_google_512x512.png" alt="google logo" />
+        <span>Signup with Google</span>
       </button>
     </div>
   );
