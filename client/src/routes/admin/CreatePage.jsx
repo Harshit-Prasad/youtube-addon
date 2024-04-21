@@ -39,7 +39,7 @@ export default function CreatePage() {
         url: streamId,
       });
 
-      addNewStreams(addedStream);
+      addNewStreams(addedStream.data);
       navigate(`/private-stream/${streamId}`);
     } catch (error) {
       toast.error(error.message);

@@ -34,8 +34,8 @@ export default function ProtectedRoute() {
       <div className='items-center justify-center flex-col flex grow gap-4'>
         <div>
 
-          You're logged in as a <span className='font-semibold'>{userInfo.role === 'admin' ? 'admin' : 'user'}</span>, toggle the switch to
-          become a {userInfo.role === 'admin' ? 'creator' : 'viewer'}
+          You're logged in as a <span className='font-semibold'>{userInfo.role === 'admin' ? 'ADMIN' : 'USER'}</span>, toggle the switch to
+          become a {userInfo.role === 'admin' ? 'User' : 'creator'}
 
         </div>
         <AdminToggle />
