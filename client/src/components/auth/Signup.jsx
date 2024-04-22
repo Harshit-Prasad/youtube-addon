@@ -49,10 +49,10 @@ export default function Signup({ pathname }) {
   });
 
   return (
-    <div className="flex flex-col gap-2 mt-2 justify-center items-center">
+    <div className="flex flex-col gap-2 mt-2 justify-center items-center text-white">
       <span>Already have an account</span>
       <button
-        className="flex hover:bg-[#ddd] gap-4 justify-between items-center outline outline-1 outline-black p-2 rounded-lg"
+        className="flex bg-white text-black hover:bg-[#ddd] gap-4 justify-between items-center outline outline-1 outline-black p-2 rounded-lg"
         onClick={() => {
           signup();
         }}
