@@ -32,12 +32,12 @@ export default function Dashboard() {
 
   return (
     <div className='h-dvh items-center justify-between flex flex-col p-2 landing-page__bg text-white overflow-y-auto'>
-      <nav className="w-full flex items-center justify-between px-6">
-        <Link className="ff-hughs text-2xl" to="/">
+      <nav className="navbar">
+        <Link className="logo text-4xl" to="/">
           Zuptalk
         </Link>
 
-        <Link className="button" to="/create-page">
+        <Link className="link text-2xl" to="/create-page">
           Create a new Page
         </Link>
       </nav>

@@ -127,32 +127,32 @@ export default function MainStream() {
   const handleAnswerCall = useCallback(async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-      video: false,
-      audio: {
-        deviceId: selectedInputAudioDevice
-      },
-    });
+        video: false,
+        audio: {
+          deviceId: selectedInputAudioDevice
+        },
+      });
 
-    setLocalStream(stream);
-    for (const track of stream.getTracks()) {
-      webRTCPeer.peer.addTrack(track, stream);
-    }
+      setLocalStream(stream);
+      for (const track of stream.getTracks()) {
+        webRTCPeer.peer.addTrack(track, stream);
+      }
 
-    const answer = await webRTCPeer.getAnswer();
+      const answer = await webRTCPeer.getAnswer();
 
 
-    socket.emit("call-accepted", {
-      answer,
-      to: selectedAdmin,
-      from: userInfo.id,
-    });
+      socket.emit("call-accepted", {
+        answer,
+        to: selectedAdmin,
+        from: userInfo.id,
+      });
 
-    setCallStarted(true);
-    setIsOpen(false);
+      setCallStarted(true);
+      setIsOpen(false);
     } catch (error) {
       toast.error(
-        'Please grant microphone access in order to answer the call.', 
-        {icon: '⚠️', duration: 5000}
+        'Please grant microphone access in order to answer the call.',
+        { icon: '⚠️', duration: 5000 }
       )
       handleCallEnded()
       setIsOpen(false);
@@ -273,7 +273,7 @@ export default function MainStream() {
     webRTCPeer.peer.close();
     setToggleRaiseHand(false);
     console.log('-->');
-    
+
     setSelectedAdmin(null);
     setWebRTCPeer(new NewWebRTCPeer());
   }, [selectedAdmin, socket, userInfo.id, webRTCPeer.peer, localStream]);
@@ -306,11 +306,11 @@ export default function MainStream() {
       }
     })();
 
-   return () => {
-    if (wakeLock) {
-      wakeLock.release();
+    return () => {
+      if (wakeLock) {
+        wakeLock.release();
+      }
     }
-   }
   }, [wakeLock])
 
   return (
@@ -324,7 +324,7 @@ export default function MainStream() {
               <button
                 disabled={callStarted}
                 onClick={handleRaiseHand}
-                className="button text-primary flex items-center justify-center gap-3"
+                className="media-button text-primary flex items-center justify-center gap-3"
               >
                 <span>{toggleRaiseHand ? "Asked to call" : "Ask to call"}</span>
                 <span
@@ -362,7 +362,7 @@ export default function MainStream() {
                 </>
               )}
               <button
-                className="button text-primary flex items-center justify-center gap-3"
+                className="media-button px-4 text-primary flex items-center justify-center gap-3"
                 onClick={handleShareLink}
               >
                 <span>Share</span>
@@ -411,17 +411,17 @@ export default function MainStream() {
           document.getElementById("incoming-call")
         )}
 
-        {mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
-            {loadingMediaDevices ? <span>Loading...</span> : 
-              <MediaDevices 
-                setModalDisplay={setMediaDevicesModal}
-                setSelectedInputAudioDevice={setSelectedInputAudioDevice} 
-                mediaDevices={mediaDevices}
-              />
-            }
-          </Popup>, 
-          document.getElementById('media-device-settings'))
+      {mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
+        {loadingMediaDevices ? <span>Loading...</span> :
+          <MediaDevices
+            setModalDisplay={setMediaDevicesModal}
+            setSelectedInputAudioDevice={setSelectedInputAudioDevice}
+            mediaDevices={mediaDevices}
+          />
         }
+      </Popup>,
+        document.getElementById('media-device-settings'))
+      }
     </>
   );
 }

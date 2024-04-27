@@ -25,6 +25,8 @@ export default function Login({ pathname }) {
           picture: userInfo.data.picture,
         });
 
+        console.log(createdUser);
+
         setIsAuth(true);
         setUserInfo({
           id: createdUser.data.user._id,
@@ -37,6 +39,8 @@ export default function Login({ pathname }) {
           "auth_tokens",
           JSON.stringify(createdUser.data.auth_tokens)
         );
+
+        localStorage.setItem("user_info", JSON.stringify(createdUser.data.user));
 
         if (location.state.redirectToMain) {
           navigate(pathname || '/welcome', { state: { handRaise: true } });

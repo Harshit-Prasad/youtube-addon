@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import useVerifyTokens from "../hooks/useVerifyTokens";
 import { useUserInfoStore } from "../services/store";
+import axios from '../api/axios';
 
 const AuthContext = createContext({});
 
@@ -14,23 +14,28 @@ export default function AuthProvider({ children }) {
   const [isAuth, setIsAuth] = useState(false);
   const { setUserInfo } = useUserInfoStore((state) => state);
   const [verificationLoading, setVerificationLoading] = useState(true);
-  const axiosVerifyTokens = useVerifyTokens(setIsAuth);
 
   useEffect(() => {
     (async function () {
       try {
         const auth_tokens = window.localStorage.getItem("auth_tokens");
+        const user_info = window.localStorage.getItem('user_info')
         if (auth_tokens) {
-          const verifiedUser = await axiosVerifyTokens.post(
-            "/api/user/verify-tokens",
+          // const verifiedUser = await axiosVerifyTokens.post(
+          //   "/api/user/verify-tokens",
+          //   {
+          //     auth_tokens: JSON.parse(auth_tokens),
+          //   }
+          // );
+          const verifiedUser = await axios.post(
+            "/api/user/verify-token/v2",
             {
-              auth_tokens: JSON.parse(auth_tokens),
+              auth_token: JSON.parse(auth_tokens),
+              user_info: JSON.parse(user_info)
             }
           );
 
-          if (verifiedUser) {
-            setIsAuth(true);
-
+          if (verifiedUser.status === 200) {
             setUserInfo({
               id: verifiedUser.data.user.id,
               name: verifiedUser.data.user.name,
@@ -39,10 +44,7 @@ export default function AuthProvider({ children }) {
               email: verifiedUser.data.user.email,
             });
 
-            localStorage.setItem(
-              "auth_tokens",
-              JSON.stringify(verifiedUser.data.auth_tokens)
-            );
+            setIsAuth(true)
           }
         }
       } catch (error) {

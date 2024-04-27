@@ -34,19 +34,19 @@
   }
 
   .navbar {
-    @apply w-full flex items-center justify-between px-6 bg-black border-b-[1px] border-b-white; 
+    @apply w-full flex items-center justify-between px-6 py-2 bg-black border-b-[1px] border-b-white; 
   }
 
   .waitlist-form__input-container {
-    @apply flex w-full items-center my-3 md:my-6 gap-2;
+    @apply flex w-full flex-col items-start md:flex-row md:items-center justify-between my-6 md:my-6 gap-1 md:gap-2;
   }
   
   .waitlist-form__label {
-    @apply text-xl md:text-2xl font-bold;
+    @apply text-[1.5rem] w-full md:w-[25%] md:text-2xl md:font-semibold;
   }
 
   .waitlist-form__input {
-    @apply active:outline-0 focus:outline-0 grow rounded-full px-3 py-2 bg-[#232e2c84];
+    @apply block w-full active:outline-0 focus:outline-0 outline-[0.1px] outline outline-[#1e2826] grow rounded-full px-3 py-2 bg-[#232e2c84];
   }
 
   .button {
@@ -54,7 +54,7 @@
   }
 
   .media-button {
-    @apply inline-block text-white py-1 px-1 md:py-2 md:px-2 rounded-full bg-[#272727] hover:bg-[#767676];
+    @apply inline-block text-white py-1 px-1 md:py-2 md:px-4 rounded-full bg-[#272727] hover:bg-[#767676];
   }
 
   .bg-main {
@@ -79,6 +79,14 @@
 
   .text-secondary {
     @apply text-[#AAAAAA];
+  }
+
+  .logo {
+    @apply text-[2.2rem] md:text-6xl text-white ff-hughs;
+  }
+
+  .link {
+    @apply ff-hughs text-xl md:text-3xl md:inline-block px-4 py-[0.1rem] md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full;
   }
 }
 

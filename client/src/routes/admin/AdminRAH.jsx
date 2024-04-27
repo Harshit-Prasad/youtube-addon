@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import Popup from '../../components/ui/Popup';
 import MediaDevices from '../../components/ui/MediaDevices';
+import LinkCopyButton from '../../components/ui/LinkCopyButton';
 
 export default function AdminRAH() {
   const socket = useSocket();
@@ -31,7 +32,12 @@ export default function AdminRAH() {
   const [mediaDevicesModal, setMediaDevicesModal] = useState(true);
   const [loadingMediaDevices, setLoadingMediaDevices] = useState(true);
   const [mediaDevices, setMediaDevices] = useState([]);
-  const [selectedInputAudioDevice, setSelectedInputAudioDevice] = useState('default')
+  const [selectedInputAudioDevice, setSelectedInputAudioDevice] = useState('default');
+
+  const [userId, streamId] = params.roomId.split(":");
+
+  const streamLink = `${import.meta.env.VITE_CLIENT_URL
+    }/main-stream/${userId}:${streamId}`;
 
   const adminConnected = useCallback(() => {
     socket.emit("admin-connected", { userInfo, streamId: params.roomId });
@@ -362,21 +368,25 @@ export default function AdminRAH() {
   return (
     <div className='h-dvh flex flex-col landing-page__bg'>
       <nav className='navbar'>
-        <Link className="button" to="/dashboard">
+        <Link className="link" to="/dashboard">
           Dashboard
         </Link>
 
-        <button
-          onClick={handleEndStream}
-          className="button bg-red-500 hover:bg-red-700 text-white"
-        >
-          End Stream
-        </button>
+        <div className='flex gap-4 items-center'>
+          <button
+            onClick={handleEndStream}
+            className="link bg-red-500 hover:bg-red-700 text-white"
+          >
+            End Stream
+          </button>
+
+          <LinkCopyButton streamLink={streamLink} type="link" fontFace='ff-hughs' />
+        </div>
       </nav>
 
       <main className='text-white w-full grow overflow-y-auto flex justify-center flex-wrap p-2 gap-6'>
         {users.length === 0 ? (
-          <span className="text-center">No user joined</span>
+          <span className="text-center text-xl">No user joined</span>
         ) : (
           <div className="w-full flex justify-center items-center flex-col">
             <h2 className="text-center font-bold text-2xl p-4">Raised hand</h2>

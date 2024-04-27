@@ -36,6 +36,7 @@ export default function Signup({ pathname }) {
           "auth_tokens",
           JSON.stringify(createdUser.data.auth_tokens)
         );
+        localStorage.setItem("user_info", JSON.stringify(createdUser.user));
 
         if (location.state?.redirectToMain) {
           navigate(pathname, { state: { handRaise: true } });

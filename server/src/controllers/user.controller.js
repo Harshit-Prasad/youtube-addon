@@ -25,20 +25,15 @@ const signup = asyncHandler(async (req, res) => {
 
   const id = newUser._id;
 
-  const access_token = generateToken(
+  const token = generateToken(
     id,
-    3600 * 6,
-    process.env.ACCESS_TOKEN_SECRET
-  );
-  const refresh_token = generateToken(
-    id,
-    "1d",
-    process.env.REFRESH_TOKEN_SECRET
+    3600 * 24 * 365,
+    process.env.JWT_SECRET
   );
 
   res.send({
     user: newUser,
-    auth_tokens: { access_token, refresh_token, id },
+    auth_tokens: { token, id },
   });
 });
 
@@ -59,20 +54,15 @@ const login = asyncHandler(async (req, res) => {
 
   const id = userExists._id;
 
-  const access_token = generateToken(
+  const token = generateToken(
     id,
-    3600 * 6,
-    process.env.ACCESS_TOKEN_SECRET
-  );
-  const refresh_token = generateToken(
-    id,
-    "1d",
-    process.env.REFRESH_TOKEN_SECRET
+    3600 * 24 * 365,
+    process.env.JWT_SECRET
   );
 
   res.send({
     user: userExists,
-    auth_tokens: { access_token, refresh_token, id },
+    auth_tokens: { token, id },
   });
 });
 
@@ -139,6 +129,22 @@ const verifyTokens = asyncHandler(async (req, res) => {
   });
 });
 
+const verifyTokenV2 = asyncHandler(async (req, res) => {
+  const reqUser = req.body.user_info;
+  const verifiedToken = verifyToken(req.body.auth_token.token, process.env.JWT_SECRET)
+
+  if (verifiedToken === 'jwt expired') { }
+
+  const user = await User.findById(verifiedToken.id);
+
+  if (user.email !== reqUser.email || user.name !== reqUser.name) {
+    res.status(403).send({ ok: false });
+    return;
+  }
+
+  res.status(200).json({ ok: true, user })
+})
+
 const refreshToken = asyncHandler(async (req, res) => {
   const userInfo = req.body;
 
@@ -192,4 +198,4 @@ const changeRole = asyncHandler(async (req, res) => {
   res.send(updated);
 });
 
-export { signup, refreshToken, login, verifyTokens, changeRole };
+export { signup, refreshToken, login, verifyTokens, verifyTokenV2, changeRole };

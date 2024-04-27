@@ -14,7 +14,7 @@ export default function UserNavbar() {
 
   return (
     <header className="hidden z-[1] bg-[#0f0f0f] p-2 md:flex justify-between items-center w-full">
-      <h1 className="text-xl text-white">Logo.</h1>
+      <h1 className="logo text-3xl">Zuptalk</h1>
 
       {isAuth && (
         <div>

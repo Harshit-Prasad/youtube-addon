@@ -8,7 +8,7 @@ export default function useProtectedRoutes() {
   const axiosProtectedRoute = axios.create({
     baseURL: BASE_URL,
     headers: {
-      Authorization: `Bearer ${authTokens.access_token}`,
+      Authorization: `Bearer ${authTokens.token}`,
     },
   });
 

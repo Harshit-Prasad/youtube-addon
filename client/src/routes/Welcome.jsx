@@ -12,14 +12,14 @@ export default function ProtectedRoute() {
 
   return (
     <div className="h-dvh items-center justify-between flex flex-col p-2 landing-page__bg text-white">
-      <nav className="w-full flex items-center justify-between px-6">
-        <Link className="ff-hughs text-2xl" to="/">
+      <nav className="navbar">
+        <Link className="logo" to="/">
           Zuptalk
         </Link>
 
         <button onClick={() => {
           setProfileIsOpen(true)
-        }} className="button">
+        }} className="link">
           Profile
         </button>
       </nav>
@@ -32,7 +32,7 @@ export default function ProtectedRoute() {
       }
 
       <div className='items-center justify-center flex-col flex grow gap-4'>
-        <div>
+        <div className='text-xl'>
 
           You're logged in as a <span className='font-semibold'>{userInfo.role === 'admin' ? 'ADMIN' : 'USER'}</span>, toggle the switch to
           become a {userInfo.role === 'admin' ? 'User' : 'creator'}
@@ -41,7 +41,7 @@ export default function ProtectedRoute() {
         <AdminToggle />
 
         {
-          userInfo.role === 'admin' && <Link className="button" to="/dashboard">Dashboard</Link>
+          userInfo.role === 'admin' && <Link className="link mt-6" to="/dashboard">Dashboard</Link>
         }
       </div>
     </div>
