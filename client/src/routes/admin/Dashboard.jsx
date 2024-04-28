@@ -37,7 +37,7 @@ export default function Dashboard() {
           Zuptalk
         </Link>
 
-        <Link className="link text-2xl" to="/create-page">
+        <Link className="link text-xl md:text-2xl" to="/create-page">
           Create a new Page
         </Link>
       </nav>
@@ -55,7 +55,7 @@ export default function Dashboard() {
               if (!upcomingStream.ended) {
                 return (
                   <div
-                    className="flex justify-evenly items-center gap-10 mt-1 text-black"
+                    className="flex-col md:flex-row flex justify-evenly items-center gap:4 md:gap-10 mt-6 text-black"
                     key={upcomingStream._id}
                   >
                     <iframe
@@ -112,7 +112,7 @@ export default function Dashboard() {
                     width={240}
                     className="pointer-events-none"
                     allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    src={`https://www.youtube.com/embed/${endedStream.url.split(':')[1]}`} frameborder="0"></iframe>
+                    src={`https://www.youtube.com/embed/${endedStream.url.split(':')[1]}`}></iframe>
                 </div>
               );
             })}

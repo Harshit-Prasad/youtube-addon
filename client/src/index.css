@@ -34,7 +34,7 @@
   }
 
   .navbar {
-    @apply w-full flex items-center justify-between px-6 py-2 bg-black border-b-[1px] border-b-white; 
+    @apply w-full flex items-center justify-between px-2 md:px-6 py-2 bg-black border-b-[1px] border-b-white; 
   }
 
   .waitlist-form__input-container {
@@ -50,7 +50,7 @@
   }
 
   .button {
-    @apply flex text-black ff-hughs my-2 py-1 px-3 md:py-2 md:px-4 rounded-full transition-colors duration-300 ease-in-out bg-[#00E5BC] hover:bg-[#00e5bb8a];
+    @apply flex text-center text-black ff-hughs my-2 py-1 px-3 md:py-2 md:px-4 rounded-full transition-colors duration-300 ease-in-out bg-[#00E5BC] hover:bg-[#00e5bb8a];
   }
 
   .media-button {
