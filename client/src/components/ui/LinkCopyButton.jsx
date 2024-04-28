@@ -18,7 +18,7 @@ export default function LinkCopyButton({ streamLink, type, fontFace = '' }) {
             onClick={handleCopyLink}
             className={`${type} text-2xl flex items-center gap-3`}
         >
-            <span className={fontFace}>Copy Stream Link</span>
+            <span className={`${fontFace} text-xl md:text-2xl`}>Copy Stream Link</span>
             <span
                 className={`flex justify-center items-center p-1 rounded-full`}
             >

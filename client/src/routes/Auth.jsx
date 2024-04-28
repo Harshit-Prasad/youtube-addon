@@ -14,7 +14,7 @@ export default function Auth() {
       </nav>
 
       <div className="w-full max-w-[600px] grow p-4 gap-4 flex flex-col justify-center items-center">
-        <h2 className='text-white text-4xl font-semibold mb-8'>Let's rock in livestreams ⚡</h2>
+        <h2 className='text-white text-center text-4xl font-semibold mb-8'>Let's rock in livestreams ⚡</h2>
         <Login />
         <Signup />
 
