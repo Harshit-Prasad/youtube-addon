@@ -13,9 +13,9 @@ export default function Home() {
                     <Link to='/explore-use-cases' className='link'>
                         Explore Use Cases
                     </Link>
-                    <Link className='link' to='/welcome' >
+                    {/* <Link className='link' to='/welcome' >
                         Profile
-                    </Link>
+                    </Link> */}
                 </div>
             </nav>
 
