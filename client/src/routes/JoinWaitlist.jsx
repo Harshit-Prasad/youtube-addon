@@ -45,7 +45,7 @@ export default function JoinWaitlist() {
 
   return (
     <div className='h-dvh md:flex md:flex-col landing-page__bg'>
-      <nav className='bg-black flex justify-between items-center px-6 md:px-[3.5rem] py-2 md:py-4 border-b-[0.1px] border-white border-solid'>
+      <nav className='navbar'>
         <Link to='/' className='logo'>
           Zuptalk
         </Link>

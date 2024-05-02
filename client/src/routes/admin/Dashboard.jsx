@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useStreamsStore } from "../../services/store";
 import useProtectedRoutes from "../../hooks/useProtectedRoutes";
+import ProfileToggle from '../../components/ui/ProfileToggle';
 
 export default function Dashboard() {
   const { streams, removeStream, setStreams } = useStreamsStore(
@@ -40,6 +41,8 @@ export default function Dashboard() {
         <Link className="link text-xl md:text-2xl" to="/create-page">
           Create a new Page
         </Link>
+
+        <ProfileToggle />
       </nav>
       <main className="grow flex flex-col items-center gap-3 p-5">
         <h2 className="text-2xl py-5">Upcoming Streams</h2>

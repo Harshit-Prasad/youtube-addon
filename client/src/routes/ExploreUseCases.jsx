@@ -79,7 +79,7 @@ const pageContent = [
 export default function ExploreUseCases() {
   return (
     <div className='relative flex flex-col landing-page__bg'>
-      <nav className='bg-black sticky top-0 flex justify-between items-center px-6 md:px-[3.5rem] py-2 md:py-4 border-b-[1px] border-white border-solid'>
+      <nav className='navbar'>
         <Link to='/' className='logo'>
           Zuptalk
         </Link>
@@ -96,7 +96,7 @@ export default function ExploreUseCases() {
 
         <h2 className='text-xl md:text-3xl mb-4 md:mb-8'>
           Zuptalk is the all-in-one solution for interactive YouTube Livestreams.
-          <br/>
+          <br />
           Here's how it could be used:
         </h2>
 
@@ -106,11 +106,11 @@ export default function ExploreUseCases() {
               <h3 className='text-lg md:text-4xl font-bold md:font-semibold my-2 md:my-4'>{section.heading}</h3>
               <ul>
                 {section.points.map((point, i) => {
-                return <li key={i} className='my-2 ms-6 text-lg md:text-3xl list-disc md:leading-[2.5rem]'>
-                  <span className='font-semibold'>{point.highlight}</span>&nbsp;
-                  {point.content}
-                </li>
-              })}
+                  return <li key={i} className='my-2 ms-6 text-lg md:text-3xl list-disc md:leading-[2.5rem]'>
+                    <span className='font-semibold'>{point.highlight}</span>&nbsp;
+                    {point.content}
+                  </li>
+                })}
               </ul>
             </section>
           })
