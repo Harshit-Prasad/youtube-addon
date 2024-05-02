@@ -38,11 +38,13 @@ export default function Dashboard() {
           Zuptalk
         </Link>
 
-        <Link className="link text-xl md:text-2xl" to="/create-page">
-          Create a new Page
-        </Link>
+        <div className='flex gap-5 items-center'>
+          <Link className="link text-xl md:text-2xl" to="/create-page">
+            Create a new Page
+          </Link>
 
-        <ProfileToggle />
+          <ProfileToggle />
+        </div>
       </nav>
       <main className="grow flex flex-col items-center gap-3 p-5">
         <h2 className="text-2xl py-5">Upcoming Streams</h2>
@@ -126,3 +128,7 @@ export default function Dashboard() {
 
   );
 }
+
+// zuptalk to link
+// profile button
+// RAH font face

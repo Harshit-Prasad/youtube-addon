@@ -26,7 +26,7 @@ export default function PrivateStream() {
               className="media-button flex items-center text-primary gap-3 bg-[#272727] hover:bg-[#767676]"
               to={`/admin-rah/${userId}:${streamId}`}
             >
-              <span className='ff-hughs text-2xl'>To RAH Page</span>
+              <span className='text-2xl'>Speak To Audience</span>
               <span
                 className={`flex justify-center items-center p-1 rounded-full`}
               >
