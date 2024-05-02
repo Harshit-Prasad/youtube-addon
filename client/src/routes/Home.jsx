@@ -21,8 +21,8 @@ export default function Home() {
 
             <main className='text-white px-6 md:px-[3.5rem] py-4 md:py-0 grow flex flex-col gap-12 md:gap-20 justify-start items-start md:justify-center'>
                 <h1 className="text-3xl mt-6 md:leading-[4.5rem] md:text-[2.5rem] xl:text-[3.75rem] font-bold">
-                    Introducing the world's first <br className='hidden md:block' />
-                    seamless audio chat experience for <br className='hidden md:block' />
+                    Introducing the world's easiest <br className='hidden md:block' />
+                    audio chat experience for <br className='hidden md:block' />
                     YouTube <span className='text-[#ff2323]'>•Livestreams</span>
                 </h1>
 
