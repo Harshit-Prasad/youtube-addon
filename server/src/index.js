@@ -31,7 +31,7 @@ const corsOptions = {
   optionsSuccessStatus: 200,
 };
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 const server = createServer(app);
 
@@ -49,7 +49,7 @@ app.use("/api/stream", userStream);
 app.use("/api/user", userRoute);
 
 app.post('/save-waitlist', asyncHandler(async (req, res) => {
-  const {fullName, email, channelLink, contactNo} = req.body;
+  const { fullName, email, channelLink, contactNo } = req.body;
 
   if (!fullName || !email || !channelLink || !contactNo) {
     throw new Error('Invalid data')

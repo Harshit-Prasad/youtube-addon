@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { useUserInfoStore } from "../services/store";
 import axios from '../api/axios';
+import Loader from '../components/layout/Loader';
 
 const AuthContext = createContext({});
 
@@ -37,7 +38,7 @@ export default function AuthProvider({ children }) {
 
           if (verifiedUser.status === 200) {
             setUserInfo({
-              id: verifiedUser.data.user.id,
+              id: verifiedUser.data.user._id,
               name: verifiedUser.data.user.name,
               picture: verifiedUser.data.user.picture,
               role: verifiedUser.data.user.role,
@@ -62,7 +63,7 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={value}>
-      {verificationLoading ? <>Verifing User</> : <>{children}</>}
+      {verificationLoading ? <Loader /> : <>{children}</>}
     </AuthContext.Provider>
   );
 }
