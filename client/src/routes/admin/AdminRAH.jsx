@@ -140,9 +140,10 @@ export default function AdminRAH() {
       setSelectedUser(userId);
       const stream = await navigator.mediaDevices.getUserMedia({
         video: false,
-        audio: {
-          deviceId: selectedInputAudioDevice
-        },
+        audio: true
+        // audio: {
+        //   deviceId: selectedInputAudioDevice
+        // },
       });
 
       setLocalStream(stream);
@@ -467,7 +468,7 @@ export default function AdminRAH() {
       {callStarted && callStatus && createPortal(<div className="relative h-dvh w-full">
         <strong className='absolute bottom-0 left-0 m-4 p-2 bg-white shadow-md shadow-black rounded-md'>{callStatus}</strong>,
       </div>, document.getElementById('call-status'))}
-      {mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
+      {/* {mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
         {loadingMediaDevices ? <span>Loading...</span> :
           <MediaDevices
             setModalDisplay={setMediaDevicesModal}
@@ -477,7 +478,7 @@ export default function AdminRAH() {
         }
       </Popup>,
         document.getElementById('media-device-settings'))
-      }
+      } */}
     </div>
   );
 }

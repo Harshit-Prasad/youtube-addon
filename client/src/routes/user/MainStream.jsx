@@ -128,9 +128,10 @@ export default function MainStream() {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: false,
-        audio: {
-          deviceId: selectedInputAudioDevice
-        },
+        audio: true
+        // audio: {
+        //   deviceId: selectedInputAudioDevice
+        // },
       });
 
       setLocalStream(stream);
@@ -411,7 +412,7 @@ export default function MainStream() {
           document.getElementById("incoming-call")
         )}
 
-      {mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
+      {/* {mediaDevicesModal && createPortal(<Popup setIsOpen={setMediaDevicesModal} >
         {loadingMediaDevices ? <span>Loading...</span> :
           <MediaDevices
             setModalDisplay={setMediaDevicesModal}
@@ -421,7 +422,7 @@ export default function MainStream() {
         }
       </Popup>,
         document.getElementById('media-device-settings'))
-      }
+      } */}
     </>
   );
 }
