@@ -295,7 +295,8 @@ export default function MainStream() {
           try {
             setWakeLock(await navigator.wakeLock.request('screen'));
           } catch (error) {
-            toast.error('Something went wrong')
+            // toast.error('Something went wrong')
+            console.error('Something went wrong');
           }
         }
 
