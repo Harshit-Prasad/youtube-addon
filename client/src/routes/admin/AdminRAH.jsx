@@ -79,7 +79,7 @@ export default function AdminRAH() {
         });
       }
     },
-    [users]
+    [users, selectedUser]
   );
 
   const userHandRaised = useCallback(({ id, handRaised }) => {
@@ -390,51 +390,56 @@ export default function AdminRAH() {
           <span className="text-center text-xl">No user joined</span>
         ) : (
           <div className="w-full flex justify-center items-center flex-col">
-            <h2 className="text-center font-bold text-2xl p-4">Raised hand</h2>
-            {users.map((user, i) => {
-              if (user.handRaised) {
-                return (
-                  <div
-                    key={user.id + i}
-                    className="flex flex-col items-center justify-center gap-4"
-                  >
-                    <div className='flex flex-col gap-1 items-center justify-center'>
-                      <button
-                        onClick={() => handleCallAudience(user.id)}
-                        className={`relative button text-primary h-12 w-12 rounded-full flex justify-center items-center border-4 border-solid ${remoteStream && 'border-[green]'}`}
-                        key={user.id}
-                        disabled={selectedUser !== null}
-                      >
-                        <img className='absolute cursor-pointer h-full w-full rounded-full' src={user.picture} alt={user.name} />
-                      </button>
-                      <p>{user.name} </p>
-                    </div>
-                    {selectedUser === user.id && callStarted && (
-                      <div className='flex gap-4'>
-                        <button
-                          onClick={() => {
-                            setMuted((prev) => !prev);
-                          }}
-                          className="media-button text-primary rounded-full"
-                        >
-                          {muted ? <MicOff /> : <Mic />}
-                        </button>
-                        <button
-                          onClick={() => {
-                            handleEndCall(user.id);
-                          }}
-                          className="media-button bg-red-700 hover:bg-red-500 rounded-full"
-                        >
-                          <X />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                );
-              }
+            <h2 className="text-center font-bold text-2xl p-4">Ready to Speak</h2>
 
-              return null;
-            })}
+            <div className='w-full items-center justify-center flex gap-4 flex-wrap'>
+
+              {users.map((user, i) => {
+                if (user.handRaised) {
+                  return (
+                    <div
+                      key={user.id + i}
+                      className="flex flex-col items-center justify-center gap-4"
+                    >
+                      <div className='flex flex-col gap-1 items-center justify-center'>
+                        <button
+                          onClick={() => handleCallAudience(user.id)}
+                          className={`relative button text-primary h-12 w-12 rounded-full flex justify-center items-center border-4 border-solid ${remoteStream && selectedUser === user.id && 'border-[green]'}`}
+                          key={user.id}
+                          disabled={selectedUser !== null}
+                        >
+                          <img className='absolute cursor-pointer h-full w-full rounded-full' src={user.picture} alt={user.name} />
+                        </button>
+                        <p>{user.name} </p>
+                      </div>
+                      {selectedUser === user.id && callStarted && (
+                        <div className='flex gap-4'>
+                          <button
+                            onClick={() => {
+                              setMuted((prev) => !prev);
+                            }}
+                            className="media-button text-primary rounded-full"
+                          >
+                            {muted ? <MicOff /> : <Mic />}
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleEndCall(user.id);
+                            }}
+                            className="media-button bg-red-700 hover:bg-red-500 rounded-full"
+                          >
+                            <X />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+
+                return null;
+              })}
+            </div>
+
           </div>
         )}
         {recentInteractions.length > 0 &&

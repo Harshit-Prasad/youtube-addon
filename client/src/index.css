@@ -54,7 +54,7 @@
   }
 
   .media-button {
-    @apply inline-block text-white py-1 px-1 md:py-2 md:px-4 rounded-full bg-[#272727] hover:bg-[#767676];
+    @apply inline-block text-white py-1 px-2 md:py-2 md:px-4 rounded-full bg-[#272727] hover:bg-[#767676];
   }
 
   .bg-main {

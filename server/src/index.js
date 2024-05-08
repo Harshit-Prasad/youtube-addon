@@ -168,6 +168,9 @@ io.on("connection", (socket) => {
 
   socket.on("admin-end-call", ({ to, from }) => {
     const userSocketID = userIDToSocketID.get(to);
+
+    if (!userSocketID) return;
+
     const userInfo = socketIDToUserID.get(userSocketID);
     userInfo.handRaised = false;
     socketIDToUserID.set(userSocketID, userInfo);
