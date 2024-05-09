@@ -48,13 +48,13 @@ export default function AdminRAH() {
       const exists = users.find((userInfo) => userInfo.id === id);
       if (!exists) {
         setUsers((prev) => [
+          ...prev,
           {
             id,
             name,
             picture,
             handRaised,
           },
-          ...prev,
         ]);
       }
     },
@@ -385,17 +385,65 @@ export default function AdminRAH() {
         </div>
       </nav>
 
-      <main className='text-white w-full grow overflow-y-auto flex justify-center flex-wrap p-2 gap-6'>
+      <main className='text-white w-full overflow-y-auto flex justify-center flex-wrap p-2 gap-6'>
         {users.length === 0 ? (
           <span className="text-center text-xl">No user joined</span>
         ) : (
           <div className="w-full flex justify-center items-center flex-col">
             <h2 className="text-center font-bold text-2xl p-4">Ready to Speak</h2>
 
+            {users.map((user, i) => {
+              if (user.handRaised && selectedUser === user.id) {
+                return (
+                  <div
+                    key={user.id + i}
+                    className="flex flex-col items-center justify-center gap-4 mb-4"
+                  >
+                    <div className='flex flex-col gap-1 items-center justify-center'>
+                      <button
+                        onClick={() => handleCallAudience(user.id)}
+                        className={`relative button text-primary h-12 w-12 rounded-full flex justify-center items-center border-4 border-solid ${remoteStream && selectedUser === user.id && 'border-[green]'}`}
+                        key={user.id}
+                        disabled={selectedUser !== null}
+                      >
+                        <img className='absolute cursor-pointer h-full w-full rounded-full' src={user.picture} alt={user.name} />
+                      </button>
+                      <p>{user.name} </p>
+                    </div>
+                    {selectedUser === user.id && callStarted && (
+                      <div className='flex gap-4'>
+                        <button
+                          onClick={() => {
+                            setMuted((prev) => !prev);
+                          }}
+                          className="media-button text-primary rounded-full"
+                        >
+                          {muted ? <MicOff /> : <Mic />}
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleEndCall(user.id);
+                          }}
+                          className="media-button bg-red-700 hover:bg-red-500 rounded-full"
+                        >
+                          <X />
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+            })}
+
             <div className='w-full items-center justify-center flex gap-4 flex-wrap'>
 
               {users.map((user, i) => {
                 if (user.handRaised) {
+
+                  if (selectedUser === user.id) {
+                    return
+                  }
+
                   return (
                     <div
                       key={user.id + i}
