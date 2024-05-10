@@ -34,7 +34,7 @@ export default function JoinWaitlist() {
       }
 
     } catch (error) {
-      toast.error(error.message);
+      console.error(error.message);
     }
 
     setFullName('')

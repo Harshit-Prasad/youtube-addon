@@ -58,7 +58,7 @@ app.post('/save-waitlist', asyncHandler(async (req, res) => {
   const response = await Wishlist.create(req.body);
 
   res.send(response)
-}))
+}));
 
 server.listen(PORT, function () {
   console.log("Server Started on PORT: " + PORT);
