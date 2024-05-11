@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import axios from '../api/axios'
 
 export default function JoinWaitlist() {
-
+  const [formLoading, setFormLoading] = useState(false)
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [channelLink, setChannelLink] = useState('');
@@ -12,6 +12,18 @@ export default function JoinWaitlist() {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+
+    setFormLoading(true);
+
+    // const wait = async (d) => {
+    //   return new Promise((res, rej) => {
+    //     setTimeout(() => {
+    //       res()
+    //     }, d);
+    //   })
+    // };
+
+    // await wait(5000);
 
     if (contactNo.length !== 10) {
       toast.error('Please give a valid contact number.')
@@ -37,10 +49,11 @@ export default function JoinWaitlist() {
       console.error(error.message);
     }
 
-    setFullName('')
-    setEmail('')
-    setChannelLink('')
-    setContactNo('')
+    setFullName('');
+    setEmail('');
+    setChannelLink('');
+    setContactNo('');
+    setFormLoading(false);
   };
 
   return (
@@ -88,8 +101,9 @@ export default function JoinWaitlist() {
             </div>
           </div>
 
-          <button className='link text-2xl mt-8 px-12'>
+          <button className='flex items-center gap-4 link text-2xl mt-8 px-12'>
             Submit
+            {formLoading && <span className='animate-spin h-5 w-5 border-b-2 border-l-2 border-black border-solid rounded-[50%]'></span>}
           </button>
         </form>
       </main>
