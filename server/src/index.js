@@ -34,7 +34,6 @@ const corsOptions = {
 app.use(cors());
 app.options('*', cors());
 
-
 const server = createServer(app);
 
 // Socket io init
