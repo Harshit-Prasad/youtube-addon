@@ -118,7 +118,7 @@ export default function MainStream() {
   const handleIncomingCall = useCallback(
     async ({ from, offer }) => {
       setSelectedAdmin(from);
-      webRTCPeer.peer.setRemoteDescription(offer);
+      await webRTCPeer.peer.setRemoteDescription(offer);
       setIsOpen(true);
     },
     [webRTCPeer]
@@ -129,9 +129,6 @@ export default function MainStream() {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: false,
         audio: true
-        // audio: {
-        //   deviceId: selectedInputAudioDevice
-        // },
       });
 
       setLocalStream(stream);
