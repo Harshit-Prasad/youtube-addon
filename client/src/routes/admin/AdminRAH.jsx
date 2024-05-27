@@ -206,6 +206,8 @@ export default function AdminRAH() {
         track.stop();
       });
 
+      console.log('__');
+
       webRTCPeer?.peer.close();
       setRemoteStream(null);
       setLocalStream(null);
@@ -214,7 +216,7 @@ export default function AdminRAH() {
       setSelectedUser(null);
 
       setUsers((prevUsers) => {
-        const u = prevUsers.slice().map((user) => {
+        const u = prevUsers.map((user) => {
           if (user.id === userId) {
             return {
               ...user,
@@ -244,7 +246,7 @@ export default function AdminRAH() {
         resetRecentInteractions(userId)
       }
     },
-    [webRTCPeer, localStream, users]
+    [webRTCPeer, localStream, users, resetRecentInteractions]
   );
 
   const handleIncomingICECandidate = useCallback(
@@ -401,12 +403,12 @@ export default function AdminRAH() {
                   >
                     <div className='flex flex-col gap-1 items-center justify-center'>
                       <button
-                        onClick={() => handleCallAudience(user.id)}
+                        onClick={() => handleCallAudience(user?.id)}
                         className={`relative button text-primary h-12 w-12 rounded-full flex justify-center items-center border-4 border-solid ${remoteStream && selectedUser === user.id && 'border-[green]'}`}
                         key={user.id}
                         disabled={selectedUser !== null}
                       >
-                        <img className='absolute cursor-pointer h-full w-full rounded-full' src={user.picture} alt={user.name} />
+                        <img className='absolute cursor-pointer h-full w-full rounded-full' src={user?.picture} alt={user.name} />
                       </button>
                       <p>{user.name} </p>
                     </div>
@@ -438,7 +440,7 @@ export default function AdminRAH() {
             <div className='w-full items-center justify-center flex gap-4 flex-wrap'>
 
               {users.map((user, i) => {
-                if (user.handRaised) {
+                if (user?.handRaised) {
 
                   if (selectedUser === user.id) {
                     return
@@ -495,15 +497,15 @@ export default function AdminRAH() {
             <h2 className="text-center font-bold text-lg">Recent Interactions</h2>
             <div className='flex flex-wrap gap-4 py-4 items-center justify-center'>
               {recentInteractions.map((user, i) => {
-                if (!user.handRaised) {
+                if (!user?.handRaised) {
                   return (
-                    <div key={user.id + i} className='flex flex-col gap-4 items-center justify-center'>
+                    <div key={user?.id + i} className='flex flex-col gap-4 items-center justify-center'>
                       <span
                         className={`relative text-primary h-12 w-12 rounded-full flex justify-center items-center`}
                       >
-                        <img className='absolute cursor-pointer h-full w-full rounded-full' src={user.picture} alt={user.name} />
+                        <img className='absolute cursor-pointer h-full w-full rounded-full' src={user?.picture} alt={user?.name} />
                       </span>
-                      <p>{user.name} </p>
+                      <p>{user?.name} </p>
                     </div>
                   );
                 }

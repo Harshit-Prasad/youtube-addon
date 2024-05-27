@@ -262,19 +262,18 @@ export default function MainStream() {
       track?.stop();
     });
 
-    socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin, type });
-
     setRemoteStream(null);
     setLocalStream(null);
+    webRTCPeer.peer.close();
+    socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin, type });
+
     setCallStarted(false);
     setIsOpen(false);
-    webRTCPeer.peer.close();
     setToggleRaiseHand(false);
-    console.log('-->');
-
     setSelectedAdmin(null);
+
     setWebRTCPeer(new NewWebRTCPeer());
-  }, [selectedAdmin, socket, userInfo.id, webRTCPeer.peer, localStream]);
+  }, [selectedAdmin, socket, userInfo.id, webRTCPeer.peer, localStream?.getTracks()]);
 
   useEffect(() => {
     (async function () {
@@ -285,32 +284,32 @@ export default function MainStream() {
     })();
   }, []);
 
-  useEffect(() => {
-    (async function () {
-      if ('wakeLock' in navigator) {
-        if (!wakeLock) {
-          try {
-            setWakeLock(await navigator.wakeLock.request('screen'));
-          } catch (error) {
-            // toast.error('Something went wrong')
-            console.error('Something went wrong');
-          }
-        }
+  // useEffect(() => {
+  //   (async function () {
+  //     if ('wakeLock' in navigator) {
+  //       if (!wakeLock) {
+  //         try {
+  //           setWakeLock(await navigator.wakeLock.request('screen'));
+  //         } catch (error) {
+  //           // toast.error('Something went wrong')
+  //           console.error('Something went wrong');
+  //         }
+  //       }
 
-        wakeLock.addEventListener('release', (e) => {
-          console.log(e);
-        });
-      } else {
-        toast.error('Be sure to keep the screen active.')
-      }
-    })();
+  //       wakeLock.addEventListener('release', (e) => {
+  //         console.log(e);
+  //       });
+  //     } else {
+  //       toast.error('Be sure to keep the screen active.')
+  //     }
+  //   })();
 
-    return () => {
-      if (wakeLock) {
-        wakeLock.release();
-      }
-    }
-  }, [wakeLock])
+  //   return () => {
+  //     if (wakeLock) {
+  //       wakeLock.release();
+  //     }
+  //   }
+  // }, [wakeLock])
 
   return (
     <>
@@ -351,13 +350,15 @@ export default function MainStream() {
                   >
                     {muted ? <MicOff /> : <Mic />}
                   </button>
-                  {/* <button
-                    onClick={handleEndCall}
-                    disabled={true}
+                  <button
+                    onClick={() => {
+                      handleEndCall()
+                    }}
+                    // disabled={true}
                     className="media-button bg-red-700 hover:bg-red-500 rounded-full"
                   >
                     <X />
-                  </button> */}
+                  </button>
                 </>
               )}
               <button
