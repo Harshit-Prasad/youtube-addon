@@ -1,5 +1,7 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import Navbar from '../components/layout/Navbar'
+
 
 const pageContent = [
   {
@@ -79,15 +81,7 @@ const pageContent = [
 export default function ExploreUseCases() {
   return (
     <div className='relative flex flex-col landing-page__bg'>
-      <nav className='navbar'>
-        <Link to='/' className='logo'>
-          Zuptalk
-        </Link>
-
-        <Link to='/join-waitlist' className='link'>
-          Join the Waitlist
-        </Link>
-      </nav>
+      <Navbar />
 
       <main className='text-white px-6 md:px-[3.5rem] flex-1 py-4 md:py-8'>
         <h1 className='text-2xl md:text-5xl font-bold my-6 md:mb-8'>

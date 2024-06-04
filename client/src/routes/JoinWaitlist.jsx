@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import axios from '../api/axios'
+import Navbar from '../components/layout/Navbar'
 
 export default function JoinWaitlist() {
   const [formLoading, setFormLoading] = useState(false)
@@ -58,15 +59,7 @@ export default function JoinWaitlist() {
 
   return (
     <div className='h-dvh md:flex md:flex-col landing-page__bg'>
-      <nav className='navbar'>
-        <Link to='/' className='logo'>
-          Zuptalk
-        </Link>
-
-        <Link to='/explore-use-cases' className='link'>
-          Explore Use Cases
-        </Link>
-      </nav>
+      <Navbar />
 
       <main className='text-white py-4 md:py-0 px-6 md:px-[3.5rem] gap-8 flex-1 flex flex-col items-start justify-center'>
         <h1 className='text-4xl md:text-5xl font-bold md:mt-6'>

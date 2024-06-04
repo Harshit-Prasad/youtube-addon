@@ -23,6 +23,7 @@ import PublicStreamProtected from "./protected-route/PublicStreamProtected";
 import Home from './routes/Home';
 import JoinWaitlist from './routes/JoinWaitlist';
 import ExploreUseCases from './routes/ExploreUseCases';
+import AboutUs from './routes/AboutUs';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +31,7 @@ const router = createBrowserRouter(
       <Route path='/' element={<Home />} />
       <Route path='/join-waitlist' element={<JoinWaitlist />} />
       <Route path='/explore-use-cases' element={<ExploreUseCases />} />
+      <Route path='/about-us' element={<AboutUs />} />
 
       <Route element={<AuthProviderProtected />}>
         <Route element={<AuthProtector />}>

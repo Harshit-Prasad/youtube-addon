@@ -1,23 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import Navbar from '../components/layout/Navbar'
 export default function Home() {
 
     return (
         <div className='landing-page__bg text-white flex flex-col h-dvh'>
-            <nav className="navbar">
-                <span className="logo">
-                    Zuptalk
-                </span>
-
-                <div className='flex items-center gap-3 ff-hughs text-xl'>
-                    <Link to='/explore-use-cases' className='link'>
-                        Explore Use Cases
-                    </Link>
-                    {/* <Link className='link' to='/welcome' >
-                        Profile
-                    </Link> */}
-                </div>
-            </nav>
+            <Navbar />
 
             <main className='text-white px-6 md:px-[3.5rem] py-4 md:py-0 grow flex flex-col gap-12 md:gap-20 justify-start items-start md:justify-center'>
                 <h1 className="text-3xl mt-6 md:leading-[4.5rem] md:text-[2.5rem] xl:text-[3.75rem] font-bold">

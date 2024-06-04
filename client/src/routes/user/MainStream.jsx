@@ -125,37 +125,38 @@ export default function MainStream() {
   );
 
   const handleAnswerCall = useCallback(async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: false,
-        audio: true
-      });
+    // try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: false,
+      audio: true
+    });
 
-      setLocalStream(stream);
-      for (const track of stream.getTracks()) {
-        webRTCPeer.peer.addTrack(track, stream);
-      }
-
-      const answer = await webRTCPeer.getAnswer();
-
-
-      socket.emit("call-accepted", {
-        answer,
-        to: selectedAdmin,
-        from: userInfo.id,
-      });
-
-      setCallStarted(true);
-      setIsOpen(false);
-    } catch (error) {
-      toast.error(
-        'Please grant microphone access in order to answer the call.',
-        { icon: '⚠️', duration: 5000 }
-      )
-      handleCallEnded()
-      setIsOpen(false);
-      socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin, type: 'permission-not-granted' });
+    setLocalStream(stream);
+    for (const track of stream.getTracks()) {
+      webRTCPeer.peer.addTrack(track, stream);
     }
+
+    const answer = await webRTCPeer.getAnswer();
+
+
+    socket.emit("call-accepted", {
+      answer,
+      to: selectedAdmin,
+      from: userInfo.id,
+    });
+
+    setCallStarted(true);
+    setIsOpen(false);
+    // } 
+    // catch (error) {
+    //   toast.error(
+    //     'Please grant microphone access in order to answer the call.',
+    //     { icon: '⚠️', duration: 5000 }
+    //   )
+    //   handleCallEnded()
+    //   setIsOpen(false);
+    //   socket.emit("user-end-call", { from: userInfo.id, to: selectedAdmin, type: 'permission-not-granted' });
+    // }
   }, [webRTCPeer, socket, userInfo.id, selectedAdmin, selectedInputAudioDevice]);
 
   const handleIncomingTracks = useCallback(
@@ -340,7 +341,7 @@ export default function MainStream() {
                   />
                 </span>
               </button>
-              {callStarted && (
+              {/* {callStarted && (
                 <>
                   <button
                     onClick={() => {
@@ -360,7 +361,7 @@ export default function MainStream() {
                     <X />
                   </button>
                 </>
-              )}
+              )} */}
               <button
                 className="media-button px-4 text-primary flex items-center justify-center gap-3"
                 onClick={handleShareLink}
