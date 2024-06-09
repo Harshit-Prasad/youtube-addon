@@ -23,6 +23,16 @@
   
   .landing-page__bg {
     background-image: linear-gradient(135deg, #080808 60%, #162522 ,#145247 100%);
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  .sticky-bg {
+    background-image: linear-gradient(135deg, #080808 60%, #162522 ,#145247 100%);
+    position: sticky;
+    background-repeat: no-repeat;
+    height: 100dvh;
+    width: 100%;
   }
   
   .ff-hughs {
@@ -34,7 +44,7 @@
   }
 
   .navbar {
-    @apply w-full flex items-center justify-between px-2 md:px-6 py-2 bg-black border-b-[1px] border-b-white; 
+    @apply w-full flex items-center justify-between px-6 md:px-[3.5rem] py-2 bg-black border-b-[1px] border-b-white; 
   }
 
   .waitlist-form__input-container {
@@ -86,7 +96,7 @@
   }
 
   .link {
-    @apply ff-hughs text-xl md:text-3xl md:inline-block px-4 py-[0.1rem] md:px-8 md:py-2 text-black bg-[#00E5BC] rounded-full;
+    @apply ff-hughs text-lg md:text-xl md:inline-block px-2 py-1 md:px-4 md:py-2 text-black bg-[#00E5BC] rounded-full;
   }
 }
 

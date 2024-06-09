@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar'
-
+import { Helmet } from 'react-helmet-async'
 
 const pageContent = [
   {
@@ -80,42 +80,50 @@ const pageContent = [
 
 export default function ExploreUseCases() {
   return (
-    <div className='relative flex flex-col landing-page__bg'>
-      <Navbar />
+    <>
+      <Helmet>
+        <title>Zuptalk | Explore More About Us</title>
+        <meta name="description" content="Take your YouTube live streams to the next level with Zuptalk. Talk to fans and enjoy real-time voice chat on YouTube Live. Experience live stream audio interaction like never before."
+        />
+        <link rel="canonical" href="/about-us" />
+      </Helmet>
+      <div className='relative flex flex-col landing-page__bg'>
+        <Navbar />
 
-      <main className='text-white px-6 md:px-[3.5rem] flex-1 py-4 md:py-8'>
-        <h1 className='text-2xl md:text-5xl font-bold my-6 md:mb-8'>
-          Engage with Your Audience Like Never Before with Zuptalk
-        </h1>
+        <main className='text-white px-6 md:px-[3.5rem] flex-1 py-4 md:py-8'>
+          <h1 className='text-2xl md:text-5xl font-bold my-6 md:mb-8'>
+            Engage with Your Audience Like Never Before with Zuptalk
+          </h1>
 
-        <h2 className='text-xl md:text-3xl mb-4 md:mb-8'>
-          Zuptalk is the all-in-one solution for interactive YouTube Livestreams.
-          <br />
-          Here's how it could be used:
-        </h2>
+          <h2 className='text-xl md:text-3xl mb-4 md:mb-8'>
+            Zuptalk is the all-in-one solution for interactive YouTube Livestreams.
+            <br />
+            Here's how it could be used:
+          </h2>
 
-        {
-          pageContent.map((section, i) => {
-            return <section key={i} className='my-6 md:my-10 w-full md:w-[80%]'>
-              <h3 className='text-lg md:text-4xl font-bold md:font-semibold my-2 md:my-4'>{section.heading}</h3>
-              <ul>
-                {section.points.map((point, i) => {
-                  return <li key={i} className='my-2 ms-6 text-lg md:text-3xl list-disc md:leading-[2.5rem]'>
-                    <span className='font-semibold'>{point.highlight}</span>&nbsp;
-                    {point.content}
-                  </li>
-                })}
-              </ul>
-            </section>
-          })
-        }
+          {
+            pageContent.map((section, i) => {
+              return <section key={i} className='my-6 md:my-10 w-full md:w-[80%]'>
+                <h3 className='text-lg md:text-4xl font-bold md:font-semibold my-2 md:my-4'>{section.heading}</h3>
+                <ul>
+                  {section.points.map((point, i) => {
+                    return <li key={i} className='my-2 ms-6 text-lg md:text-3xl list-disc md:leading-[2.5rem]'>
+                      <span className='font-semibold'>{point.highlight}</span>&nbsp;
+                      {point.content}
+                    </li>
+                  })}
+                </ul>
+              </section>
+            })
+          }
 
-        <div className='flex w-full justify-center items-center my-16'>
-          <Link to='/join-waitlist' className='link px-16 md:my-8'>
-            Join the Waitlist
-          </Link>
-        </div>
-      </main>
-    </div>
+          <div className='flex w-full justify-center items-center my-16'>
+            <Link to='/join-waitlist' className='link px-16 md:my-8'>
+              Join the Waitlist
+            </Link>
+          </div>
+        </main>
+      </div>
+    </>
   )
 }

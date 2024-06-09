@@ -24,6 +24,8 @@ import Home from './routes/Home';
 import JoinWaitlist from './routes/JoinWaitlist';
 import ExploreUseCases from './routes/ExploreUseCases';
 import AboutUs from './routes/AboutUs';
+import Blog from './routes/Blog';
+import Blogs from './routes/Blogs';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -32,6 +34,8 @@ const router = createBrowserRouter(
       <Route path='/join-waitlist' element={<JoinWaitlist />} />
       <Route path='/explore-use-cases' element={<ExploreUseCases />} />
       <Route path='/about-us' element={<AboutUs />} />
+      <Route path='/blog' element={<Blogs />} />
+      <Route path='/blog/:blog' element={<Blog />} />
 
       <Route element={<AuthProviderProtected />}>
         <Route element={<AuthProtector />}>
