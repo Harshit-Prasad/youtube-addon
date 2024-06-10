@@ -21,20 +21,20 @@ export default function AboutUs() {
 
                 <main className='text-white px-6 md:px-[3.5rem] py-4 md:py-0 grow flex flex-col gap-2 md:gap-6 justify-start items-start md:justify-center'>
 
-                    <section className='my-4 md:my-6 md:mt-10 w-full h-[90dvh] md:h-[80%] flex justify-center md:items-center flex-col'>
+                    <section className='my-4 md:my-6 md:mt-10 w-full h-[100%] md:h-[80%] flex justify-center md:items-center flex-col'>
                         <h1 className='text-3xl text-center md:text-5xl font-bold my-2 md:mt-8 md:w-[75%]'>
                             About Us
                         </h1>
-                        <h2 className='my-6 text-lg text-center md:text-3xl list-disc md:leading-[2.5rem] md:w-[75%]'>
+                        <h2 className='mt-6 text-lg text-center md:text-3xl list-disc md:leading-[2.5rem] md:w-[75%]'>
                             Take your YouTube live streams to the next level with Zuptalk – Start engaging with your audience through real-time audio chats today!
                         </h2>
-                        <h3 className='my-6 text-lg text-center md:text-xl list-disc md:leading-[2.5rem] md:w-[75%]'>
+                        <h3 className='mt-6 text-lg text-center md:text-xl list-disc md:leading-[2.5rem] md:w-[75%]'>
                             Welcome to Zuptalk! We are a team of passionate innovators dedicated to transforming how YouTubers interact with their audiences. Our mission is to create tools that enhance the live-streaming experience, making it more engaging, personal, and fun.
                         </h3>
-                        <div className='mt-16 md:w-[75%] flex justify-center items-center'>
+                        <div className='mt-8 md:mt-16 md:w-[75%] flex justify-center items-center'>
                             <Link to='/join-waitlist' className="link">Join Waitlist</Link>
                         </div>
-                        <div className='mt-32 md:w-[75%] flex justify-center items-center'>
+                        <div className='mt-8 md:mt-32 md:w-[75%] flex justify-center items-center'>
                             <MoveDown size={36} className="animate-bounce" />
                         </div>
                     </section>
