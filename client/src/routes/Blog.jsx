@@ -34,13 +34,13 @@ export default function Blog() {
                         </h1>
 
                         {
-                            b.blog.paragraphs.map(p => {
-                                return <>
+                            b.blog.paragraphs.map((p, i) => {
+                                return <React.Fragment key={i}>
                                     {p.subHeading && <h2 className='text-xl md:text-3xl'>{p.subHeading}</h2>}
-                                    <p className='text-lg md:text-xl leading-4'>
+                                    <p className='text-lg md:text-xl'>
                                         {p.paragraph}
                                     </p>
-                                </>
+                                </React.Fragment>
                             })
                         }
                     </div>

@@ -26,11 +26,11 @@ export default function Blogs() {
 
                         {
                             blogs.map((b) => {
-                                return <>
-                                    <Link to={`/blog/${b.id}`} className='text-lg md:text-xl leading-4 border-none hover:border-white hover:border-b hover:border-solid my-4 py-1'>
+                                return <Link key={b.id} to={`/blog/${b.id}`} className='text-lg md:text-xl my-4 py-1'>
+                                    <span className='border-none pb-1 hover:border-white hover:border-b hover:border-solid'>
                                         {b.blog.heading}
-                                    </Link>
-                                </>
+                                    </span>
+                                </Link>
                             })
                         }
                     </div>
