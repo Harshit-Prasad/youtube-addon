@@ -35,7 +35,7 @@ const router = createBrowserRouter(
       <Route path='/explore-use-cases' element={<ExploreUseCases />} />
       <Route path='/about-us' element={<AboutUs />} />
       <Route path='/blog' element={<Blogs />} />
-      <Route path='/blog/:blog' element={<Blog />} />
+      <Route path='/blog/:id' element={<Blog />} />
 
       <Route element={<AuthProviderProtected />}>
         <Route element={<AuthProtector />}>

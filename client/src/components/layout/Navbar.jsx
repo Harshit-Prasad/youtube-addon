@@ -44,7 +44,7 @@ export default function Navbar() {
                             isActiveRoute = true
                         }
 
-                        return <li className="list-none mt-4" key={i}>
+                        return <li className="list-none mt-4 mx-4 p-1 border-b border-b-white rounded-none" key={i}>
                             <Link className={`link text-2xl bg-transparent ff-roboto text-[rgb(77,255,222)] hover:text-[rgba(77,255,222,0.75)] ${isActiveRoute && 'text-[rgba(77,255,222,0.5)] pointer-events-none'}`} to={route.route} >{route.name}</Link>
                         </li>
                     })
