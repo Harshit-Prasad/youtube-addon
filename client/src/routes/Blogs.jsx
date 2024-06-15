@@ -23,16 +23,21 @@ export default function Blogs() {
                         <h1 className='text-3xl md:text-5xl font-bold mt-12'>
                             Blogs
                         </h1>
+                        <div className='flex flex-wrap'>
+                            {
+                                blogs.map((b) => {
+                                    return <Link key={b.id} to={`/blog/${b.id}`} className='block rounded-[1em] hover-zoom bg-[rgba(255,255,255,0.1)] p-3 max-w-[350px] w-full aspect-square text-lg md:text-xl my-4'>
+                                        <div className='aspect-square rounded-[0.5em]'>
+                                            <img className='transition-all duration-[250ms] rounded-[0.5em]' width='100%' height='100%' src={`/src/assets/images/blogs/${b.id}.webp`} />
+                                        </div>
+                                        <h2 className='py-2'>
+                                            {b.blog.heading}
+                                        </h2>
 
-                        {
-                            blogs.map((b) => {
-                                return <Link key={b.id} to={`/blog/${b.id}`} className='text-lg md:text-xl my-4 py-1'>
-                                    <span className='border-none pb-1 hover:border-white hover:border-b hover:border-solid'>
-                                        {b.blog.heading}
-                                    </span>
-                                </Link>
-                            })
-                        }
+                                    </Link>
+                                })
+                            }
+                        </div>
                     </div>
                 </section>
             </main>
