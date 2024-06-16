@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async'
 import { toast } from 'react-hot-toast';
-import axios from '../api/axios'
+// import axios from '../api/axios'
+import axios from 'axios';
 import Navbar from '../components/layout/Navbar'
 
 export default function JoinWaitlist() {
@@ -26,6 +27,8 @@ export default function JoinWaitlist() {
 
     // await wait(5000);
 
+
+
     if (contactNo.length !== 10) {
       toast.error('Please give a valid contact number.')
 
@@ -40,7 +43,9 @@ export default function JoinWaitlist() {
         contactNo
       };
 
-      const response = await axios.post('/save-waitlist', data);
+      // const response = await axios.post('/save-waitlist', data);
+      const url = 'https://script.google.com/macros/s/AKfycbxlGQC2yptkLF3UhN3sjF59H_119GvZjRmb4PlXupz-OrxNZDIt9lE8ZYUdJmX-coucVw/exec';
+      const response = await axios.post(url, data)
 
       if (response.status === 200) {
         toast.success('Information saved successfully.')

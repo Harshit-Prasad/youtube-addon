@@ -26,7 +26,7 @@ export default function Navbar() {
                 {
                     navbar.map((route, i) => {
 
-                        return <Link key={i} className={`link ${route.route == location.pathname && 'bg-transparent text-[#4dffde]'}`} to={route.route}>{route.name}</Link>
+                        return <Link key={i} className={`bg-transparent text-[#4dffde] ${route.route == location.pathname && 'link'}`} to={route.route}>{route.name}</Link>
                     })
                 }
             </div>

@@ -1,4 +1,4 @@
-import _0_0_ from '../assets/images/blogs/_0_0_.webp';
+import _0_0_ from '../assets/images/blogs/_0_0_.png';
 
 export const blogs = [
     {

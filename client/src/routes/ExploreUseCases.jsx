@@ -95,19 +95,18 @@ export default function ExploreUseCases() {
             Engage with Your Audience Like Never Before with Zuptalk
           </h1>
 
-          <h2 className='text-xl md:text-3xl mb-4 md:mb-8'>
+          <h2 className='text-xl md:text-3xl mb-4 md:my-16'>
             Zuptalk is the all-in-one solution for interactive YouTube Livestreams.
-            <br />
             Here's how it could be used:
           </h2>
 
           {
             pageContent.map((section, i) => {
-              return <section key={i} className='my-6 md:my-10 w-full md:w-[80%]'>
+              return <section key={i} className={`my-6 md:my-10 w-full`}>
                 <h3 className='text-lg md:text-4xl font-bold md:font-semibold my-2 md:my-4'>{section.heading}</h3>
                 <ul>
                   {section.points.map((point, i) => {
-                    return <li key={i} className='my-2 ms-6 text-lg md:text-3xl list-disc md:leading-[2.5rem]'>
+                    return <li key={i} className='my-2 ms-6 text-lg md:text-2xl list-disc md:leading-[2.5rem]'>
                       <span className='font-semibold'>{point.highlight}</span>&nbsp;
                       {point.content}
                     </li>

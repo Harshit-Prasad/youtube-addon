@@ -26,11 +26,9 @@ export default function Blogs() {
                         <div className='flex flex-wrap'>
                             {
                                 blogs.map((b) => {
-                                    return <Link key={b.id} to={`/blog/${b.id}`} className='block rounded-[1em] hover-zoom bg-[rgba(255,255,255,0.1)] p-3 max-w-[350px] w-full aspect-square text-lg md:text-xl my-4'>
-                                        <div className='aspect-square rounded-[0.5em]'>
-                                            <img className='transition-all duration-[250ms] rounded-[0.5em]' width='100%' height='100%' src={blogsImages?.[b.id]} />
-                                        </div>
-                                        <h2 className='py-2'>
+                                    return <Link key={b.id} to={`/blog/${b.id}`} className='block rounded-[1em] hover-zoom bg-[#0E0E0E] w-full md:max-w-[400px] p-3 text-lg md:text-xl my-4'>
+                                        <img className='transition-all duration-[250ms] rounded-[0.5em]' src={blogsImages?.[b.id]} />
+                                        <h2 className='py-2 pt-4 font-semibold'>
                                             {b.blog.heading}
                                         </h2>
 

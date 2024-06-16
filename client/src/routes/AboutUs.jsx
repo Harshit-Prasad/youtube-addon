@@ -34,24 +34,19 @@ export default function AboutUs() {
                         <div className='mt-8 md:mt-16 md:w-[75%] flex justify-center items-center'>
                             <Link to='/join-waitlist' className="link">Join Waitlist</Link>
                         </div>
-                        <div className='mt-8 md:mt-32 md:w-[75%] flex justify-center items-center'>
-                            <MoveDown size={36} className="animate-bounce" />
-                        </div>
                     </section>
 
                     <>
                         {
                             aboutUs.map((section, i) => {
-                                const isEven = i % 2;
-
-                                return <section key={i} className={`my-6 md:my-6 flex justify-center md:items-${isEven ? 'start' : 'end'} flex-col`}>
-                                    <h2 className='text-xl md:text-3xl mb-4 md:mb-4'>
+                                return <section key={i} className={`my-6 md:my-6`}>
+                                    <h2 className='text-xl md:text-3xl mb-4 md:mb-4 text-center'>
                                         {section.heading}
                                     </h2>
 
                                     {
                                         section.content.length > 0 && section.content.map((para, i) => {
-                                            return <p key={i} className='my-4 w-100 md:w-[50%] text-lg md:text-2xl list-disc md:leading-[2.5rem]'>
+                                            return <p key={i} className='my-4 w-100 text-lg md:text-2xl list-disc md:leading-[2.5rem] text-center'>
                                                 {para}
                                             </p>
                                         })
@@ -64,18 +59,18 @@ export default function AboutUs() {
                     <>
                         {
                             <section className='my-6 md:my-6 md:mt-10 w-full'>
-                                <h2 className='text-center text-2xl md:text-5xl font-bold my-2 md:mb-4'>
+                                <h2 className='text-center text-2xl md:text-5xl font-bold my-2 md:mb-16'>
                                     About Our Product
                                 </h2>
-                                <p className='my-4 text-lg md:text-3xl list-disc md:leading-[2.5rem]'>
+                                <p className='my-4 text-lg md:text-2xl list-disc md:leading-[2.5rem]'>
                                     Zuptalk is an all-in-one solution that allows YouTubers to talk with their fans in real time during live streams. Here's what makes Zuptalk special:
                                 </p>
 
                                 <ul>
                                     {
                                         aboutOurProduct.map((list, i) => {
-                                            return <li key={i} className='my-4 ms-6 text-lg md:text-3xl list-disc md:leading-[2rem]'>
-                                                <span className='font-semibold'>{list.heading}:</span>&nbsp;
+                                            return <li key={i} className='my-4 ms-6 text-lg md:text-3xl list-disc md:leading-[1.25rem]'>
+                                                <span className='font-semibold text-lg md:text-2xl'>{list.heading}:</span>&nbsp;
                                                 <span className='text-lg md:text-2xl'>
                                                     {list.content}
                                                 </span>
@@ -84,7 +79,7 @@ export default function AboutUs() {
                                     }
                                 </ul>
 
-                                <p className='my-4 text-lg md:text-3xl list-disc md:leading-[2.5rem]'>
+                                <p className='my-4 text-lg md:text-2xl list-disc md:leading-[2.5rem]'>
                                     At Zuptalk, we are constantly innovating and improving our platform to meet the needs of our users. We are committed to providing the best tools and support to help you grow your community and make your live streams more exciting.
                                 </p>
 

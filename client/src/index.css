@@ -48,7 +48,7 @@
     background: linear-gradient(to right, rgba(38, 38, 38, 0.25) 5%, rgba(13, 13, 13, 0.75) 40%, rgba(0, 0, 0, 1) 100%);
   }
 
-  .hover-zoom:hover div img {
+  .hover-zoom:hover img {
     scale: 0.975;
   }
 
