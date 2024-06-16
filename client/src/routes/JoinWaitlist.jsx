@@ -106,10 +106,16 @@ export default function JoinWaitlist() {
               </div>
             </div>
 
-            <button className='flex items-center gap-4 link text-2xl mt-8 px-12'>
-              Submit
-              {formLoading && <span className='animate-spin h-5 w-5 border-b-2 border-l-2 border-black border-solid rounded-[50%]'></span>}
-            </button>
+            <div className='mt-8 '>
+              <button className='flex items-center gap-4 link text-2xl px-12'>
+                Submit
+                {formLoading && <span className='animate-spin h-5 w-5 border-b-2 border-l-2 border-black border-solid rounded-[50%]'></span>}
+              </button>
+
+              <span className='block mt-4 text-lg'>
+                Or send us an email at <a className='text-green-300' href='mailto:hello@zuptalk.com'>hello@zuptalk.com</a>
+              </span>
+            </div>
           </form>
         </main>
       </div>
