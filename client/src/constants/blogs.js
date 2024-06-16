@@ -1,3 +1,5 @@
+import _0_0_ from '../assets/images/blogs/_0_0_.webp';
+
 export const blogs = [
     {
         id: '0',
@@ -11,4 +13,8 @@ export const blogs = [
             ]
         }
     }
-]
+];
+
+export const blogsImages = {
+    '0': _0_0_,
+}
