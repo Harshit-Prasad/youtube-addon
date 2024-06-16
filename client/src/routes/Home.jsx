@@ -69,7 +69,7 @@ export default function Home() {
                                                 </div>
                                             </AccordionItemButton>
                                         </AccordionItemHeading>
-                                        <AccordionItemPanel className=' text-green-300 p-4 px-2 text-lg'>
+                                        <AccordionItemPanel className='text-green-300 p-4 px-2 text-lg'>
                                             {
                                                 p.paragraphs.map(paragraph => {
                                                     return <p>{paragraph}</p>
@@ -82,18 +82,18 @@ export default function Home() {
                             }
                             {
                                 faqs.list.map(l => {
-                                    return <AccordionItem className='text-black'>
+                                    return <AccordionItem className='text-white'>
                                         <AccordionItemHeading>
                                             <AccordionItemButton>
-                                                <div className='flex justify-between items-center bg-[#f4f4f4] hover:bg-[rgba(244,244,244,0.9)] p-4 border border-solid border-black'>
-                                                    <span className='text-xl'>
+                                                <div className='flex justify-between items-center bg-transparent hover:bg-[rgba(14,14,14,0.25)] p-8 px-2 pb-1 border-b border-b-solid border-green-800'>
+                                                    <span className='text-2xl font-semibold'>
                                                         {l.heading}
                                                     </span>
                                                     <span>
                                                         <AccordionItemState>
                                                             {
                                                                 ({ expanded }) => {
-                                                                    return expanded ? <ChevronUp /> : <ChevronDown />
+                                                                    return <ChevronDown color='rgb(134 239 172)' className={`${expanded && 'rotate-180'} transition-[rotate] duration-[250ms] ease-in`} />
                                                                 }
                                                             }
                                                         </AccordionItemState>
@@ -101,7 +101,7 @@ export default function Home() {
                                                 </div>
                                             </AccordionItemButton>
                                         </AccordionItemHeading>
-                                        <AccordionItemPanel className='text-white bg-[rgba(0,0,0,0.25)] p-4 text-xl'>
+                                        <AccordionItemPanel className='text-green-300 p-4 px-2 text-lg'>
                                             {
                                                 l.paragraphs.map(paragraph => {
                                                     return <>
