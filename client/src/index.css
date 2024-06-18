@@ -108,6 +108,8 @@
     @apply ff-hughs text-lg md:text-xl md:inline-block px-2 py-1 md:px-4 md:py-2 text-black bg-[#00E5BC] rounded-full;
   }
 
+  /* blogs */
+
   .section {
     @apply px-6 md:px-[3.5rem] py-4 md:py-0;
   }

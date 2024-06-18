@@ -1,12 +1,10 @@
 import React from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
-import Navbar from '../components/layout/Navbar';
-import { blogs, blogsImages } from '../constants/blogs';
+import Navbar from '../../components/layout/Navbar';
+import { blogs } from '../../constants/blogs';
 
 export default function Blogs() {
-
-
 
     return (
         <>
@@ -23,19 +21,19 @@ export default function Blogs() {
                         <h1 className='text-3xl md:text-5xl font-bold mt-12'>
                             Blogs
                         </h1>
-                        <div className='flex flex-wrap'>
+                        <article className='flex flex-wrap gap-4 justify-between'>
                             {
-                                blogs.map((b) => {
-                                    return <Link key={b.id} to={`/blog/${b.id}`} className='block rounded-[1em] hover-zoom bg-[#0E0E0E] w-full md:max-w-[400px] p-3 text-lg md:text-xl my-4'>
-                                        <img className='transition-all duration-[250ms] rounded-[0.5em]' src={blogsImages?.[b.id]} />
+                                blogs.map((b, i) => {
+                                    return <Link key={b.id} to={`/blog/${i + 1}`} className='block rounded-[1em] hover-zoom bg-[#0E0E0E] w-full md:max-w-[400px] p-3 text-lg md:text-xl my-4'>
+                                        <img className='transition-all duration-[250ms] rounded-[0.5em]' src={b.img} />
                                         <h2 className='py-2 pt-4 font-semibold'>
-                                            {b.blog.heading}
+                                            {b.heading}
                                         </h2>
 
                                     </Link>
                                 })
                             }
-                        </div>
+                        </article>
                     </div>
                 </section>
             </main>
