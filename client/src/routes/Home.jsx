@@ -63,12 +63,12 @@ export default function Home() {
                 {
                     pageContent.map(section => {
                         return <section className='section'>
-                            <h2 className="text-3xl mt-6 md:leading-[4.5rem] md:text-[2.5rem] xl:text-[3.75rem] font-bold">
+                            <h2 className="text-3xl mt-6 md:leading-[4.5rem] md:text-5xl font-semibold">
                                 {section.subHeading}
                             </h2>
                             {
                                 section.paragraphs.map(paragraph => {
-                                    return <p className='text-2xl md:text-5xl mt-4'>
+                                    return <p className='text-2xl md:text-2xl mt-4'>
                                         {paragraph}
                                     </p>
                                 })
