@@ -63,7 +63,7 @@ export default function Home() {
                 {
                     pageContent.map(section => {
                         return <section className='section'>
-                            <h2 className="text-3xl mt-6 md:leading-[4.5rem] md:text-5xl font-semibold">
+                            <h2 className="text-3xl mt-16 md:leading-[4.5rem] md:text-5xl font-semibold">
                                 {section.subHeading}
                             </h2>
                             {
@@ -77,7 +77,7 @@ export default function Home() {
                     })
                 }
 
-                <section className='section my-8'>
+                <section className='section my-12'>
                     <h2 className='text-4xl md:text-5xl font-semibold my-8'>
                         FAQs
                     </h2>
