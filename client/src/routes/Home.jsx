@@ -43,18 +43,22 @@ export default function Home() {
                 <section className='flex flex-col h-dvh'>
                     <Navbar />
 
-                    <div className='section text-white  grow flex flex-col gap-12 md:gap-20 justify-start items-start md:justify-center'>
-                        <h1 className="text-3xl mt-6 md:leading-[4.5rem] md:text-[2.5rem] xl:text-[3.75rem] font-bold">
-                            Introducing the world's easiest <br className='hidden md:block' />
-                            audio chat experience for <br className='hidden md:block' />
-                            YouTube <span className='text-[#ff2323]'>•Livestreams</span>
+                    <div className='section text-white grow'>
+                        <h1 className="text-3xl mt-[6rem] md:leading-[4.5rem] md:text-5xl xl:text-[3.75rem] font-bold">
+                            Talk to Fans On YouTube Live
                         </h1>
 
-                        <h2 className='text-2xl md:text-5xl font-semibold'>
+                        <p className="text-2xl mt-16 md:text-3xl md:leading-[3rem] font-bold">
+                            Introducing the world's easiest audio chat experience for
+                            <br className='hidden md:block' />
+                            YouTube <span className='text-[#ff2323]'>•Livestreams</span>
+                        </p>
+
+                        <h2 className='text-2xl md:text-4xl font-semibold mt-12'>
                             Now hear what your fans have to say
                         </h2>
 
-                        <Link to='/join-waitlist' className='link mt-6 px-16'>
+                        <Link to='/join-waitlist' className='link inline-block mt-20 px-16'>
                             Join the Waitlist
                         </Link>
                     </div>
