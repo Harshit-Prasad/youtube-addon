@@ -44,7 +44,7 @@ export default function Home() {
                     <Navbar />
 
                     <div className='section text-white grow'>
-                        <h1 className="text-3xl mt-[6rem] md:leading-[4.5rem] md:text-5xl xl:text-[3.75rem] font-bold">
+                        <h1 className="text-4xl mt-[6rem] md:leading-[4.5rem] md:text-5xl xl:text-[3.75rem] font-bold">
                             Talk to Fans On YouTube Live
                         </h1>
 
@@ -72,7 +72,7 @@ export default function Home() {
                             </h2>
                             {
                                 section.paragraphs.map(paragraph => {
-                                    return <p className='text-2xl md:text-2xl mt-4'>
+                                    return <p className='text-lg md:text-2xl mt-4'>
                                         {paragraph}
                                     </p>
                                 })

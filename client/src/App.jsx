@@ -29,7 +29,6 @@ import Blogs from './routes/blogs/Blogs';
 import Blog_1 from './routes/blogs/Blog_1';
 import Blog_2 from './routes/blogs/Blog_2';
 import Blog_3 from './routes/blogs/Blog_3';
-import Blog_4 from './routes/blogs/Blog_4';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -42,7 +41,6 @@ const router = createBrowserRouter(
       <Route path='/blog/1' element={<Blog_1 />} />
       <Route path='/blog/2' element={<Blog_2 />} />
       <Route path='/blog/3' element={<Blog_3 />} />
-      <Route path='/blog/4' element={<Blog_4 />} />
 
       <Route element={<AuthProviderProtected />}>
         <Route element={<AuthProtector />}>
