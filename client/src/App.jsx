@@ -37,10 +37,10 @@ const router = createBrowserRouter(
       <Route path='/join-waitlist' element={<JoinWaitlist />} />
       <Route path='/explore-use-cases' element={<ExploreUseCases />} />
       <Route path='/about-us' element={<AboutUs />} />
-      <Route path='/blog' element={<Blogs />} />
-      <Route path='/blog/1' element={<Blog_1 />} />
-      <Route path='/blog/2' element={<Blog_2 />} />
-      <Route path='/blog/3' element={<Blog_3 />} />
+      <Route path='/blogs' element={<Blogs />} />
+      <Route path='/blog/the-best-way-to-engaging-with-your-fans-via-voice-chat-on-youtube-live' element={<Blog_1 />} />
+      <Route path='/blog/how-to-talk-on-youtube-live-streams' element={<Blog_2 />} />
+      <Route path='/blog/how-zuptalk-transforms-youtube-live-streams' element={<Blog_3 />} />
 
       <Route element={<AuthProviderProtected />}>
         <Route element={<AuthProtector />}>

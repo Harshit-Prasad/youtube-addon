@@ -24,7 +24,7 @@ export default function Blogs() {
                         <article className='flex flex-wrap gap-4 justify-between'>
                             {
                                 blogs.map((b, i) => {
-                                    return <Link key={b.id} to={`/blog/${i + 1}`} className='block rounded-[1em] hover-zoom bg-[#0E0E0E] w-full md:max-w-[400px] p-3 text-lg md:text-xl my-4'>
+                                    return <Link key={b.id} to={`/blog/${b.route}`} className='block rounded-[1em] hover-zoom bg-[#0E0E0E] w-full md:max-w-[400px] p-3 text-lg md:text-xl my-4'>
                                         <img className='transition-all duration-[250ms] rounded-[0.5em]' src={b.img} />
                                         <h2 className='py-2 pt-4 font-semibold'>
                                             {b.heading}

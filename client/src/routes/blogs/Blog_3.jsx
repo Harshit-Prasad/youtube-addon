@@ -85,39 +85,39 @@ export default function Blog_4() {
                 <section className='flex flex-col'>
                     <Navbar />
 
-                    <div className='section text-white flex flex-col gap-6 md:gap-12 justify-start items-start md:justify-center'>
-                        <h1 className='text-3xl md:text-5xl font-bold mt-12'>
+                    <div className='section text-white flex flex-col gap-4 justify-start items-start md:justify-center'>
+                        <h1 className='blog-heading'>
                             How Zuptalk Transforms YouTube Live Streams
                         </h1>
 
-                        <p className='text-lg md:text-xl'>
+                        <p className='blog-paragraph'>
                             Transforming your YouTube live streams into engaging, interactive experiences is key to fostering the best audience. Zuptalk introduces an ultimate way to achieve this by enabling real-time voice chats during live streams. This guide will walk you through the process of setting up and using Zuptalk, enhancing your live streams via voice chat, and deepening viewer engagement.
                         </p>
-                        <p className='text-lg md:text-xl'>
+                        <p className='blog-paragraph'>
                             This revision maintains the focus on audience engagement and introduces Zuptalk's functionality clearly and enticingly. Let’s walk through with the guide.
                         </p>
                     </div>
                 </section>
 
                 <section className='section'>
-                    <h2 className='text-3xl md:text-4xl font-bold mt-12'>
+                    <h2 className='blog-sub-heading'>
                         Step-by-Step Guide to Setting Up Zuptalk
                     </h2>
                     {
                         pageContent.map((section, i) => {
                             return (
-                                <article className='section'>
-                                    <h3 className='text-3xl md:text-4xl font-semibold mt-12'>
+                                <article className='section mt-8'>
+                                    <h3 className='blog-sub-heading font-semibold'>
                                         {section.heading}
                                     </h3>
 
                                     {
                                         section.points.map((point, i) => {
                                             return <>
-                                                <h4 className='text-2xl md:text-3xl mt-8'>
+                                                <h4 className='blog-paragraph font-semibold mt-4'>
                                                     {i + 1}. {point.heading}
                                                 </h4>
-                                                <p className='text-lg md:text-xl mt-4'>
+                                                <p className='blog-paragraph mt-2'>
                                                     {point.paragraph}
                                                 </p>
                                             </>
@@ -129,13 +129,13 @@ export default function Blog_4() {
                     }
                 </section>
 
-                <section className='section text-white flex flex-col gap-4 md:gap-12 justify-start items-start md:justify-center mb-8'>
-                    <h2 className='text-3xl md:text-4xl font-bold mt-12'>
+                <section className='section text-white flex flex-col gap-4 justify-start items-start md:justify-center mb-8'>
+                    <h2 className='blog-sub-heading'>
                         Get A Powerful Way To Enhance Your Live Streaming Experience Via Zuptalk                    </h2>
-                    <p className='text-lg md:text-xl'>
+                    <p className='blog-paragraph'>
                         Zuptalk offers a powerful way to enhance your YouTube live streams by enabling real-time voice chats. By following the simple setup steps and actively engaging with your audience, you can create a more dynamic and interactive live-streaming experience.
                     </p>
-                    <p className='text-lg md:text-xl'>
+                    <p className='blog-paragraph'>
                         Ready to transform your YouTube live streams? Sign up for Zuptalk today and start engaging with your audience in real-time audio chats!
                     </p>
                 </section>
