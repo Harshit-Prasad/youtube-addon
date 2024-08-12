@@ -155,11 +155,15 @@ io.on("connection", (socket) => {
   socket.on("call-peer", ({ from, to, offer }) => {
     const socketID = userIDToSocketID.get(to);
     io.to(socketID).emit("incoming-call", { from, offer });
+
+    console.log('call-peer', from, to, offer);
   });
 
   socket.on("call-accepted", ({ answer, to, from }) => {
     const socketID = userIDToSocketID.get(to);
     io.to(socketID).emit("call-accepted", { from, answer });
+
+    console.log('call-accepted', from, to, answer);
   });
 
   socket.on("add-ice-candidate", ({ to, from, ic }) => {

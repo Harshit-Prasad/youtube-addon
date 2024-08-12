@@ -120,6 +120,7 @@ export default function MainStream() {
       setSelectedAdmin(from);
       await webRTCPeer.peer.setRemoteDescription(offer);
       setIsOpen(true);
+      console.log('incoming call', from);
     },
     [webRTCPeer]
   );
@@ -284,33 +285,6 @@ export default function MainStream() {
       setLoadingMediaDevices(false)
     })();
   }, []);
-
-  // useEffect(() => {
-  //   (async function () {
-  //     if ('wakeLock' in navigator) {
-  //       if (!wakeLock) {
-  //         try {
-  //           setWakeLock(await navigator.wakeLock.request('screen'));
-  //         } catch (error) {
-  //           // toast.error('Something went wrong')
-  //           console.error('Something went wrong');
-  //         }
-  //       }
-
-  //       wakeLock.addEventListener('release', (e) => {
-  //         console.log(e);
-  //       });
-  //     } else {
-  //       toast.error('Be sure to keep the screen active.')
-  //     }
-  //   })();
-
-  //   return () => {
-  //     if (wakeLock) {
-  //       wakeLock.release();
-  //     }
-  //   }
-  // }, [wakeLock])
 
   return (
     <>
